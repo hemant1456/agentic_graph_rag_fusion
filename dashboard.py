@@ -38,6 +38,8 @@ st.set_page_config(
 ROOT        = Path(__file__).parent
 STEP01_EVAL = ROOT / "step_01_baseline_rag" / "results" / "eval_results.json"
 STEP04_EVAL = ROOT / "step_04_chunking" / "results" / "eval_results.json"
+STEP05_EVAL = ROOT / "step_05_knowledge_graph" / "results" / "eval_results.json"
+STEP06_EVAL = ROOT / "step_06_graph_rag" / "results" / "eval_results.json"
 STEP01_DB   = ROOT / "step_01_baseline_rag" / "results" / "chroma_db"
 STEP04_DB   = ROOT / "step_04_chunking" / "results" / "chroma_db"
 CORPUS      = ROOT / "step_00_dataset" / "company_data"
@@ -536,7 +538,7 @@ def _sidebar() -> None:
             ("✅", "Step 03", "Evaluation framework"),
             ("✅", "Step 04", "Format-aware chunking (59%)"),
             ("✅", "Step 05", "Knowledge graph (82%)"),
-            ("⬜", "Step 06", "Graph RAG"),
+            ("✅", "Step 06", "Graph RAG (91%)"),
             ("⬜", "Step 07", "RAG Fusion + BM25"),
             ("⬜", "Step 08", "Agentic RAG"),
         ]
@@ -560,8 +562,8 @@ def _sidebar() -> None:
         st.divider()
         st.markdown("**Remaining failure modes**")
         st.markdown(
-            "- Aggregation → **structured query tool** (Step 07)\n"
-            "- Cross-CSV multi-hop → **graph traversal** (Step 06)\n"
+            "- Exact aggregation (precise numbers) → **structured query tool** (Step 07)\n"
+            "- Ambiguous entity resolution → **agentic disambiguation** (Step 08)\n"
             "- Retrieval noise at k=10 → **BM25 + reranking** (Step 07)"
         )
 
@@ -740,11 +742,17 @@ def tab_experiment_lab() -> None:
         # Comparison bar chart
         s1 = load_eval(STEP01_EVAL)
         s4 = load_eval(STEP04_EVAL)
+        s5 = load_eval(STEP05_EVAL)
+        s6 = load_eval(STEP06_EVAL)
         all_runs: list[tuple[str, dict]] = []
         if s1:
             all_runs.append(("Step01 (baseline)", s1))
         if s4:
             all_runs.append(("Step04 (format-aware)", s4))
+        if s5:
+            all_runs.append(("Step05 (knowledge graph)", s5))
+        if s6:
+            all_runs.append(("Step06 (graph RAG)", s6))
         for exp in history:
             all_runs.append((exp["label"], exp))
 
@@ -784,12 +792,16 @@ def tab_experiment_lab() -> None:
 def tab_analysis() -> None:
     s1 = load_eval(STEP01_EVAL)
     s4 = load_eval(STEP04_EVAL)
+    s5 = load_eval(STEP05_EVAL)
+    s6 = load_eval(STEP06_EVAL)
 
-    if not s1 and not s4:
+    if not s1 and not s4 and not s5 and not s6:
         st.warning("No baseline eval results found. Run the evaluation scripts first.")
         st.code(
             "uv run python step_01_baseline_rag/evaluation/run_eval.py\n"
-            "uv run python step_04_chunking/evaluation/run_eval.py"
+            "uv run python step_04_chunking/evaluation/run_eval.py\n"
+            "uv run python step_05_knowledge_graph/evaluation/run_eval.py\n"
+            "uv run python step_06_graph_rag/evaluation/run_eval.py"
         )
         return
 
@@ -799,6 +811,10 @@ def tab_analysis() -> None:
         base_runs.append(("Step01 (27%)", s1))
     if s4:
         base_runs.append(("Step04 (59%)", s4))
+    if s5:
+        base_runs.append(("Step05 (82%)", s5))
+    if s6:
+        base_runs.append(("Step06 (91%)", s6))
 
     history: list[dict] = st.session_state["exp_history"]
     exp_options = [exp["label"] for exp in history]
