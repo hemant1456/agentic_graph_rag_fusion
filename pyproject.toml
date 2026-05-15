@@ -52,7 +52,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["step_00_dataset/tests"]
+testpaths = ["step_00_dataset/tests", "step_01_baseline_rag/tests"]
 python_files = ["test_*.py"]
 
 [tool.ruff]

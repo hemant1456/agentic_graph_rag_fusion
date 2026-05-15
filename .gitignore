@@ -13,3 +13,6 @@ wheels/
 .env
 .env.*
 !.env.example
+
+# Generated vector store indexes (rebuild with ingest.py)
+**/chroma_db/

@@ -1,0 +1,336 @@
+{
+  "step": "01_baseline_rag",
+  "timestamp": "2026-05-15T13:41:52",
+  "total_questions": 10,
+  "grade_counts": {
+    "PASS": 7,
+    "PARTIAL": 3,
+    "FAIL": 0
+  },
+  "pass_rate": 0.7,
+  "pass_or_partial_rate": 1.0,
+  "results": [
+    {
+      "id": "Q01",
+      "type": "simple_lookup",
+      "question": "What is Vertexia's data retention policy for customer data?",
+      "answer": "Vertexia Inc.'s data retention policy for customer data is as follows:\n\n*   **Hot storage:** 90 days\n*   **Cold storage:** 1 year (S3 Glacier)\n\nAdditionally, the company maintains system logs for 30 days and performs daily backups with a 30-day retention period.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "90 day",
+        "cold storage",
+        "glacier"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "legal/data_processing_agreement_template.txt",
+        "legal/data_processing_agreement_template.txt",
+        "legal/phoenix_corp_msa.txt",
+        "hr/onboarding_handbook.txt",
+        "legal/ip_policy.txt"
+      ],
+      "source_similarities": [
+        0.887,
+        0.879,
+        0.875,
+        0.866,
+        0.866
+      ],
+      "context_chars": 8503,
+      "retrieval_latency_ms": 619.8,
+      "generation_latency_ms": 973.3,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q02",
+      "type": "comparative",
+      "question": "How did Q3 2023 NexusFlow revenue compare to Q2 2023?",
+      "answer": "Based on the provided documents, there is not enough information to answer this question. While the documents provide detailed revenue figures for Q3 2023 (NexusFlow: $1.6M), they do not contain financial data regarding Q2 2023.",
+      "grade": "PARTIAL",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": true,
+      "required_hits": [
+        "1.6"
+      ],
+      "required_missing": [
+        "1.4"
+      ],
+      "sources_retrieved": [
+        "finance/q3_2023_finance_report.txt",
+        "sales/q3_closed_won_report.txt",
+        "finance/q3_2023_finance_report.txt",
+        "executive/q3_2023_allhands_notes.txt",
+        "finance/revenue_by_product_2023.csv"
+      ],
+      "source_similarities": [
+        0.883,
+        0.878,
+        0.876,
+        0.875,
+        0.874
+      ],
+      "context_chars": 7429,
+      "retrieval_latency_ms": 532.6,
+      "generation_latency_ms": 848.8,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q03",
+      "type": "multi_hop",
+      "question": "Who was the on-call engineer for the data platform during the August 2023 outage?",
+      "answer": "The provided documents do not contain information regarding an outage in August 2023, so I cannot identify who was on call during that specific event. \n\nHowever, the on-call schedule for the Data Platform Team during August 2023 was as follows:\n*   **July 31 \u2013 August 6:** Priya Nair\n*   **August 7 \u2013 August 13:** James O'Brien\n*   **August 21 \u2013 August 27:** Lin Wei\n*   **August 28 \u2013 September 3:** Priya Nair",
+      "grade": "PARTIAL",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [],
+      "required_missing": [
+        "Kenji",
+        "Ito"
+      ],
+      "sources_retrieved": [
+        "engineering/on_call_schedule_aug2023.csv",
+        "engineering/on_call_schedule_aug2023.csv",
+        "engineering/data_platform_runbook.md",
+        "engineering/on_call_schedule_aug2023.csv",
+        "engineering/on_call_schedule_aug2023.csv"
+      ],
+      "source_similarities": [
+        0.904,
+        0.9,
+        0.899,
+        0.899,
+        0.899
+      ],
+      "context_chars": 2802,
+      "retrieval_latency_ms": 511.6,
+      "generation_latency_ms": 1063.2,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q04",
+      "type": "temporal",
+      "question": "What was Sarah Chen's title in January 2023?",
+      "answer": "In January 2023, Sarah Chen's title was VP Engineering.",
+      "grade": "PASS",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": false,
+      "required_hits": [
+        "VP Engineering"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "hr/org_chart_q1_2023.txt",
+        "hr/promotion_announcements_2023.txt",
+        "hr/employee_directory.csv",
+        "hr/promotion_announcements_2023.txt",
+        "hr/org_chart_q1_2023.txt"
+      ],
+      "source_similarities": [
+        0.866,
+        0.854,
+        0.851,
+        0.84,
+        0.839
+      ],
+      "context_chars": 6525,
+      "retrieval_latency_ms": 722.7,
+      "generation_latency_ms": 1150.1,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q05",
+      "type": "disambiguation",
+      "question": "What is Project Phoenix at Vertexia?",
+      "answer": "According to the provided Intellectual Property Policy, Project Phoenix refers to the Python 2\u21923 migration that was completed in June 2022.",
+      "grade": "PARTIAL",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": true,
+      "required_hits": [
+        "Python",
+        "migration"
+      ],
+      "required_missing": [
+        "Phoenix Corp"
+      ],
+      "sources_retrieved": [
+        "executive/founding_story.txt",
+        "sales/phoenix_corp_deal_summary.txt",
+        "executive/company_strategy_2024.txt",
+        "sales/phoenix_corp_deal_summary.txt",
+        "legal/ip_policy.txt"
+      ],
+      "source_similarities": [
+        0.865,
+        0.864,
+        0.861,
+        0.859,
+        0.859
+      ],
+      "context_chars": 8504,
+      "retrieval_latency_ms": 611.9,
+      "generation_latency_ms": 1152.5,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q06",
+      "type": "implicit_link",
+      "question": "Does the Phoenix Corp SLA requirement exceed NexusFlow's documented availability target?",
+      "answer": "Yes, the Phoenix Corp SLA requirement exceeds NexusFlow's documented availability target.\n\nAccording to the provided documents:\n*   **Phoenix Corp SLA:** The Master Services Agreement mandates a **99.99%** monthly uptime percentage.\n*   **NexusFlow Availability Target:** The platform-level availability SLO for NexusFlow is **99.9%** (three nines).\n\nThe internal documentation explicitly notes that the 99.99% requirement for Phoenix Corp \"significantly exceeds\" the standard NexusFlow architecture target of 99.9%.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "99.99",
+        "99.9",
+        "yes"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "sales/phoenix_corp_deal_summary.txt",
+        "legal/phoenix_corp_msa.txt",
+        "engineering/nexusflow_architecture.md",
+        "legal/data_processing_agreement_template.txt",
+        "legal/phoenix_corp_msa.txt"
+      ],
+      "source_similarities": [
+        0.863,
+        0.859,
+        0.856,
+        0.851,
+        0.849
+      ],
+      "context_chars": 9105,
+      "retrieval_latency_ms": 587.8,
+      "generation_latency_ms": 1523.4,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q07",
+      "type": "contradictory_data",
+      "question": "What was Vertexia's total revenue in Q3 2023?",
+      "answer": "Vertexia Inc.'s total revenue for Q3 2023 is reported in two ways depending on the accounting method:\n\n*   **GAAP recognized revenue:** $4.12M\n*   **Bookings performance:** $4.2M",
+      "grade": "PASS",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": false,
+      "required_hits": [
+        "4.12",
+        "4.2"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "finance/q3_2023_finance_report.txt",
+        "executive/q3_2023_allhands_notes.txt",
+        "sales/q3_closed_won_report.txt",
+        "finance/q3_2023_finance_report.txt",
+        "finance/revenue_by_product_2023.csv"
+      ],
+      "source_similarities": [
+        0.891,
+        0.887,
+        0.885,
+        0.874,
+        0.86
+      ],
+      "context_chars": 6228,
+      "retrieval_latency_ms": 630.2,
+      "generation_latency_ms": 903.8,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q08",
+      "type": "aggregation",
+      "question": "How many employees joined Vertexia through the DataCraft acquisition?",
+      "answer": "Exactly 12 employees joined Vertexia through the DataCraft acquisition.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "12"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "hr/datacraft_employee_integration.txt",
+        "legal/datacraft_acquisition_summary.txt",
+        "executive/founding_story.txt",
+        "hr/datacraft_employee_integration.txt",
+        "hr/org_chart_q3_2023.txt"
+      ],
+      "source_similarities": [
+        0.881,
+        0.879,
+        0.858,
+        0.857,
+        0.853
+      ],
+      "context_chars": 9146,
+      "retrieval_latency_ms": 527.7,
+      "generation_latency_ms": 700.4,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q09",
+      "type": "stale_reference",
+      "question": "Who is the VP of Customer Success at Vertexia?",
+      "answer": "The VP of Customer Success at Vertexia is Maya Sharma.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "Maya Sharma"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "hr/org_chart_q1_2023.txt",
+        "hr/org_chart_q1_2023.txt",
+        "executive/founding_story.txt",
+        "hr/org_chart_q3_2023.txt",
+        "hr/org_chart_q3_2023.txt"
+      ],
+      "source_similarities": [
+        0.877,
+        0.873,
+        0.866,
+        0.862,
+        0.856
+      ],
+      "context_chars": 8338,
+      "retrieval_latency_ms": 729.3,
+      "generation_latency_ms": 806.5,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q10",
+      "type": "cross_format",
+      "question": "Was InsightLens affected by the August 2023 NexusFlow outage? Explain why or why not.",
+      "answer": "Yes, InsightLens was affected by the August 2023 NexusFlow outage. \n\nAccording to the provided documents, InsightLens depends on the NexusFlow `events_api` for analytics ingestion. Because the outage caused a major disruption in the NexusFlow data ingestion service, the downstream impact extended to InsightLens, resulting in an impact on analytics delivery.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "yes",
+        "events_api"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "finance/revenue_by_product_2023.csv",
+        "executive/q3_2023_allhands_notes.txt"
+      ],
+      "source_similarities": [
+        0.872,
+        0.863,
+        0.85,
+        0.849,
+        0.848
+      ],
+      "context_chars": 7005,
+      "retrieval_latency_ms": 834.8,
+      "generation_latency_ms": 1418.8,
+      "provider": "gemini"
+    }
+  ]
+}
