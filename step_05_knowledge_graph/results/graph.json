@@ -1,0 +1,1721 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "node_type": "person",
+      "name": "Arjun Mehta",
+      "department": "Executive",
+      "role": "CEO",
+      "manager_id": "",
+      "start_date": "2019-03-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E001"
+    },
+    {
+      "node_type": "person",
+      "name": "Diana Volkov",
+      "department": "Executive",
+      "role": "Co-Founder (departed)",
+      "manager_id": "",
+      "start_date": "2019-03-01",
+      "status": "departed_2021",
+      "location": "San Francisco",
+      "departure_type": "voluntary_founder",
+      "departed_to": "",
+      "departure_notes": "Left to found new startup (amicable)",
+      "last_day": "2021-12-15",
+      "id": "E002"
+    },
+    {
+      "node_type": "person",
+      "name": "Sarah Chen",
+      "department": "Platform Engineering",
+      "role": "CTO",
+      "manager_id": "E001",
+      "start_date": "2019-06-15",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E003"
+    },
+    {
+      "node_type": "person",
+      "name": "Nadia Kim",
+      "department": "Product",
+      "role": "CPO",
+      "manager_id": "E001",
+      "start_date": "2020-02-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E004"
+    },
+    {
+      "node_type": "person",
+      "name": "Robert Okafor",
+      "department": "Finance",
+      "role": "CFO",
+      "manager_id": "E001",
+      "start_date": "2020-04-15",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E005"
+    },
+    {
+      "node_type": "person",
+      "name": "Lisa Torres",
+      "department": "Revenue",
+      "role": "CRO",
+      "manager_id": "E001",
+      "start_date": "2021-01-10",
+      "status": "active",
+      "location": "Austin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E006"
+    },
+    {
+      "node_type": "person",
+      "name": "Zara Ahmed",
+      "department": "People & Culture",
+      "role": "VP People & Culture",
+      "manager_id": "E001",
+      "start_date": "2020-09-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E007"
+    },
+    {
+      "node_type": "person",
+      "name": "Carmen Reyes",
+      "department": "Legal",
+      "role": "VP Legal",
+      "manager_id": "E005",
+      "start_date": "2021-03-15",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E008"
+    },
+    {
+      "node_type": "person",
+      "name": "Marcus Webb",
+      "department": "Platform Engineering",
+      "role": "Lead, Platform Engineering",
+      "manager_id": "E003",
+      "start_date": "2020-01-15",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E009"
+    },
+    {
+      "node_type": "person",
+      "name": "Priya Nair",
+      "department": "Platform Engineering",
+      "role": "Lead, Data Platform Team",
+      "manager_id": "E009",
+      "start_date": "2020-03-01",
+      "status": "active",
+      "location": "Bangalore",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E010"
+    },
+    {
+      "node_type": "person",
+      "name": "Daniel Osei",
+      "department": "Platform Engineering",
+      "role": "Lead, Security Team",
+      "manager_id": "E009",
+      "start_date": "2021-05-10",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E011"
+    },
+    {
+      "node_type": "person",
+      "name": "Tom\u00e1s Garc\u00eda",
+      "department": "Product Engineering",
+      "role": "Lead, Product Engineering",
+      "manager_id": "E003",
+      "start_date": "2019-08-01",
+      "status": "active",
+      "location": "Austin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E012"
+    },
+    {
+      "node_type": "person",
+      "name": "Yuki Tanaka",
+      "department": "Product Engineering",
+      "role": "Lead, NexusFlow Team",
+      "manager_id": "E012",
+      "start_date": "2019-10-15",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E013"
+    },
+    {
+      "node_type": "person",
+      "name": "Aisha Johnson",
+      "department": "Product Engineering",
+      "role": "Senior Manager, InsightLens Team",
+      "manager_id": "E012",
+      "start_date": "2021-02-01",
+      "status": "active",
+      "location": "Austin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E014"
+    },
+    {
+      "node_type": "person",
+      "name": "Raj Patel",
+      "department": "Product Engineering",
+      "role": "Staff PM, PulseConnect Team",
+      "manager_id": "E012",
+      "start_date": "2021-07-15",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E015"
+    },
+    {
+      "node_type": "person",
+      "name": "Felix Wagner",
+      "department": "DataCraft Integration",
+      "role": "Lead, DataCraft Integration Team",
+      "manager_id": "E003",
+      "start_date": "2022-01-15",
+      "status": "active",
+      "location": "Berlin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E016"
+    },
+    {
+      "node_type": "person",
+      "name": "Kenji Ito",
+      "department": "Platform Engineering",
+      "role": "Senior Engineer, Data Platform",
+      "manager_id": "E010",
+      "start_date": "2022-04-01",
+      "status": "active",
+      "location": "Bangalore",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E017"
+    },
+    {
+      "node_type": "person",
+      "name": "Ben Carter",
+      "department": "Revenue",
+      "role": "VP Sales",
+      "manager_id": "E006",
+      "start_date": "2021-04-01",
+      "status": "active",
+      "location": "Austin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E018"
+    },
+    {
+      "node_type": "person",
+      "name": "Maya Sharma",
+      "department": "Revenue",
+      "role": "VP Customer Success",
+      "manager_id": "E006",
+      "start_date": "2021-06-15",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E019"
+    },
+    {
+      "node_type": "person",
+      "name": "James O'Brien",
+      "department": "Platform Engineering",
+      "role": "Staff Engineer, Infrastructure",
+      "manager_id": "E009",
+      "start_date": "2020-06-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E020"
+    },
+    {
+      "node_type": "person",
+      "name": "Lin Wei",
+      "department": "Product Engineering",
+      "role": "Senior Engineer, NexusFlow",
+      "manager_id": "E013",
+      "start_date": "2022-02-15",
+      "status": "active",
+      "location": "Bangalore",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E021"
+    },
+    {
+      "node_type": "person",
+      "name": "Sophie Laurent",
+      "department": "Product Engineering",
+      "role": "Senior Engineer, InsightLens",
+      "manager_id": "E014",
+      "start_date": "2022-05-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E022"
+    },
+    {
+      "node_type": "person",
+      "name": "Amara Diallo",
+      "department": "People & Culture",
+      "role": "HR Business Partner",
+      "manager_id": "E007",
+      "start_date": "2022-03-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E023"
+    },
+    {
+      "node_type": "person",
+      "name": "Carlos Mendez",
+      "department": "Revenue",
+      "role": "Account Executive",
+      "manager_id": "E018",
+      "start_date": "2022-08-15",
+      "status": "active",
+      "location": "Austin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E024"
+    },
+    {
+      "node_type": "person",
+      "name": "Fatima Al-Hassan",
+      "department": "Product",
+      "role": "Senior PM, NexusFlow",
+      "manager_id": "E004",
+      "start_date": "2023-01-10",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E025"
+    },
+    {
+      "node_type": "person",
+      "name": "Ravi Krishnan",
+      "department": "DataCraft Integration",
+      "role": "Senior Engineer, DataCraft",
+      "manager_id": "E016",
+      "start_date": "2022-01-15",
+      "status": "active",
+      "location": "Berlin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E026"
+    },
+    {
+      "node_type": "person",
+      "name": "Emma Fischer",
+      "department": "DataCraft Integration",
+      "role": "Engineer, DataCraft",
+      "manager_id": "E016",
+      "start_date": "2022-01-15",
+      "status": "active",
+      "location": "Berlin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E027"
+    },
+    {
+      "node_type": "person",
+      "name": "Noah Zimmermann",
+      "department": "DataCraft Integration",
+      "role": "Data Engineer, DataCraft",
+      "manager_id": "E016",
+      "start_date": "2022-01-15",
+      "status": "active",
+      "location": "Berlin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E028"
+    },
+    {
+      "node_type": "person",
+      "name": "Adrian Blake",
+      "department": "Platform Engineering",
+      "role": "Senior Engineer (departed)",
+      "manager_id": "E010",
+      "start_date": "2021-11-01",
+      "status": "departed_2023-08",
+      "location": "San Francisco",
+      "departure_type": "voluntary",
+      "departed_to": "FinDataCo",
+      "departure_notes": "Joined competitor FinDataCo",
+      "last_day": "2023-08-31",
+      "id": "E029"
+    },
+    {
+      "node_type": "person",
+      "name": "Preet Kaur",
+      "department": "Revenue",
+      "role": "Customer Success Manager (departed)",
+      "manager_id": "E019",
+      "start_date": "2022-01-01",
+      "status": "departed_2023-06",
+      "location": "Austin",
+      "departure_type": "voluntary",
+      "departed_to": "",
+      "departure_notes": "Relocated internationally",
+      "last_day": "2023-06-30",
+      "id": "E030"
+    },
+    {
+      "node_type": "person",
+      "name": "Wei Zhang",
+      "department": "Finance",
+      "role": "Senior Financial Analyst",
+      "manager_id": "E005",
+      "start_date": "2022-06-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E031"
+    },
+    {
+      "node_type": "person",
+      "name": "Omar Faruk",
+      "department": "Platform Engineering",
+      "role": "Engineer, Security",
+      "manager_id": "E011",
+      "start_date": "2023-02-01",
+      "status": "active",
+      "location": "Bangalore",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E032"
+    },
+    {
+      "node_type": "person",
+      "name": "Isabella Romano",
+      "department": "Product Engineering",
+      "role": "Senior Engineer, PulseConnect",
+      "manager_id": "E015",
+      "start_date": "2022-09-15",
+      "status": "active",
+      "location": "Austin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E033"
+    },
+    {
+      "node_type": "person",
+      "name": "David Kim",
+      "department": "Revenue",
+      "role": "Account Executive",
+      "manager_id": "E018",
+      "start_date": "2023-03-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E034"
+    },
+    {
+      "node_type": "person",
+      "name": "Nora Andersen",
+      "department": "Product",
+      "role": "UX Designer",
+      "manager_id": "E004",
+      "start_date": "2022-11-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E035"
+    },
+    {
+      "node_type": "person",
+      "name": "Sam Rivera",
+      "department": "Revenue",
+      "role": "Customer Success Manager",
+      "manager_id": "E019",
+      "start_date": "2023-04-01",
+      "status": "active",
+      "location": "Austin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E036"
+    },
+    {
+      "node_type": "person",
+      "name": "Anjali Patel",
+      "department": "Revenue",
+      "role": "Customer Success Manager",
+      "manager_id": "E019",
+      "start_date": "2022-03-15",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E037"
+    },
+    {
+      "node_type": "person",
+      "name": "Hiroshi Tanaka",
+      "department": "Product Engineering",
+      "role": "Senior Engineer, NexusFlow",
+      "manager_id": "E013",
+      "start_date": "2022-07-01",
+      "status": "active",
+      "location": "Tokyo",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E038"
+    },
+    {
+      "node_type": "person",
+      "name": "Priya Kapoor",
+      "department": "Platform Engineering",
+      "role": "Data Engineer, Data Platform",
+      "manager_id": "E010",
+      "start_date": "2022-09-01",
+      "status": "active",
+      "location": "Bangalore",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E039"
+    },
+    {
+      "node_type": "person",
+      "name": "Liam O'Connor",
+      "department": "Product Engineering",
+      "role": "Engineer, InsightLens",
+      "manager_id": "E014",
+      "start_date": "2023-01-15",
+      "status": "active",
+      "location": "Dublin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E040"
+    },
+    {
+      "node_type": "person",
+      "name": "Fatima Ouedraogo",
+      "department": "Product",
+      "role": "UX Researcher",
+      "manager_id": "E004",
+      "start_date": "2023-04-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E041"
+    },
+    {
+      "node_type": "person",
+      "name": "Chen Jie",
+      "department": "Platform Engineering",
+      "role": "Site Reliability Engineer",
+      "manager_id": "E009",
+      "start_date": "2023-05-01",
+      "status": "active",
+      "location": "Singapore",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E042"
+    },
+    {
+      "node_type": "person",
+      "name": "Marcus Allen",
+      "department": "Revenue",
+      "role": "Solutions Engineer",
+      "manager_id": "E018",
+      "start_date": "2022-11-01",
+      "status": "active",
+      "location": "Austin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E043"
+    },
+    {
+      "node_type": "person",
+      "name": "Leila Rashidi",
+      "department": "Legal",
+      "role": "Legal Counsel",
+      "manager_id": "E008",
+      "start_date": "2023-03-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E044"
+    },
+    {
+      "node_type": "person",
+      "name": "Thomas Nguyen",
+      "department": "Finance",
+      "role": "Financial Analyst",
+      "manager_id": "E005",
+      "start_date": "2023-06-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E045"
+    },
+    {
+      "node_type": "person",
+      "name": "Julia Chen",
+      "department": "Platform Engineering",
+      "role": "Senior Engineer, Infrastructure",
+      "manager_id": "E009",
+      "start_date": "2022-08-01",
+      "status": "active",
+      "location": "San Francisco",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E046"
+    },
+    {
+      "node_type": "person",
+      "name": "Aleksander Nowak",
+      "department": "DataCraft Integration",
+      "role": "Engineer, DataCraft",
+      "manager_id": "E016",
+      "start_date": "2022-01-15",
+      "status": "active",
+      "location": "Berlin",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E047"
+    },
+    {
+      "node_type": "person",
+      "name": "Hana Kobayashi",
+      "department": "Product Engineering",
+      "role": "Engineer, PulseConnect",
+      "manager_id": "E015",
+      "start_date": "2023-07-01",
+      "status": "active",
+      "location": "Tokyo",
+      "departure_type": "",
+      "departed_to": "",
+      "departure_notes": "",
+      "last_day": "",
+      "id": "E048"
+    },
+    {
+      "node_type": "product",
+      "name": "InsightLens",
+      "id": "InsightLens"
+    },
+    {
+      "node_type": "product",
+      "name": "NexusFlow",
+      "id": "NexusFlow"
+    },
+    {
+      "node_type": "product",
+      "name": "PulseConnect",
+      "id": "PulseConnect"
+    },
+    {
+      "node_type": "external_service",
+      "name": "external_snowflake",
+      "id": "external_snowflake"
+    },
+    {
+      "node_type": "external_service",
+      "name": "external_aws_s3",
+      "id": "external_aws_s3"
+    },
+    {
+      "node_type": "external_service",
+      "name": "external_pulsar",
+      "id": "external_pulsar"
+    },
+    {
+      "node_type": "external_service",
+      "name": "external_sendgrid",
+      "id": "external_sendgrid"
+    },
+    {
+      "node_type": "external_service",
+      "name": "external_twilio",
+      "id": "external_twilio"
+    },
+    {
+      "node_type": "product",
+      "name": "DataCraft",
+      "id": "DataCraft"
+    },
+    {
+      "node_type": "customer",
+      "name": "Phoenix Corp",
+      "industry": "Financial Services",
+      "arr_usd": "2400000",
+      "segment": "enterprise",
+      "contract_start": "2022-06-01",
+      "csm_name": "Maya Sharma",
+      "id": "Phoenix Corp"
+    },
+    {
+      "node_type": "customer",
+      "name": "QuantumBank",
+      "industry": "Financial Services",
+      "arr_usd": "3200000",
+      "segment": "enterprise",
+      "contract_start": "2022-01-15",
+      "csm_name": "Maya Sharma",
+      "id": "QuantumBank"
+    },
+    {
+      "node_type": "customer",
+      "name": "Apex Financial",
+      "industry": "Financial Services",
+      "arr_usd": "240000",
+      "segment": "mid-market",
+      "contract_start": "2022-09-15",
+      "csm_name": "Preet Kaur",
+      "id": "Apex Financial"
+    },
+    {
+      "node_type": "customer",
+      "name": "Summit Pharma",
+      "industry": "Pharmaceutical",
+      "arr_usd": "300000",
+      "segment": "mid-market",
+      "contract_start": "2022-12-01",
+      "csm_name": "Anjali Patel",
+      "id": "Summit Pharma"
+    },
+    {
+      "node_type": "customer",
+      "name": "OmegaLogistics",
+      "industry": "Logistics",
+      "arr_usd": "156000",
+      "segment": "smb",
+      "contract_start": "2023-03-01",
+      "csm_name": "Anjali Patel",
+      "id": "OmegaLogistics"
+    },
+    {
+      "node_type": "customer",
+      "name": "Redwood Analytics",
+      "industry": "Technology",
+      "arr_usd": "720000",
+      "segment": "enterprise",
+      "contract_start": "2023-01-15",
+      "csm_name": "Anjali Patel",
+      "id": "Redwood Analytics"
+    },
+    {
+      "node_type": "customer",
+      "name": "Coastal Bancorp",
+      "industry": "Financial Services",
+      "arr_usd": "216000",
+      "segment": "mid-market",
+      "contract_start": "2023-04-01",
+      "csm_name": "Sam Rivera",
+      "id": "Coastal Bancorp"
+    },
+    {
+      "node_type": "customer",
+      "name": "NovaTech Systems",
+      "industry": "Technology",
+      "arr_usd": "264000",
+      "segment": "mid-market",
+      "contract_start": "2023-05-01",
+      "csm_name": "Sam Rivera",
+      "id": "NovaTech Systems"
+    },
+    {
+      "node_type": "customer",
+      "name": "Ironclad Security",
+      "industry": "Technology",
+      "arr_usd": "384000",
+      "segment": "mid-market",
+      "contract_start": "2023-06-15",
+      "csm_name": "Anjali Patel",
+      "id": "Ironclad Security"
+    },
+    {
+      "node_type": "customer",
+      "name": "TechVenture AI",
+      "industry": "Technology",
+      "arr_usd": "420000",
+      "segment": "mid-market",
+      "contract_start": "2023-07-01",
+      "csm_name": "Maya Sharma",
+      "id": "TechVenture AI"
+    },
+    {
+      "node_type": "customer",
+      "name": "GreenLeaf Retail",
+      "industry": "Retail",
+      "arr_usd": "180000",
+      "segment": "mid-market",
+      "contract_start": "2023-07-15",
+      "csm_name": "Maya Sharma",
+      "id": "GreenLeaf Retail"
+    },
+    {
+      "node_type": "customer",
+      "name": "Meridian Health",
+      "industry": "Healthcare",
+      "arr_usd": "360000",
+      "segment": "mid-market",
+      "contract_start": "2023-08-01",
+      "csm_name": "Maya Sharma",
+      "id": "Meridian Health"
+    },
+    {
+      "node_type": "customer",
+      "name": "Harbor Logistics",
+      "industry": "Logistics",
+      "arr_usd": "96000",
+      "segment": "smb",
+      "contract_start": "2023-08-01",
+      "csm_name": "Maya Sharma",
+      "id": "Harbor Logistics"
+    },
+    {
+      "node_type": "customer",
+      "name": "Cascade Media",
+      "industry": "Media",
+      "arr_usd": "144000",
+      "segment": "smb",
+      "contract_start": "2023-08-15",
+      "csm_name": "Maya Sharma",
+      "id": "Cascade Media"
+    },
+    {
+      "node_type": "customer",
+      "name": "Pinnacle Mfg",
+      "industry": "Manufacturing",
+      "arr_usd": "192000",
+      "segment": "mid-market",
+      "contract_start": "2023-09-01",
+      "csm_name": "Maya Sharma",
+      "id": "Pinnacle Mfg"
+    },
+    {
+      "node_type": "customer",
+      "name": "Stellarpath",
+      "industry": "SaaS",
+      "arr_usd": "60000",
+      "segment": "smb",
+      "contract_start": "2023-09-15",
+      "csm_name": "Maya Sharma",
+      "id": "Stellarpath"
+    },
+    {
+      "node_type": "customer",
+      "name": "BlueRidge Energy",
+      "industry": "Energy",
+      "arr_usd": "480000",
+      "segment": "mid-market",
+      "contract_start": "2023-10-01",
+      "csm_name": "Sam Rivera",
+      "id": "BlueRidge Energy"
+    },
+    {
+      "node_type": "customer",
+      "name": "Pacific Dynamics",
+      "industry": "SaaS",
+      "arr_usd": "48000",
+      "segment": "smb",
+      "contract_start": "2023-10-15",
+      "csm_name": "Sam Rivera",
+      "id": "Pacific Dynamics"
+    },
+    {
+      "node_type": "customer",
+      "name": "Northgate Bank",
+      "industry": "Financial Services",
+      "arr_usd": "840000",
+      "segment": "enterprise",
+      "contract_start": "2023-11-01",
+      "csm_name": "Anjali Patel",
+      "id": "Northgate Bank"
+    },
+    {
+      "node_type": "customer",
+      "name": "Crestwood Pharma",
+      "industry": "Pharmaceutical",
+      "arr_usd": "300000",
+      "segment": "mid-market",
+      "contract_start": "2023-12-01",
+      "csm_name": "Sam Rivera",
+      "id": "Crestwood Pharma"
+    },
+    {
+      "node_type": "vendor",
+      "name": "AWS",
+      "category": "Cloud Infrastructure",
+      "annual_value_usd": "480000",
+      "renewal_date": "2024-12-31",
+      "owner_name": "Robert Okafor",
+      "id": "vendor:AWS"
+    },
+    {
+      "node_type": "vendor",
+      "name": "Snowflake",
+      "category": "Data Warehouse",
+      "annual_value_usd": "120000",
+      "renewal_date": "2024-06-30",
+      "owner_name": "Priya Nair",
+      "id": "vendor:Snowflake"
+    },
+    {
+      "node_type": "vendor",
+      "name": "Okta",
+      "category": "Identity & SSO",
+      "annual_value_usd": "36000",
+      "renewal_date": "2024-01-31",
+      "owner_name": "Daniel Osei",
+      "id": "vendor:Okta"
+    },
+    {
+      "node_type": "vendor",
+      "name": "Datadog",
+      "category": "Monitoring",
+      "annual_value_usd": "48000",
+      "renewal_date": "2024-03-31",
+      "owner_name": "Marcus Webb",
+      "id": "vendor:Datadog"
+    },
+    {
+      "node_type": "vendor",
+      "name": "Sendgrid",
+      "category": "Email Delivery",
+      "annual_value_usd": "18000",
+      "renewal_date": "2024-12-31",
+      "owner_name": "Raj Patel",
+      "id": "vendor:Sendgrid"
+    },
+    {
+      "node_type": "vendor",
+      "name": "Twilio",
+      "category": "SMS/Communications",
+      "annual_value_usd": "24000",
+      "renewal_date": "2024-12-31",
+      "owner_name": "Raj Patel",
+      "id": "vendor:Twilio"
+    },
+    {
+      "node_type": "vendor",
+      "name": "GitHub",
+      "category": "Source Control",
+      "annual_value_usd": "12000",
+      "renewal_date": "2024-12-31",
+      "owner_name": "Marcus Webb",
+      "id": "vendor:GitHub"
+    },
+    {
+      "node_type": "vendor",
+      "name": "1Password",
+      "category": "Password Management",
+      "annual_value_usd": "8400",
+      "renewal_date": "2024-12-31",
+      "owner_name": "Daniel Osei",
+      "id": "vendor:1Password"
+    },
+    {
+      "node_type": "vendor",
+      "name": "Notion",
+      "category": "Wiki/Docs",
+      "annual_value_usd": "9600",
+      "renewal_date": "2024-12-31",
+      "owner_name": "Zara Ahmed",
+      "id": "vendor:Notion"
+    },
+    {
+      "node_type": "vendor",
+      "name": "Figma",
+      "category": "Design",
+      "annual_value_usd": "14400",
+      "renewal_date": "2024-12-31",
+      "owner_name": "Nadia Kim",
+      "id": "vendor:Figma"
+    },
+    {
+      "node_type": "vendor",
+      "name": "Atlassian",
+      "category": "Project Management",
+      "annual_value_usd": "36000",
+      "renewal_date": "2024-06-30",
+      "owner_name": "Marcus Webb",
+      "id": "vendor:Atlassian"
+    },
+    {
+      "node_type": "vendor",
+      "name": "Slack",
+      "category": "Communications",
+      "annual_value_usd": "48000",
+      "renewal_date": "2024-03-31",
+      "owner_name": "Zara Ahmed",
+      "id": "vendor:Slack"
+    },
+    {
+      "node_type": "vendor",
+      "name": "Segment",
+      "category": "Customer Data Platform",
+      "annual_value_usd": "60000",
+      "renewal_date": "2024-09-30",
+      "owner_name": "Priya Nair",
+      "id": "vendor:Segment"
+    },
+    {
+      "node_type": "vendor",
+      "name": "PagerDuty",
+      "category": "Incident Management",
+      "annual_value_usd": "24000",
+      "renewal_date": "2024-06-30",
+      "owner_name": "Marcus Webb",
+      "id": "vendor:PagerDuty"
+    },
+    {
+      "node_type": "vendor",
+      "name": "Zoom",
+      "category": "Video Conferencing",
+      "annual_value_usd": "18000",
+      "renewal_date": "2024-12-31",
+      "owner_name": "Zara Ahmed",
+      "id": "vendor:Zoom"
+    }
+  ],
+  "links": [
+    {
+      "edge_type": "reports_to",
+      "source": "E003",
+      "target": "E001"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E004",
+      "target": "E001"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E004",
+      "target": "vendor:Figma"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E005",
+      "target": "E001"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E005",
+      "target": "vendor:AWS"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E006",
+      "target": "E001"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E007",
+      "target": "E001"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E007",
+      "target": "vendor:Notion"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E007",
+      "target": "vendor:Slack"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E007",
+      "target": "vendor:Zoom"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E008",
+      "target": "E005"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E009",
+      "target": "E003"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E009",
+      "target": "vendor:Datadog"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E009",
+      "target": "vendor:GitHub"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E009",
+      "target": "vendor:Atlassian"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E009",
+      "target": "vendor:PagerDuty"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E010",
+      "target": "E009"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E010",
+      "target": "vendor:Snowflake"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E010",
+      "target": "vendor:Segment"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E011",
+      "target": "E009"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E011",
+      "target": "vendor:Okta"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E011",
+      "target": "vendor:1Password"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E012",
+      "target": "E003"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E013",
+      "target": "E012"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E014",
+      "target": "E012"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E015",
+      "target": "E012"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E015",
+      "target": "vendor:Sendgrid"
+    },
+    {
+      "edge_type": "owns_contract",
+      "source": "E015",
+      "target": "vendor:Twilio"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E016",
+      "target": "E003"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E017",
+      "target": "E010"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E018",
+      "target": "E006"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E019",
+      "target": "E006"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E019",
+      "target": "Phoenix Corp"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E019",
+      "target": "QuantumBank"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E019",
+      "target": "TechVenture AI"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E019",
+      "target": "GreenLeaf Retail"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E019",
+      "target": "Meridian Health"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E019",
+      "target": "Harbor Logistics"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E019",
+      "target": "Cascade Media"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E019",
+      "target": "Pinnacle Mfg"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E019",
+      "target": "Stellarpath"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E020",
+      "target": "E009"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E021",
+      "target": "E013"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E022",
+      "target": "E014"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E023",
+      "target": "E007"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E024",
+      "target": "E018"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E025",
+      "target": "E004"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E026",
+      "target": "E016"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E027",
+      "target": "E016"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E028",
+      "target": "E016"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E029",
+      "target": "E010"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E030",
+      "target": "E019"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E030",
+      "target": "Apex Financial"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E031",
+      "target": "E005"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E032",
+      "target": "E011"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E033",
+      "target": "E015"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E034",
+      "target": "E018"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E035",
+      "target": "E004"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E036",
+      "target": "E019"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E036",
+      "target": "Coastal Bancorp"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E036",
+      "target": "NovaTech Systems"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E036",
+      "target": "BlueRidge Energy"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E036",
+      "target": "Pacific Dynamics"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E036",
+      "target": "Crestwood Pharma"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E037",
+      "target": "E019"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E037",
+      "target": "Summit Pharma"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E037",
+      "target": "OmegaLogistics"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E037",
+      "target": "Redwood Analytics"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E037",
+      "target": "Ironclad Security"
+    },
+    {
+      "edge_type": "manages_account",
+      "source": "E037",
+      "target": "Northgate Bank"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E038",
+      "target": "E013"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E039",
+      "target": "E010"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E040",
+      "target": "E014"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E041",
+      "target": "E004"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E042",
+      "target": "E009"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E043",
+      "target": "E018"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E044",
+      "target": "E008"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E045",
+      "target": "E005"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E046",
+      "target": "E009"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E047",
+      "target": "E016"
+    },
+    {
+      "edge_type": "reports_to",
+      "source": "E048",
+      "target": "E015"
+    },
+    {
+      "edge_type": "depends_on",
+      "api_endpoint": "events_api, connectors_api",
+      "criticality": "critical",
+      "purpose": "Dashboard data ingestion; Connector status polling",
+      "source": "InsightLens",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "depends_on",
+      "api_endpoint": "jdbc",
+      "criticality": "critical",
+      "purpose": "Snowflake data connector",
+      "source": "InsightLens",
+      "target": "external_snowflake"
+    },
+    {
+      "edge_type": "depends_on",
+      "api_endpoint": "sdk",
+      "criticality": "critical",
+      "purpose": "Cold storage delivery",
+      "source": "NexusFlow",
+      "target": "external_aws_s3"
+    },
+    {
+      "edge_type": "depends_on",
+      "api_endpoint": "client",
+      "criticality": "critical",
+      "purpose": "Message queue",
+      "source": "NexusFlow",
+      "target": "external_pulsar"
+    },
+    {
+      "edge_type": "depends_on",
+      "api_endpoint": "metrics_api",
+      "criticality": "optional",
+      "purpose": "Embedded analytics widget",
+      "source": "PulseConnect",
+      "target": "InsightLens"
+    },
+    {
+      "edge_type": "depends_on",
+      "api_endpoint": "pipeline_status_api",
+      "criticality": "optional",
+      "purpose": "Pipeline health display",
+      "source": "PulseConnect",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "depends_on",
+      "api_endpoint": "api_v3",
+      "criticality": "critical",
+      "purpose": "Email delivery",
+      "source": "PulseConnect",
+      "target": "external_sendgrid"
+    },
+    {
+      "edge_type": "depends_on",
+      "api_endpoint": "api",
+      "criticality": "optional",
+      "purpose": "SMS notifications",
+      "source": "PulseConnect",
+      "target": "external_twilio"
+    },
+    {
+      "edge_type": "depends_on",
+      "api_endpoint": "ingest_api",
+      "criticality": "critical",
+      "purpose": "DataCraft pipeline handoff",
+      "source": "DataCraft",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Phoenix Corp",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Phoenix Corp",
+      "target": "InsightLens"
+    },
+    {
+      "edge_type": "uses",
+      "source": "QuantumBank",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "QuantumBank",
+      "target": "InsightLens"
+    },
+    {
+      "edge_type": "uses",
+      "source": "QuantumBank",
+      "target": "PulseConnect"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Apex Financial",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Summit Pharma",
+      "target": "InsightLens"
+    },
+    {
+      "edge_type": "uses",
+      "source": "OmegaLogistics",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Redwood Analytics",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Redwood Analytics",
+      "target": "InsightLens"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Coastal Bancorp",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "NovaTech Systems",
+      "target": "PulseConnect"
+    },
+    {
+      "edge_type": "uses",
+      "source": "NovaTech Systems",
+      "target": "InsightLens"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Ironclad Security",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "TechVenture AI",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "TechVenture AI",
+      "target": "InsightLens"
+    },
+    {
+      "edge_type": "uses",
+      "source": "GreenLeaf Retail",
+      "target": "InsightLens"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Meridian Health",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Harbor Logistics",
+      "target": "PulseConnect"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Cascade Media",
+      "target": "InsightLens"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Pinnacle Mfg",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Stellarpath",
+      "target": "PulseConnect"
+    },
+    {
+      "edge_type": "uses",
+      "source": "BlueRidge Energy",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "BlueRidge Energy",
+      "target": "InsightLens"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Pacific Dynamics",
+      "target": "PulseConnect"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Northgate Bank",
+      "target": "NexusFlow"
+    },
+    {
+      "edge_type": "uses",
+      "source": "Crestwood Pharma",
+      "target": "InsightLens"
+    }
+  ]
+}

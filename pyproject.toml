@@ -66,3 +66,11 @@ packages = ["src/agentic_graph_rag_fusion"]
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "chromadb>=0.5.0",
+    "fastembed>=0.3.0",
+    "plotly>=6.7.0",
+    "streamlit>=1.57.0",
+]
