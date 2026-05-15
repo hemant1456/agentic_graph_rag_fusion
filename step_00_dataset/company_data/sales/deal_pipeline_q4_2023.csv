@@ -1,0 +1,11 @@
+deal_id,company_name,industry,arr,stage,products,owner,quarter
+D113,BlueRidge Energy,Energy,480000,Closed-Won,NexusFlow+InsightLens,Ben Carter,2023-Q4
+D114,Pacific Dynamics,SaaS,48000,Closed-Won,PulseConnect,Ben Carter,2023-Q4
+D115,Northgate Bank,Financial Services,840000,Closed-Won,NexusFlow,Ben Carter,2023-Q4
+D116,Crestwood Pharma,Pharmaceutical,300000,Closed-Won,InsightLens,Ben Carter,2023-Q4
+D117,Sterling Capital,Financial Services,600000,Eval,NexusFlow+InsightLens,David Kim,2023-Q4
+D118,Atlas Health,Healthcare,420000,Negotiate,NexusFlow,Ben Carter,2023-Q4
+D119,Vector Systems,Technology,180000,Closed-Lost,PulseConnect,Carlos Mendez,2023-Q4
+D120,Delta Aerospace,Aviation,240000,Demo,InsightLens,David Kim,2023-Q4
+D121,Apex Legal,Legal,96000,Closed-Won,PulseConnect,Sam Rivera,2023-Q4
+D122,Granite Capital,Financial Services,720000,Negotiate,NexusFlow+InsightLens,Ben Carter,2023-Q4

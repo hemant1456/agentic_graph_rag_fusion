@@ -41,6 +41,8 @@ REQUIRED_FILES = [
     "engineering/project_phoenix_migration.md",
     "engineering/api_dependencies.csv",
     "engineering/on_call_schedule_aug2023.csv",
+    "engineering/on_call_schedule_q4_2023.csv",
+    "engineering/nexusflow_api_changelog.md",
     "engineering/datacraft_original_architecture.md",
     "engineering/datacraft_migration_complete.txt",
     "engineering/security_audit_2023.txt",
@@ -58,6 +60,7 @@ REQUIRED_FILES = [
     "hr/offboarding_records_2023.csv",
     "hr/promotion_announcements_2023.txt",
     "hr/datacraft_employee_integration.txt",
+    "finance/revenue_by_product_2022.csv",
     "finance/revenue_by_product_2023.csv",
     "finance/q3_2023_finance_report.txt",
     "finance/budget_allocation_2023.csv",
@@ -68,7 +71,10 @@ REQUIRED_FILES = [
     "sales/sales_playbook_2023.txt",
     "sales/q3_closed_won_report.txt",
     "sales/deal_pipeline_q3_2023.csv",
+    "sales/deal_pipeline_q4_2023.csv",
     "sales/customer_list.csv",
+    "sales/customer_health_scores_2023.csv",
+    "sales/csm_account_history.csv",
     "legal/phoenix_corp_msa.txt",
     "legal/datacraft_acquisition_summary.txt",
     "legal/ip_policy.txt",
@@ -88,7 +94,7 @@ def test_all_required_files_exist():
 def test_minimum_file_count():
     all_files = list(COMPANY_DATA.rglob("*"))
     actual_files = [f for f in all_files if f.is_file()]
-    assert len(actual_files) >= 35, f"Expected 35+ files, got {len(actual_files)}"
+    assert len(actual_files) >= 48, f"Expected 48+ files, got {len(actual_files)}"
 
 
 def test_format_variety():
@@ -382,3 +388,92 @@ def test_gq10_chain_for_insightlens_outage_impact():
         None
     )
     assert critical_dep is not None, "The critical InsightLens→NexusFlow dependency must exist"
+
+
+# ── Expanded dataset integrity ────────────────────────────────────────────────
+
+def test_customer_list_has_20_rows():
+    rows = read_csv("sales/customer_list.csv")
+    assert len(rows) == 20, f"customer_list.csv must have 20 rows, got {len(rows)}"
+
+
+def test_customer_list_total_arr_is_11m():
+    rows = read_csv("sales/customer_list.csv")
+    total = sum(int(r["arr_usd"]) for r in rows)
+    assert total == 11_000_000, f"Total ARR must be $11,000,000, got ${total:,}"
+
+
+def test_customer_list_enterprise_segment_total():
+    rows = read_csv("sales/customer_list.csv")
+    enterprise_arr = sum(int(r["arr_usd"]) for r in rows if r.get("segment") == "enterprise")
+    assert enterprise_arr == 7_160_000, f"Enterprise ARR must be $7,160,000, got ${enterprise_arr:,}"
+
+
+def test_employee_directory_has_48_rows():
+    rows = read_csv("hr/employee_directory.csv")
+    assert len(rows) >= 48, f"employee_directory.csv must have 48+ rows, got {len(rows)}"
+
+
+def test_employee_directory_has_5_berlin_employees():
+    rows = read_csv("hr/employee_directory.csv")
+    berlin = [r for r in rows if r.get("location", "").lower() == "berlin"]
+    names = [r["name"] for r in berlin]
+    assert len(berlin) == 5, f"Expected 5 Berlin employees, got {len(berlin)}: {names}"
+    assert any("Aleksander Nowak" in n for n in names), "Aleksander Nowak must be in Berlin employees"
+
+
+def test_vendor_contracts_has_15_rows():
+    rows = read_csv("finance/vendor_contracts_summary.csv")
+    assert len(rows) == 15, f"vendor_contracts_summary.csv must have 15 rows, got {len(rows)}"
+
+
+def test_vendor_contracts_total_spend():
+    rows = read_csv("finance/vendor_contracts_summary.csv")
+    total = sum(float(r.get("annual_value_usd", 0)) for r in rows)
+    assert abs(total - 956_400) < 1, f"Total vendor spend must be $956,400, got ${total:,.0f}"
+
+
+def test_csm_account_history_preet_kaur_transition():
+    """Apex Financial CSM transitioned from Preet Kaur to Sam Rivera."""
+    rows = read_csv("sales/csm_account_history.csv")
+    apex_rows = [r for r in rows if "Apex" in r.get("company_name", "")]
+    assert len(apex_rows) == 2, f"Apex Financial must have 2 CSM history rows, got {len(apex_rows)}"
+    preet_row = next((r for r in apex_rows if "Preet Kaur" in r.get("csm_name", "")), None)
+    assert preet_row is not None, "Preet Kaur must be in Apex Financial CSM history"
+    sam_row = next((r for r in apex_rows if "Sam Rivera" in r.get("csm_name", "")), None)
+    assert sam_row is not None, "Sam Rivera must be in Apex Financial CSM history"
+
+
+def test_customer_health_scores_high_risk_customers():
+    rows = read_csv("sales/customer_health_scores_2023.csv")
+    high_risk = [r["company_name"] for r in rows if r.get("renewal_risk") == "high"]
+    assert len(high_risk) >= 3, f"Expected 3+ high-risk customers, got {len(high_risk)}: {high_risk}"
+    assert "Apex Financial" in high_risk, "Apex Financial must be high renewal risk"
+
+
+def test_deal_pipeline_q4_2023_closed_won():
+    rows = read_csv("sales/deal_pipeline_q4_2023.csv")
+    closed_won = [r for r in rows if r.get("stage") == "Closed-Won"]
+    assert len(closed_won) >= 4, f"Q4 2023 must have 4+ Closed-Won deals, got {len(closed_won)}"
+
+
+def test_nexusflow_api_changelog_has_breaking_changes():
+    text = read_text("engineering/nexusflow_api_changelog.md")
+    assert "v2.1" in text
+    assert "events/stream" in text or "events/batch" in text
+    assert "Breaking" in text or "breaking" in text
+
+
+def test_revenue_by_product_2022_exists_and_has_12_months():
+    rows = read_csv("finance/revenue_by_product_2022.csv")
+    assert len(rows) == 12, f"revenue_by_product_2022.csv must have 12 months, got {len(rows)}"
+    months = {r.get("month", "") for r in rows}
+    assert "2022-01" in months and "2022-12" in months
+
+
+def test_on_call_schedule_q4_2023_coverage():
+    rows = read_csv("engineering/on_call_schedule_q4_2023.csv")
+    assert len(rows) >= 20, f"Q4 2023 on-call schedule must have 20+ rows, got {len(rows)}"
+    teams = {r.get("team", "") for r in rows}
+    assert "Data Platform Team" in teams
+    assert "NexusFlow Team" in teams

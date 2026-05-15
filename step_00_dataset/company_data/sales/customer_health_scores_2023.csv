@@ -1,0 +1,21 @@
+company_name,health_score,nps,open_support_tickets,renewal_risk,last_qbr_date,next_renewal_date,notes
+Phoenix Corp,9,72,2,low,2023-09-15,2025-06-01,Strategic account — dedicated CSM and executive sponsor
+QuantumBank,8,68,4,low,2023-10-01,2025-01-15,High growth; exploring PulseConnect expansion
+Apex Financial,4,18,11,high,2023-08-01,2024-09-15,CSM transition caused friction; 3 escalations in Q3
+Summit Pharma,7,55,3,medium,2023-09-01,2024-12-01,Good adoption but slow to expand
+OmegaLogistics,6,42,5,medium,2023-10-15,2024-03-01,Integration delays; implementation support requested
+Redwood Analytics,8,63,2,low,2023-11-01,2024-01-15,Champion recently promoted; new budget cycle starting
+Coastal Bancorp,5,30,7,high,2023-09-15,2024-04-01,Technical issues with NexusFlow connector; P1 open
+NovaTech Systems,7,58,1,low,2023-10-01,2024-05-01,Strong adoption of PulseConnect; InsightLens underutilized
+Ironclad Security,6,45,4,medium,2023-10-15,2024-06-15,Data governance requirements blocking full rollout
+TechVenture AI,9,78,1,low,2023-11-01,2024-07-01,Fastest onboarding in cohort; champion very engaged
+GreenLeaf Retail,5,35,6,high,2023-09-01,2024-07-15,Low InsightLens usage; champion left company
+Meridian Health,8,65,2,low,2023-10-01,2024-08-01,Healthcare compliance add-on driving value
+Harbor Logistics,6,40,3,medium,2023-10-15,2024-08-01,SMB; self-serve model working; low engagement
+Cascade Media,7,52,2,low,2023-11-01,2024-08-15,Stable; content team is main user base
+Pinnacle Mfg,7,60,3,medium,2023-10-01,2024-09-01,Manufacturing use case well-suited; expansion discussion Q1
+Stellarpath,5,28,5,high,2023-09-15,2024-09-15,Budget constraints; potential downgrade risk
+BlueRidge Energy,8,70,1,low,2023-11-15,2024-10-01,New customer strong start
+Pacific Dynamics,6,44,2,medium,2023-11-01,2024-10-15,Early stage; onboarding in progress
+Northgate Bank,7,55,3,low,2023-12-01,2024-11-01,Enterprise procurement took long; now fully contracted
+Crestwood Pharma,7,50,2,low,,2024-12-01,Newest customer; onboarding not yet started

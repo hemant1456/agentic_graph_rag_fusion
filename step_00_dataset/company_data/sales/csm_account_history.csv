@@ -1,0 +1,22 @@
+company_name,csm_name,csm_employee_id,effective_date,end_date,transition_reason
+Phoenix Corp,Maya Sharma,E019,2022-06-01,,original assignment
+QuantumBank,Maya Sharma,E019,2022-01-15,,original assignment
+Apex Financial,Preet Kaur,E030,2022-09-15,2023-06-30,original assignment
+Apex Financial,Sam Rivera,E036,2023-07-01,,CSM departure (Preet Kaur relocated internationally)
+Summit Pharma,Anjali Patel,E037,2022-12-01,,original assignment
+OmegaLogistics,Anjali Patel,E037,2023-03-01,,original assignment
+Redwood Analytics,Anjali Patel,E037,2023-01-15,,original assignment
+Coastal Bancorp,Sam Rivera,E036,2023-04-01,,original assignment
+NovaTech Systems,Sam Rivera,E036,2023-05-01,,original assignment
+Ironclad Security,Anjali Patel,E037,2023-06-15,,original assignment
+TechVenture AI,Maya Sharma,E019,2023-07-01,,original assignment
+GreenLeaf Retail,Maya Sharma,E019,2023-07-15,,original assignment
+Meridian Health,Maya Sharma,E019,2023-08-01,,original assignment
+Harbor Logistics,Maya Sharma,E019,2023-08-01,,original assignment
+Cascade Media,Maya Sharma,E019,2023-08-15,,original assignment
+Pinnacle Mfg,Maya Sharma,E019,2023-09-01,,original assignment
+Stellarpath,Maya Sharma,E019,2023-09-15,,original assignment
+BlueRidge Energy,Sam Rivera,E036,2023-10-01,,original assignment
+Pacific Dynamics,Sam Rivera,E036,2023-10-15,,original assignment
+Northgate Bank,Anjali Patel,E037,2023-11-01,,original assignment
+Crestwood Pharma,Sam Rivera,E036,2023-12-01,,original assignment

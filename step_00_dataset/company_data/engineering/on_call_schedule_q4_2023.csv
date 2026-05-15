@@ -1,0 +1,25 @@
+week_start,week_end,team,on_call_engineer,employee_id
+2023-10-02,2023-10-08,Data Platform Team,Kenji Ito,E017
+2023-10-02,2023-10-08,NexusFlow Team,Sophie Laurent,E022
+2023-10-09,2023-10-15,Data Platform Team,Lin Wei,E021
+2023-10-09,2023-10-15,NexusFlow Team,Hiroshi Tanaka,E038
+2023-10-16,2023-10-22,Data Platform Team,Priya Kapoor,E039
+2023-10-16,2023-10-22,NexusFlow Team,Yuki Tanaka,E013
+2023-10-23,2023-10-29,Data Platform Team,James O'Brien,E020
+2023-10-23,2023-10-29,NexusFlow Team,Lin Wei,E021
+2023-10-30,2023-11-05,Data Platform Team,Chen Jie,E042
+2023-10-30,2023-11-05,NexusFlow Team,Sophie Laurent,E022
+2023-11-06,2023-11-12,Data Platform Team,Priya Nair,E010
+2023-11-06,2023-11-12,NexusFlow Team,Hiroshi Tanaka,E038
+2023-11-13,2023-11-19,Data Platform Team,Kenji Ito,E017
+2023-11-13,2023-11-19,NexusFlow Team,Yuki Tanaka,E013
+2023-11-20,2023-11-26,Data Platform Team,Lin Wei,E021
+2023-11-20,2023-11-26,NexusFlow Team,Sophie Laurent,E022
+2023-11-27,2023-12-03,Data Platform Team,Priya Kapoor,E039
+2023-11-27,2023-12-03,NexusFlow Team,Lin Wei,E021
+2023-12-04,2023-12-10,Data Platform Team,James O'Brien,E020
+2023-12-04,2023-12-10,NexusFlow Team,Hiroshi Tanaka,E038
+2023-12-11,2023-12-17,Data Platform Team,Kenji Ito,E017
+2023-12-11,2023-12-17,NexusFlow Team,Yuki Tanaka,E013
+2023-12-18,2023-12-24,Data Platform Team,Chen Jie,E042
+2023-12-18,2023-12-24,NexusFlow Team,Sophie Laurent,E022
