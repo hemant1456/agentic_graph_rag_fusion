@@ -1,0 +1,103 @@
+VERTEXIA SALES PLAYBOOK 2023
+Owner: Ben Carter, VP Sales
+Reviewed by: Lisa Torres, CRO
+Last updated: November 2023
+
+================================================================
+1. INTRODUCTION
+================================================================
+
+This playbook is the field guide for every Vertexia AE, SDR, and SE engaging with prospects in FY2023. It reflects what we've learned closing accounts like Phoenix Corp ($2.4M ARR, June 2022) and scaling toward our $16.5M ARR mark exiting Q3.
+
+If a situation isn't covered here, escalate to your RD or ping #sales-help. Don't freelance pricing or SLA commitments — that path leads to Carmen Reyes (Legal) calling you on a Friday.
+
+================================================================
+2. IDEAL CUSTOMER PROFILE (ICP)
+================================================================
+
+Fit criteria:
+- B2B, 200–5,000 employees
+- Mid-market to lower enterprise (typical ACV: $80K–$400K)
+- Data-driven culture: a named Head of Data, Analytics, or RevOps
+- Multi-source data environment (Salesforce, Stripe, product DBs, marketing stack)
+- Cloud-first (AWS or GCP); hybrid acceptable, on-prem-only is a pass
+- Geos: North America (primary), UK/EU (secondary), India (Bangalore-led)
+
+Disqualifiers:
+- <100 employees (route to PLG self-serve waitlist)
+- Regulated workloads requiring on-prem-only (HIPAA-heavy without cloud BAA path)
+- No identified data owner
+
+================================================================
+3. DISCOVERY QUESTIONS
+================================================================
+
+Lead with business pain, not product features.
+
+Business context:
+- "Walk me through how your team reports on revenue today — where does the data live before it lands in a dashboard?"
+- "What decisions are blocked or delayed because the data isn't ready?"
+- "How many analyst-hours per week go to data prep vs. analysis?"
+
+Technical:
+- "What's your current ingestion stack — Fivetran, Airbyte, in-house?"
+- "Where does your BI layer sit — Tableau, Looker, Power BI, Mode?"
+- "What's your warehouse — Snowflake, BigQuery, Redshift?"
+- "Any CDC or near-real-time requirements?"
+
+Org & buying:
+- "Who owns the budget for data tooling — Engineering, Data, or RevOps?"
+- "When you last bought a tool in this category, what did procurement look like?"
+
+================================================================
+4. PRODUCT POSITIONING
+================================================================
+
+NexusFlow vs. Fivetran
+- We win on: hot-path performance (Go-based pipeline), Apache Pulsar-backed streaming for sub-minute freshness, and transparent per-pipeline pricing (Fivetran's MAR billing is a top buyer complaint).
+- We tie on: connector breadth for top-50 SaaS sources.
+- We lose on: long-tail niche connectors. Counter with our Connector SLA — net-new connector in 30 days for committed customers.
+- Proof point: Phoenix Corp consolidated 3 ingestion tools onto NexusFlow in Q3 2022.
+
+InsightLens vs. Tableau / Looker
+- vs. Tableau: We're embedded-analytics-first. Tableau is desktop-heritage; InsightLens was built post-2021 for product teams shipping analytics inside their own apps. Faster time-to-embed, modern semantic layer.
+- vs. Looker: LookML lock-in is real. InsightLens uses an open semantic layer compatible with dbt. We're typically 30–50% lower TCO at the mid-market band.
+- Don't position InsightLens as a Tableau replacement for a 2,000-seat finance org. That's not our fight in 2023.
+
+PulseConnect
+- Position as the engagement layer that sits on top of NexusFlow + InsightLens. Strongest when the customer already has clean pipelines and wants action, not another CRM swap. Don't lead head-to-head vs. Salesforce — lead with "augment, don't replace."
+
+================================================================
+5. COMMON OBJECTIONS
+================================================================
+
+"You're a smaller vendor — what about stability?"
+→ Series C closed October 2023, $45M led by Sequoia. ~500 employees across SF, Austin, and Bangalore. Reference Phoenix Corp at 99.99% uptime SLA.
+
+"We had a public incident in August — what happened?"
+→ Be straight. NexusFlow v2.1 had a 4h 23min ingestion-side incident on Aug 14, 2023, caused by a misconfigured rate limiter. Full RCA available under NDA. Architecture target is 99.9%; enterprise SLA tier is 99.99% with credits. Don't oversell — Maya Sharma's CS team will own the follow-through.
+
+"We're already on Fivetran + Tableau."
+→ Don't try to rip-and-replace both. Land on the weaker leg (usually ingestion cost or embedded analytics gap) and expand.
+
+"Price is high."
+→ Anchor on analyst hours saved and freshness SLA. Discounting >15% requires Lisa Torres approval.
+
+================================================================
+6. DEAL STAGES
+================================================================
+
+1. Prospect — fits ICP, no confirmed pain yet
+2. Qualify — MEDDIC partially mapped, champion identified
+3. Demo — tailored demo delivered, technical questions logged
+4. Eval — POC or trial scoped with success criteria in writing
+5. Negotiate — Legal/Procurement engaged, redlines in flight
+6. Close — countersigned MSA, Maya's team takes handoff
+
+Stage progression requires the next-stage exit criteria in Salesforce. No "happy ears" advancement.
+
+================================================================
+7. MEDDIC APPLICATION
+================================================================
+
+- Metrics: Quantify pain ($/year, hours/week, freshness lag). "We don't trust the dashboard" is not a metric — push for

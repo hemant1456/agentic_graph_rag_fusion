@@ -1,0 +1,11 @@
+vendor,category,annual_value_usd,renewal_date,owner,notes
+AWS,Cloud Infrastructure,480000,2024-12-31,Robert Okafor,"Annual commitment, multi-year"
+Snowflake,Data Warehouse,120000,2024-06-30,Priya Nair,Usage-based + commitment
+Okta,Identity & SSO,36000,2024-01-31,Daniel Osei,"Per-seat, 500 seats"
+Datadog,Monitoring,48000,2024-03-31,Marcus Webb,Hosts + custom metrics
+Sendgrid,Email Delivery,18000,2024-12-31,Raj Patel,Volume-based
+Twilio,SMS/Communications,24000,2024-12-31,Raj Patel,Usage-based
+GitHub,Source Control,12000,2024-12-31,Marcus Webb,"Enterprise, 200 seats"
+1Password,Password Management,8400,2024-12-31,Daniel Osei,Teams plan
+Notion,Wiki/Docs,9600,2024-12-31,Zara Ahmed,"Plus plan, company-wide"
+Figma,Design,14400,2024-12-31,Nadia Kim,"Professional, design team"

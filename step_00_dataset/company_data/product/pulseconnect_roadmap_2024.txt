@@ -1,0 +1,42 @@
+PulseConnect 2024 Roadmap — Working Draft
+Author: Raj Patel
+Last updated: Dec 11, 2023
+Status: Draft for review (Nadia, Tomás, Ben, Maya — please leave comments)
+
+---
+
+Quick framing before we get into it: 2023 was a year of getting PulseConnect to feel like a real product rather than the new kid we shipped in April 2022. Q3 we did $1.02M against $1.5M for InsightLens, which is fine but not what we're capable of. With Series C closed in October and headcount opening up, 2024 is the year we pull ahead on workflow stickiness and start showing up in deals where we'd previously cede ground to HubSpot or Salesforce.
+
+Theme for the year: **make PulseConnect the system reps actually live in.**
+
+---
+
+**Q1 2024**
+
+- **AI-powered lead scoring** — Owner: Meera (with ML support from Priya's team). Sizing: **L**. Dependencies: feature store work that Data Platform committed to in their Q1 OKRs; also needs clean event data from NexusFlow events_api (post-outage hardening from August is a hard prereq — Kenji has signed off). Goal: ship behind a flag to 5 design partners by end of February, GA late March.
+- **Email sequence automation** — Owner: Dev R. Sizing: **M**. Dependencies: SendGrid contract renewal (Carmen is on it), and we need PulseConnect's template service refactored — Tomás is aware. This is table stakes; we've lost three deals in Q4 alone because we didn't have it.
+
+**Q2 2024**
+
+- **Native Slack integration** — Owner: Dev R (continuing from Q1 email work). Sizing: **M**. Dependencies: OAuth flow rework, Slack app review process (~3 weeks, plan accordingly). Maya's CS team has been asking for this since forever — it'll also unlock internal dogfooding, which is embarrassingly overdue.
+- **Customer health scoring** — Owner: Meera. Sizing: **L**. Dependencies: InsightLens shared analytics SDK (Aisha's team — we have a tentative commit but need to lock this in January). Some overlap with the lead scoring model architecture; reusing infra is the whole point.
+
+**Q3 2024**
+
+- **Revenue intelligence module** — Owner: TBD (likely a new hire we're backfilling for in Feb). Sizing: **XL**. Dependencies: this is the big one. Needs the InsightLens embedded reporting layer, deal pipeline modeling, and probably a dedicated PM. Ben has been pitching this to prospects already (please stop, Ben), so the pressure to land it is real. Realistically this slips to early Q4 if hiring lags.
+
+**Q4 2024**
+
+- **Mobile app v2** — Owner: Sana K. Sizing: **L**. Dependencies: React Native upgrade, push notification infra (Platform Engineering — Marcus's team has it on their roadmap but not committed). The v1 mobile app has a 2.8 star rating; we either invest properly or sunset it. Nadia's call ultimately.
+
+---
+
+**Risks / open questions:**
+
+1. Hiring — we're budgeted for 6 net adds on PulseConnect in 2024. If that slips, Q3 is the first thing that moves.
+2. We have no story yet for the Phoenix Corp expansion conversation Lisa wants for Q2. Need to figure out if revenue intelligence pulls forward.
+3. Data Platform's Pulsar migration is "done" but PulseConnect still has two Kafka-era consumers we never refactored. Tech debt for Q1.
+
+Comments welcome. Planning sync Dec 18.
+
+— Raj

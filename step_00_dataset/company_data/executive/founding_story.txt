@@ -1,0 +1,23 @@
+The Vertexia Story: From Stanford Labs to Data Infrastructure
+
+It’s hard to believe that Vertexia Inc. started in a cramped basement office in San Francisco back in March 2019. Looking back, it feels like a lifetime ago, yet the core mission—democratizing data engineering—remains exactly the same.
+
+I met Diana Volkov at Stanford during our final year of grad school. We were both frustrated by the same recurring problem: data pipelines were gatekept by complex code that made it impossible for non-engineers to access the insights they needed. We spent countless nights whiteboarding, trying to figure out how to abstract away the ETL complexity without sacrificing the performance that enterprise clients demand.
+
+We launched our first MVP with a simple hypothesis: what if we treated data flow like a visual workflow? By March 2020, we officially reached GA with NexusFlow (or "FLOW," as the internal team still calls it). It was our first real attempt at solving the data ingestion bottleneck. 
+
+The growth phase was a whirlwind. We secured our Series B in July 2021, which gave us the fuel to scale our team and start dreaming bigger. By that time, we were already planning the expansion beyond pipelines into analytics. 
+
+Late 2021 marked a significant transition for the company. Diana, my co-founder and partner in every sense of the early journey, decided to leave Vertexia to pursue an entirely new startup venture. It was an amicable parting—she remains a valued shareholder and a close friend of the firm. Her vision laid the groundwork for what we eventually launched as InsightLens in September 2021, and the team she helped build continues to honor her legacy of rigorous engineering.
+
+We didn’t slow down. In January 2022, we closed the acquisition of DataCraft. Integrating those 12 engineers was a turning point for our culture and our stack. It brought in the technical expertise we needed to eventually transition from Kafka to Apache Pulsar, a move that solidified our platform’s reliability. That acquisition also paved the way for us to sign the Phoenix Corp MSA in June 2022—a $2.4M ARR contract that pushed us to hold ourselves to a 99.99% uptime SLA. 
+
+Our engineering team has been the backbone of every milestone. I am particularly proud of how the team handled "Project Phoenix"—the massive Python 2 to 3 migration that we finalized on June 30, 2022. It was a Herculean effort that allowed us to keep scaling as we launched PulseConnect in April 2022.
+
+As we moved into 2023, the leadership structure evolved alongside the product. Sarah Chen, who had been our VP Engineering since the early days, stepped into the CTO role in April 2023. Under her guidance, we split the organization into Platform Engineering and Product Engineering, a move that allowed us to stay agile despite growing to 500 employees by the end of that year.
+
+Even when things go wrong—like the NexusFlow outage on August 14, 2023—we rely on our transparency. Kenji Ito and the rest of the Data Platform team showed exactly why we have such a talented group of people, working through the rate-limiter configuration issues to get us back online. 
+
+Today, with our Series C funding closed in October 2023, Vertexia stands as a leader in the data space. Whether it’s NexusFlow, InsightLens, or PulseConnect, we are still doing exactly what Diana and I set out to do in that San Francisco basement: making data work for everyone.
+
+— Arjun Mehta, CEO & Co-founder, Vertexia Inc.

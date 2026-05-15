@@ -1,0 +1,4 @@
+employee_id,name,department,last_day,departure_type,notes,manager_id
+E029,Adrian Blake,Platform Engineering,2023-08-31,voluntary,Joined competitor FinDataCo,E010
+E030,Preet Kaur,Revenue,2023-06-30,voluntary,Relocated internationally,E019
+E002,Diana Volkov,Executive,2021-12-15,voluntary_founder,Left to found new startup (amicable),E001

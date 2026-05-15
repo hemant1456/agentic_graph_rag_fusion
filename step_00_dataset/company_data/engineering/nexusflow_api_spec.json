@@ -1,0 +1,44 @@
+{
+  "service": "NexusFlow Events API",
+  "version": "v2.0",
+  "base_url": "https://api.nexusflow.vertexia.com/v2",
+  "owner_team": "Data Platform Team",
+  "owner": "Priya Nair",
+  "availability_sla": "99.9%",
+  "endpoints": [
+    {
+      "path": "/events",
+      "method": "POST",
+      "description": "Ingest a batch of events",
+      "auth": "Bearer token",
+      "rate_limit": "10000 req/min per tenant"
+    },
+    {
+      "path": "/events/stream",
+      "method": "GET",
+      "description": "Stream events for downstream consumers (InsightLens primary consumer)",
+      "auth": "Bearer token",
+      "consumers": [
+        "InsightLens",
+        "DataCraft Integration"
+      ]
+    },
+    {
+      "path": "/pipelines",
+      "method": "GET",
+      "description": "List pipeline status",
+      "auth": "Bearer token"
+    },
+    {
+      "path": "/connectors",
+      "method": "GET",
+      "description": "List available connectors",
+      "auth": "Bearer token"
+    }
+  ],
+  "changelog": {
+    "v2.1": "Released 2023-08-14 \u2014 ROLLED BACK same day due to outage. Rate limiter config bug.",
+    "v2.0": "Released 2023-06-01 \u2014 Pulsar migration complete, new streaming endpoint",
+    "v1.9": "Released 2023-02-15 \u2014 Connector framework v2"
+  }
+}

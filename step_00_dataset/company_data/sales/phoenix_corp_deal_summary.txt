@@ -1,0 +1,26 @@
+INTERNAL MEMORANDUM: CONFIDENTIAL
+TO: Executive Leadership Team
+FROM: Ben Carter, VP Sales
+DATE: June 5, 2022
+SUBJECT: Deal Summary: Phoenix Corp Enterprise Agreement
+
+I am pleased to confirm that Vertexia Inc. has officially executed the Master Services Agreement (MSA) with Phoenix Corp, a Fortune 500 leader in the financial services sector. This contract represents the largest single deal in our history, securing $2.4M in ARR.
+
+The three-year agreement covers a comprehensive deployment of the NexusFlow enterprise tier for high-volume data ingestion, coupled with InsightLens for advanced business analytics. The deal was finalized on June 1, 2022, following extensive negotiations regarding our service level commitments and infrastructure requirements.
+
+Key Contract Terms and Requirements:
+
+1. Performance Standards: Phoenix Corp requires a 99.99% uptime SLA. This significantly exceeds our standard NexusFlow architecture target of 99.9%. Achieving this will require close coordination between the Platform Engineering team (led by Marcus Webb) and Product Engineering (led by Tomás García) to ensure our data ingestion services maintain the necessary redundancy and failover capabilities.
+
+2. Account Management: As part of the enterprise service package, Maya Sharma (VP Customer Success) will serve as the dedicated Executive Sponsor, ensuring that Phoenix Corp receives prioritized support and advocacy within Vertexia.
+
+3. Strategic Engagement: The contract mandates Quarterly Business Reviews (QBRs) to monitor performance metrics against the 99.99% SLA and to align our product roadmap with their evolving financial data needs.
+
+4. Infrastructure Roadmap: While the initial deployment is cloud-native (AWS), the MSA includes a provision for an on-premise deployment option beginning in Year 2. We must begin evaluating the technical feasibility of this requirement immediately to ensure we are prepared for the transition.
+
+Strategic Significance:
+Securing Phoenix Corp validates our enterprise-grade capabilities and our ability to displace incumbent legacy systems in the financial services space. This deal provides a critical anchor for our growth strategy as we continue scaling our engineering and product teams. 
+
+Moving forward, I will be working closely with Sarah Chen (VP Engineering) to ensure that the infrastructure team is aligned with the specific uptime requirements of this account. We must ensure that our platform remains robust, particularly as we integrate the capabilities and personnel brought on by the DataCraft acquisition earlier this year.
+
+This is a milestone moment for Vertexia Inc. Let’s ensure we deliver on our promises to Phoenix Corp to secure long-term expansion opportunities.

@@ -1,0 +1,78 @@
+{
+  "year": 2023,
+  "owner": "Nadia Kim",
+  "objectives": [
+    {
+      "id": "O1",
+      "objective": "Make NexusFlow the easiest enterprise data pipeline to deploy",
+      "key_results": [
+        {
+          "id": "KR1.1",
+          "metric": "Time-to-first-pipeline",
+          "target": "< 30 minutes",
+          "q3_actual": "47 minutes"
+        },
+        {
+          "id": "KR1.2",
+          "metric": "Enterprise connector count",
+          "target": "200+",
+          "q3_actual": "187"
+        },
+        {
+          "id": "KR1.3",
+          "metric": "NPS score",
+          "target": "65+",
+          "q3_actual": "61"
+        }
+      ]
+    },
+    {
+      "id": "O2",
+      "objective": "Establish InsightLens as a best-in-class BI tool for mid-market",
+      "key_results": [
+        {
+          "id": "KR2.1",
+          "metric": "DAU/MAU ratio",
+          "target": "0.45",
+          "q3_actual": "0.38"
+        },
+        {
+          "id": "KR2.2",
+          "metric": "Dashboard creation rate (per user/month)",
+          "target": "3.0",
+          "q3_actual": "2.4"
+        },
+        {
+          "id": "KR2.3",
+          "metric": "Dashboard load time p95 (ms)",
+          "target": "< 2000",
+          "q3_actual": "3200"
+        }
+      ]
+    },
+    {
+      "id": "O3",
+      "objective": "Launch PulseConnect to product-led growth (PLG) motion",
+      "key_results": [
+        {
+          "id": "KR3.1",
+          "metric": "PLG free signups Q3",
+          "target": "500",
+          "q3_actual": "312"
+        },
+        {
+          "id": "KR3.2",
+          "metric": "Free-to-paid conversion rate",
+          "target": "8%",
+          "q3_actual": "5.2%"
+        },
+        {
+          "id": "KR3.3",
+          "metric": "Mobile app DAU (post-launch)",
+          "target": "N/A Q3",
+          "q3_actual": "Not launched"
+        }
+      ]
+    }
+  ]
+}

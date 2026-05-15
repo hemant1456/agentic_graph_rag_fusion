@@ -1,0 +1,116 @@
+VERTEXIA INC.
+EMPLOYEE ONBOARDING HANDBOOK
+Last updated: November 2023
+
+---
+
+WELCOME TO VERTEXIA
+
+Welcome aboard. Whether you're joining us in San Francisco, Austin, or Bangalore, you're now part of a team of roughly 500 people building the next generation of data infrastructure. Vertexia was founded in March 2019, and over the past four-plus years we've grown from a small office in SoMa into a global company serving customers across three product lines: NexusFlow, InsightLens, and PulseConnect.
+
+A note from Arjun: "The thing I want every new Vertexian to know is that you were hired because we believe you'll make us better. Bring your whole self, your skepticism, and your good ideas. We're still building this place — you get to shape it."
+
+---
+
+OUR VALUES
+
+We have three. We try to live them, not laminate them.
+
+**Move Fast.** Speed compounds. A decision made today is worth two made next quarter. Default to action, then iterate. If you're stuck waiting for permission, you probably don't need it.
+
+**Build Trust.** Every interaction — with a customer, a teammate, a vendor — is a deposit or a withdrawal. We choose deposits. We tell the truth, especially when it's uncomfortable. We do what we say we'll do.
+
+**Own It.** No "that's not my team's problem." If you see it, you own it until it's resolved or handed off cleanly. Ownership is a privilege, not a punishment.
+
+---
+
+YOUR FIRST WEEK CHECKLIST
+
+Day 1
+- [ ] Meet your manager and complete intro 1:1
+- [ ] Pick up laptop and badge from IT (SF/Austin) or confirm shipment (Bangalore/remote)
+- [ ] Complete Okta SSO setup and enroll in MFA
+- [ ] Join #welcome-newcomers and #general on Slack
+- [ ] Review your team's Notion space
+
+Day 2–3
+- [ ] Set up 1Password vault and import any shared vaults from your manager
+- [ ] Configure GitHub access; ensure SSO + hardware key are enforced
+- [ ] Complete Security & Privacy training in Workday (mandatory within first 7 days)
+- [ ] Read the product overviews for NexusFlow, InsightLens, and PulseConnect
+
+Day 4–5
+- [ ] Coffee chats with three people outside your immediate team
+- [ ] Attend Friday all-hands (recorded if you can't make it live)
+- [ ] Submit your 30-60-90 plan draft to your manager
+
+Week 2
+- [ ] Complete data handling and compliance modules
+- [ ] Set up expense account in Brex
+
+---
+
+TOOLS SETUP
+
+We standardize on a small set of tools. Please don't introduce new ones without checking with your manager and IT.
+
+- **Slack** — primary communication. Default to public channels.
+- **Notion** — docs, wikis, RFCs. Your team space is linked in your welcome email.
+- **GitHub** — source code. SSO required, hardware security key required for write access.
+- **Okta** — SSO for everything. If a tool isn't behind Okta, flag it to security@vertexia.com.
+- **1Password** — credential storage. Never paste secrets in Slack or Notion.
+- **Brex** — corporate card and expenses.
+- **Zoom** — meetings.
+
+---
+
+DATA HANDLING POLICIES
+
+This matters. We handle customer data on behalf of enterprises who trust us with their business. Violations are taken seriously.
+
+**Customer data retention:** 90 days in hot storage, 1 year in cold storage (S3 Glacier). After that, data is purged according to our deletion pipeline. Do not export customer data to local machines, personal drives, or unmanaged tools.
+
+**Logs retention:** 30 days. Application and infrastructure logs are automatically rotated.
+
+**Backups:** Daily snapshots with 30-day retention.
+
+**PII access:** Requires documented business justification and is audited. Talk to Daniel Osei's team (Security) before pulling anything sensitive.
+
+---
+
+EXPENSE POLICY
+
+We use Brex. The short version: spend it like it's your own money on a tight budget.
+
+- Meals while traveling: reasonable, no per-diem cap but expect scrutiny above $75/person
+- Team meals: pre-approved by manager
+- Software/SaaS: must go through IT to avoid shadow-IT sprawl
+- Travel: book through Navan; economy domestic, premium economy for flights over 6 hours
+- Receipts required for anything over $25
+
+When in doubt, ask your manager before spending.
+
+---
+
+PTO POLICY
+
+Vertexia offers unlimited PTO. The catch: unlimited only works if people actually take time off. **We strongly recommend a minimum of two weeks per year**, and managers are expected to encourage their reports to disconnect. Sick days are separate and uncapped. Parental leave is 16 weeks fully paid for all parents.
+
+Block your calendar, set an away message, and don't check Slack. We mean it.
+
+---
+
+SECURITY REQUIREMENTS
+
+Non-negotiable:
+- Full-disk encryption on all devices (enforced via MDM)
+- Hardware security key (YubiKey) for production access
+- MFA on every account, every time
+- No customer data on personal devices, ever
+- Report any suspected incident to security@vertexia.com immediately — no blame for fast reporting
+
+Phishing simulations happen quarterly. Don't feel bad if you fail one; do tell us.
+
+---
+
+Questions? Ping #ask-people-team or reach out to Zara Ahmed's team directly. Welcome to Vertexia — glad you're here.

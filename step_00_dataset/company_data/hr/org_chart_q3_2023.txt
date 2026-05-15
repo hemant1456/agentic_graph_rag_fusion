@@ -1,0 +1,89 @@
+VERTEXIA INC. — ORGANIZATIONAL CHART
+Q3 2023 Snapshot (as of July 2023)
+Prepared by: People & Culture (Z. Ahmed)
+Status: Post-restructuring (April 10, 2023)
+Headcount: ~480 (target ~500 by EOY)
+
+================================================================
+CEO
+  Arjun Mehta (Co-founder)
+================================================================
+
+DIRECT REPORTS TO CEO
+----------------------------------------------------------------
+
+[1] Sarah Chen — Chief Technology Officer
+    (Promoted from VP Engineering on April 10, 2023.
+     Engineering org split into Platform and Product per same date.)
+
+    ├── Marcus Webb — Lead, Platform Engineering
+    │     ├── Priya Nair — Lead, Data Platform Team
+    │     │     └── Includes: Kenji Ito (Sr. Engineer), +14 others
+    │     └── Daniel Osei — Lead, Security Team
+    │
+    ├── Tomás García — Lead, Product Engineering
+    │     ├── Yuki Tanaka — Lead, NexusFlow Team
+    │     ├── Aisha Johnson — Lead, InsightLens Team
+    │     └── Raj Patel — Lead, PulseConnect Team
+    │
+    └── Felix Wagner — Lead, DataCraft Integration Team
+          (Reports directly to CTO during Pulsar migration
+           wind-down; team of 9, originally 12 from Jan 2022
+           acquisition. Dotted line to Marcus Webb on
+           platform alignment.)
+
+----------------------------------------------------------------
+
+[2] Nadia Kim — Chief Product Officer
+    Product Management, Design, UX Research.
+    Partners closely with Tomás García's org on roadmap.
+
+----------------------------------------------------------------
+
+[3] Robert Okafor — Chief Financial Officer
+    ├── Finance & Accounting
+    ├── FP&A
+    ├── BizOps
+    └── Carmen Reyes — VP Legal
+          (Legal reports into CFO org;
+           dotted line to CEO on board matters.)
+
+----------------------------------------------------------------
+
+[4] Lisa Torres — Chief Revenue Officer
+    ├── Ben Carter — VP Sales
+    │     (Enterprise, Mid-Market, SMB pods)
+    ├── Maya Sharma — VP Customer Success
+    │     (Owns Phoenix Corp and top-20 accounts)
+    └── Revenue Operations
+
+----------------------------------------------------------------
+
+[5] Zara Ahmed — VP People & Culture
+    (Reports directly to CEO. Recruiting, People Ops,
+     L&D, Workplace across SF / Austin / Bangalore.)
+
+================================================================
+NOTES
+================================================================
+
+- The April 2023 restructuring formalized the Platform vs.
+  Product Engineering split. Prior to that, all engineering
+  rolled up to Sarah Chen as VP Engineering.
+
+- DataCraft Integration Team remains a standalone unit
+  through Q3 2023. Plan-of-record (per CTO staff meeting,
+  June 27) is to fold remaining members into Data Platform
+  (under Priya Nair) once Pulsar migration support work
+  concludes — target Q4 2023 / Q1 2024.
+
+- Site leads (informal):
+    • San Francisco — Arjun Mehta
+    • Austin — Ben Carter
+    • Bangalore — Priya Nair
+
+- Open exec searches: none at present. VP Marketing role
+  remains under CEO directly pending search (kickoff Q4).
+
+For corrections, contact people-ops@vertexia.com.
+Next refresh: October 2023 (post-Series C close).

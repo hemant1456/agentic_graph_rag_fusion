@@ -1,0 +1,14 @@
+deal_id,company_name,industry,arr,stage,products,owner,quarter
+D100,Apex Financial,Financial Services,240000,Closed-Won,NexusFlow,Ben Carter,2023-Q3
+D101,GreenLeaf Retail,Retail,180000,Closed-Won,InsightLens,Ben Carter,2023-Q3
+D102,TechVenture AI,Technology,420000,Closed-Won,NexusFlow+InsightLens,Ben Carter,2023-Q3
+D103,Harbor Logistics,Logistics,96000,Closed-Won,PulseConnect,Ben Carter,2023-Q3
+D104,Meridian Health,Healthcare,360000,Closed-Won,NexusFlow,Ben Carter,2023-Q3
+D105,Cascade Media,Media,144000,Closed-Won,InsightLens,Ben Carter,2023-Q3
+D106,Pinnacle Mfg,Manufacturing,192000,Closed-Won,NexusFlow,Ben Carter,2023-Q3
+D107,Stellarpath,SaaS,60000,Closed-Won,PulseConnect,Ben Carter,2023-Q3
+D108,BlueRidge Energy,Energy,480000,Eval,NexusFlow+InsightLens,Ben Carter,2023-Q3
+D109,Northgate Bank,Financial Services,840000,Negotiate,NexusFlow,Ben Carter,2023-Q3
+D110,Crestwood Pharma,Pharma,300000,Demo,InsightLens,Ben Carter,2023-Q3
+D111,DataFlow Corp,Technology,120000,Closed-Lost,NexusFlow,Ben Carter,2023-Q3
+D112,Vanguard Retail,Retail,90000,Closed-Lost,PulseConnect,Ben Carter,2023-Q3

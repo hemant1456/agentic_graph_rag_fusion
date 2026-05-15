@@ -1,0 +1,68 @@
+Vertexia Inc. — Org Chart — Q1 2023
+Snapshot as of January 2023
+Maintained by: People & Culture (Zara Ahmed)
+
+===============================================
+CEO
+===============================================
+Arjun Mehta — Chief Executive Officer (Co-founder)
+
+Direct Reports:
+  - Sarah Chen — VP Engineering
+  - Nadia Kim — Chief Product Officer (CPO)
+  - Robert Okafor — Chief Financial Officer (CFO)
+  - Carmen Reyes — VP Legal
+  - Lisa Torres — Chief Revenue Officer (CRO)
+  - Zara Ahmed — VP People & Culture
+
+Note: No CTO role currently exists. Engineering reports directly into the CEO via the VP Engineering.
+
+===============================================
+ENGINEERING (Sarah Chen, VP Engineering)
+===============================================
+Engineering operates as a single department in Q1 2023. Team leads report directly into Sarah.
+
+Team Leads:
+  - Marcus Webb — Lead, Platform Engineering function
+      • Priya Nair — Lead, Data Platform Team
+          - Kenji Ito — Senior Engineer
+      • Daniel Osei — Lead, Security Team
+  - Tomás García — Lead, Product Engineering function
+      • Yuki Tanaka — Lead, NexusFlow Team
+      • Aisha Johnson — Lead, InsightLens Team
+      • Raj Patel — Lead, PulseConnect Team
+  - Felix Wagner — Lead, DataCraft Integration Team
+      (Joined via DataCraft acquisition, Jan 15 2022; team continues
+       Kafka → Pulsar migration work scheduled to complete Q2 2023.)
+
+Note: "Platform Engineering" and "Product Engineering" exist today as
+informal functional groupings under Sarah, not as separate departments.
+A formal split is under discussion for later in 2023.
+
+===============================================
+PRODUCT (Nadia Kim, CPO)
+===============================================
+Product managers aligned to each product line (NexusFlow, InsightLens,
+PulseConnect) — see Product team roster, maintained separately.
+
+===============================================
+REVENUE (Lisa Torres, CRO)
+===============================================
+  - Ben Carter — VP Sales
+  - Maya Sharma — VP Customer Success
+
+===============================================
+FINANCE & LEGAL
+===============================================
+  - Robert Okafor — CFO
+  - Carmen Reyes — VP Legal
+
+===============================================
+PEOPLE & CULTURE
+===============================================
+  - Zara Ahmed — VP People & Culture
+
+-----------------------------------------------
+Headcount reference: ~430 employees across SF, Austin, and Bangalore as of end of Q1 2023.
+Diana Volkov (co-founder) departed late 2021 and is no longer affiliated with Vertexia.
+For corrections, contact people-ops@vertexia.internal.

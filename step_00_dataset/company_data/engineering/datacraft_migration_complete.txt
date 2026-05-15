@@ -1,0 +1,22 @@
+From: Felix Wagner <felix.wagner@vertexia.com>
+To: engineering-all@vertexia.com
+CC: Sarah Chen, Marcus Webb, Priya Nair, Tomás García
+Date: Friday, June 23, 2023, 4:47 PM PT
+Subject: DataCraft Integration Migration Complete
+
+Team,
+
+After 18 months of work, I'm happy to announce that the DataCraft data pipeline has been fully migrated from Apache Kafka to Apache Pulsar. As of this afternoon, the last DataCraft customer workloads are running on the standardized Vertexia platform, and the legacy Kafka clusters have been drained and scheduled for decommissioning next week.
+
+A few specifics worth calling out:
+
+- All 47 production tenants originally onboarded through DataCraft are now on Pulsar, routed through NexusFlow. No customer-facing downtime during cutover.
+- The DataWeave framework is officially deprecated. All transformation jobs have been ported to NexusFlow's transformation engine. If you find a stray DataWeave reference anywhere in the codebase or runbooks, please file a ticket against the Integration team.
+- The old DataCraft architecture doc (confluence/datacraft/arch-v3) has been archived. Please use the current NexusFlow architecture doc going forward. I've added a redirect at the top of the old page.
+- Monitoring, alerting, and on-call rotations for the migrated services have been folded into Priya's Data Platform rotation as of last Monday.
+
+Huge thanks to the DataCraft Integration team, Priya and the Data Platform folks, and Yuki's NexusFlow team for the long haul on this. This was the last major piece of post-acquisition integration work from January 2022, and it feels good to close it out.
+
+Retrospective doc to follow next week. Drinks on me at the Austin offsite.
+
+Felix

@@ -1,0 +1,10 @@
+company_name,industry,arr_usd,products,csm,segment,contract_start
+Phoenix Corp,Financial Services,2400000,NexusFlow+InsightLens,Maya Sharma,enterprise,2022-06-01
+Apex Financial,Financial Services,240000,NexusFlow,Preet Kaur (departed),mid-market,2022-09-15
+TechVenture AI,Technology,420000,NexusFlow+InsightLens,Maya Sharma,mid-market,2023-07-01
+Meridian Health,Healthcare,360000,NexusFlow,Maya Sharma,mid-market,2023-08-01
+GreenLeaf Retail,Retail,180000,InsightLens,Maya Sharma,mid-market,2023-07-15
+Harbor Logistics,Logistics,96000,PulseConnect,Maya Sharma,smb,2023-08-01
+Cascade Media,Media,144000,InsightLens,Maya Sharma,smb,2023-08-15
+Pinnacle Mfg,Manufacturing,192000,NexusFlow,Maya Sharma,mid-market,2023-09-01
+Stellarpath,SaaS,60000,PulseConnect,Maya Sharma,smb,2023-09-15

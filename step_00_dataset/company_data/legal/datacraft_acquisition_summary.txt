@@ -1,0 +1,25 @@
+LEGAL MEMORANDUM: ACQUISITION SUMMARY
+DATE: January 15, 2022
+TO: Executive Leadership Team, Vertexia Inc.
+FROM: Office of the General Counsel
+SUBJECT: DataCraft Acquisition Completion
+
+This memorandum confirms that the acquisition of DataCraft by Vertexia Inc. officially closed on January 15, 2022. The total purchase price for the acquisition was $8,000,000 (eight million USD), paid in an all-cash transaction.
+
+Key terms and conditions of the acquisition are summarized below:
+
+1. Personnel Integration
+A total of 12 DataCraft employees have transitioned to Vertexia Inc. effective immediately. To ensure continuity of operations and successful integration of the DataCraft technology stack, each of these 12 employees has entered into 18-month retention agreements. These packages include standard equity vesting schedules and performance-based retention bonuses.
+
+2. Intellectual Property (IP) Transfer
+Full ownership of all DataCraft assets has been transferred to Vertexia Inc. This transfer includes, but is not limited to, all existing patents, trademarks, proprietary software source code, and associated technical documentation. The engineering teams are instructed to begin the migration of DataCraft’s existing Apache Kafka-based infrastructure to our unified platform architecture, as overseen by the Platform Engineering team.
+
+3. Non-Compete Agreement
+Felix Wagner, founder of DataCraft, has entered into a formal employment agreement with Vertexia Inc. and is currently leading the DataCraft Integration Team. As a condition of this acquisition, Mr. Wagner is subject to a 3-year non-compete clause specifically within the ETL (Extract, Transform, Load) software space. This restriction is waived only for activities conducted in the scope of his official duties as an employee of Vertexia Inc.
+
+4. Legal Compliance
+All regulatory filings related to the transfer of equity and employee contracts have been completed in accordance with Delaware corporate law and San Francisco labor regulations. The Legal Department has verified that all IP assignments were properly executed prior to the close of business today.
+
+The integration of these assets is a critical step in scaling our data ingestion capabilities. Please direct any inquiries regarding the legal specifics of the retention packages or the IP transfer to the VP of Legal.
+
+End of Summary.

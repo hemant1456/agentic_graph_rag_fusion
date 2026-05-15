@@ -1,0 +1,77 @@
+POST-MORTEM: NexusFlow v2.1 Ingestion Outage
+Date of Incident: August 14, 2023
+Date of Report: August 21, 2023
+Author: Yuki Tanaka, Lead, NexusFlow Team
+Status: Final
+Severity: SEV-1
+Duration: 4h 23min (09:15 PST – 13:38 PST)
+
+----------------------------------------------------------------------
+SUMMARY
+----------------------------------------------------------------------
+On August 14, 2023, a misconfigured rate limiter introduced in the NexusFlow v2.1 release caused a major outage in the data ingestion service, owned by the Data Platform Team. The misconfiguration set max_connections=10 instead of the intended max_connections=1000, which throttled inbound producer connections almost immediately after deployment. Downstream impact extended to InsightLens, which depends on the NexusFlow events_api for analytics ingestion. PulseConnect was unaffected.
+
+Customer impact: ingestion throughput dropped to ~1% of nominal. Buffered producers retried successfully after restoration; no data loss was observed beyond extended ingestion latency. We are following up directly with Phoenix Corp regarding SLA impact under their 99.99% uptime commitment.
+
+----------------------------------------------------------------------
+TIMELINE (all times PST)
+----------------------------------------------------------------------
+09:15 — NexusFlow v2.1 deployed to production via standard rolling release.
+09:21 — Producer connection saturation begins on ingestion pods.
+09:23 — First PagerDuty alerts fire: ingestion_p99_latency and producer_connection_reject_rate cross threshold.
+09:27 — The on-call engineer for the Data Platform Team was paged and began triage.
+09:31 — Incident declared SEV-1; #incident-0814 channel opened. Marcus Webb informed.
+09:46 — Initial hypothesis (Pulsar broker degradation) ruled out; broker metrics nominal.
+10:12 — InsightLens team confirms downstream impact via events_api; Aisha Johnson joins call.
+10:48 — Rollback to v2.0.7 initiated for ingestion service; partial recovery observed.
+11:35 — Rollback completion blocked by stuck pods carrying v2.1 config; manual intervention required.
+12:20 — Root cause identified: rate_limiter.yaml in v2.1 contains max_connections: 10 (intended: 1000).
+12:41 — Hotfix v2.1.1 prepared with corrected config.
+13:09 — Hotfix deployed to canary; metrics return to baseline.
+13:38 — Full restoration confirmed across all regions. Incident closed.
+
+----------------------------------------------------------------------
+ROOT CAUSE
+----------------------------------------------------------------------
+The v2.1 release included a refactor of the ingestion service's connection pooling layer. As part of that change, the rate limiter configuration file was updated. The intended value `max_connections: 1000` was committed as `max_connections: 10`. The change passed code review, unit tests, and staging deployment — staging traffic volume was insufficient to exceed 10 concurrent producer connections, so the misconfiguration did not manifest until production load was applied.
+
+Contributing factors:
+1. No production-traffic canary stage before full rollout.
+2. Config values were not bounded-checked against expected operational ranges.
+3. Staging load profile does not approximate production producer concurrency.
+
+----------------------------------------------------------------------
+WHAT WENT WELL
+----------------------------------------------------------------------
+- Alerts fired within 8 minutes of deployment.
+- Cross-team coordination between Data Platform, NexusFlow, and InsightLens was effective.
+- Rollback tooling, while imperfect, eventually resolved the situation without data loss.
+
+----------------------------------------------------------------------
+WHAT WENT POORLY
+----------------------------------------------------------------------
+- Rollback was slower than acceptable due to stuck pods.
+- Config validation gap allowed an obviously incorrect value to ship.
+- Staging did not reflect production traffic shape.
+
+----------------------------------------------------------------------
+ACTION ITEMS
+----------------------------------------------------------------------
+AI-1 (Owner: Priya Nair, Due: Sept 8) — Add a pre-deploy config validation step that enforces declared min/max bounds on all rate limiter and connection pool parameters. Block deploys on violation.
+
+AI-2 (Owner: Yuki Tanaka, Due: Sept 22) — Implement automated canary testing for NexusFlow ingestion: route 5% of production traffic to new builds for 30 minutes with auto-rollback on SLO regression.
+
+AI-3 (Owner: Marcus Webb, Due: Sept 15) — Update the engineering deployment checklist to require explicit reviewer sign-off on changed config keys, separate from code review.
+
+AI-4 (Owner: Aisha Johnson, Due: Sept 8) — Document the InsightLens → NexusFlow events_api dependency in the service catalog so downstream impact is visible during incidents.
+
+AI-5 (Owner: Yuki Tanaka, Due: ongoing) — Reinforce blameless culture in the follow-up review. This post-mortem focuses on systems and process gaps, not individuals. Reviewers and approvers acted in good faith on the information available; our job is to make the right thing the easy thing.
+
+----------------------------------------------------------------------
+FOLLOW-UPS
+----------------------------------------------------------------------
+- Customer comms: Maya Sharma's team has reached out to affected accounts. Carmen Reyes is coordinating the SLA review for Phoenix Corp.
+- A review of this post-mortem will be held at the Platform Engineering all-hands on August 30.
+
+— Yuki Tanaka
+Lead, NexusFlow Team

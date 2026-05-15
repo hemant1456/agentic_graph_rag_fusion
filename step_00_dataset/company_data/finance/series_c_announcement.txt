@@ -1,0 +1,41 @@
+Subject: Huge News: Vertexia Inc. Secures $45M Series C Funding!
+
+Team,
+
+I am incredibly proud to announce that Vertexia Inc. has officially closed our $45M Series C funding round, led by Sequoia Capital. 
+
+Since our founding in March 2019, we have navigated incredible growth, from our early days in San Francisco to our current presence in Austin and Bangalore. Today, we stand at approximately 500 employees, and our ARR has hit $16.5M—representing a 3x growth trajectory since our Series B in July 2021. 
+
+This milestone is a testament to the hard work you put in every single day. Whether you are maintaining the reliability of NexusFlow, scaling InsightLens, or driving the growth of PulseConnect, you are the reason we have reached this stage.
+
+We have a massive opportunity ahead of us. We will be using this capital to accelerate our international expansion, invest heavily in new AI-driven product features, and scale our enterprise sales team to meet the increasing demand for our platform.
+
+Thank you for your dedication to Vertexia. Let’s keep building.
+
+Best,
+
+Arjun Mehta
+CEO, Vertexia Inc.
+
+***
+
+### Series C FAQ
+
+**Why are we raising this round now?**
+Despite the challenging market, our growth remains strong. With $16.5M in ARR as of the end of Q3 2023, we have proven product-market fit. This funding ensures we have the runway to double down on our enterprise strategy and capture more market share.
+
+**What are the specific use-of-proceeds?**
+1. **International Expansion:** Scaling our operations in Bangalore and exploring new regional hubs.
+2. **AI Features:** Investing in the research and development of generative capabilities across our product suite.
+3. **Enterprise Sales:** Expanding our sales headcount to support the growth of key accounts, similar to the scale of our Phoenix Corp partnership.
+
+**How does this impact our financial reporting?**
+While our growth is strong, we remain disciplined. As of Q3 2023, we reported $4.12M in GAAP revenue against $4.2M in bookings. Moving forward, Robert Okafor and the finance team will continue to provide transparency regarding these metrics as we scale.
+
+**Does this change our product roadmap?**
+Our core focus remains on the NexusFlow, InsightLens, and PulseConnect pillars. We are doubling down on stability—especially following the learnings from the NexusFlow v2.1 outage on August 14—to ensure we continue meeting the 99.99% uptime SLA requirements for our enterprise customers like Phoenix Corp.
+
+**Who led the round?**
+Sequoia Capital led the investment, joined by our existing investors. Their belief in our vision for data-driven customer engagement further validates the hard work of the entire engineering, product, and go-to-market teams.
+
+If you have additional questions, please join our All-Hands meeting tomorrow at 10:00 AM PT.

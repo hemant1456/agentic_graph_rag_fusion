@@ -1,0 +1,36 @@
+employee_id,name,department,role,manager_id,start_date,status,location
+E001,Arjun Mehta,Executive,CEO,,2019-03-01,active,San Francisco
+E002,Diana Volkov,Executive,Co-Founder (departed),,2019-03-01,departed_2021,San Francisco
+E003,Sarah Chen,Platform Engineering,CTO,E001,2019-06-15,active,San Francisco
+E004,Nadia Kim,Product,CPO,E001,2020-02-01,active,San Francisco
+E005,Robert Okafor,Finance,CFO,E001,2020-04-15,active,San Francisco
+E006,Lisa Torres,Revenue,CRO,E001,2021-01-10,active,Austin
+E007,Zara Ahmed,People & Culture,VP People & Culture,E001,2020-09-01,active,San Francisco
+E008,Carmen Reyes,Legal,VP Legal,E005,2021-03-15,active,San Francisco
+E009,Marcus Webb,Platform Engineering,"Lead, Platform Engineering",E003,2020-01-15,active,San Francisco
+E010,Priya Nair,Platform Engineering,"Lead, Data Platform Team",E009,2020-03-01,active,Bangalore
+E011,Daniel Osei,Platform Engineering,"Lead, Security Team",E009,2021-05-10,active,San Francisco
+E012,Tomás García,Product Engineering,"Lead, Product Engineering",E003,2019-08-01,active,Austin
+E013,Yuki Tanaka,Product Engineering,"Lead, NexusFlow Team",E012,2019-10-15,active,San Francisco
+E014,Aisha Johnson,Product Engineering,"Senior Manager, InsightLens Team",E012,2021-02-01,active,Austin
+E015,Raj Patel,Product Engineering,"Staff PM, PulseConnect Team",E012,2021-07-15,active,San Francisco
+E016,Felix Wagner,DataCraft Integration,"Lead, DataCraft Integration Team",E003,2022-01-15,active,Berlin
+E017,Kenji Ito,Platform Engineering,"Senior Engineer, Data Platform",E010,2022-04-01,active,Bangalore
+E018,Ben Carter,Revenue,VP Sales,E006,2021-04-01,active,Austin
+E019,Maya Sharma,Revenue,VP Customer Success,E006,2021-06-15,active,San Francisco
+E020,James O'Brien,Platform Engineering,"Staff Engineer, Infrastructure",E009,2020-06-01,active,San Francisco
+E021,Lin Wei,Product Engineering,"Senior Engineer, NexusFlow",E013,2022-02-15,active,Bangalore
+E022,Sophie Laurent,Product Engineering,"Senior Engineer, InsightLens",E014,2022-05-01,active,San Francisco
+E023,Amara Diallo,People & Culture,HR Business Partner,E007,2022-03-01,active,San Francisco
+E024,Carlos Mendez,Revenue,Account Executive,E018,2022-08-15,active,Austin
+E025,Fatima Al-Hassan,Product,"Senior PM, NexusFlow",E004,2023-01-10,active,San Francisco
+E026,Ravi Krishnan,DataCraft Integration,"Senior Engineer, DataCraft",E016,2022-01-15,active,Berlin
+E027,Emma Fischer,DataCraft Integration,"Engineer, DataCraft",E016,2022-01-15,active,Berlin
+E028,Noah Zimmermann,DataCraft Integration,"Data Engineer, DataCraft",E016,2022-01-15,active,Berlin
+E029,Adrian Blake,Platform Engineering,Senior Engineer (departed),E010,2021-11-01,departed_2023-08,San Francisco
+E030,Preet Kaur,Revenue,Customer Success Manager (departed),E019,2022-01-01,departed_2023-06,Austin
+E031,Wei Zhang,Finance,Senior Financial Analyst,E005,2022-06-01,active,San Francisco
+E032,Omar Faruk,Platform Engineering,"Engineer, Security",E011,2023-02-01,active,Bangalore
+E033,Isabella Romano,Product Engineering,"Senior Engineer, PulseConnect",E015,2022-09-15,active,Austin
+E034,David Kim,Revenue,Account Executive,E018,2023-03-01,active,San Francisco
+E035,Nora Andersen,Product,UX Designer,E004,2022-11-01,active,San Francisco

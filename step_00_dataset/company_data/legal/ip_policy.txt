@@ -1,0 +1,26 @@
+Vertexia Inc. Intellectual Property Policy
+Effective Date: January 2021
+Last Updated: March 2023
+
+1. PURPOSE AND SCOPE
+This policy outlines the intellectual property (IP) rights, confidentiality obligations, and open-source contribution guidelines for all employees of Vertexia Inc. (“the Company”). This policy applies to all full-time employees, contractors, and interns, including the ~500 staff members currently employed across our San Francisco, Austin, and Bangalore offices.
+
+2. OWNERSHIP OF WORK PRODUCT
+All work product, inventions, software code (including but not limited to the NexusFlow, InsightLens, and PulseConnect codebases), designs, and data processes created, conceived, or developed by employees during their tenure at Vertexia Inc. are the sole and exclusive property of the Company. Employees hereby assign all rights, title, and interest in such work product to Vertexia Inc. This includes, without limitation, all work related to the migration of our infrastructure, such as the Python 2→3 migration (Project Phoenix) completed in June 2022, and all subsequent platform enhancements.
+
+3. CONFIDENTIALITY OBLIGATIONS
+Employees must maintain the strict confidentiality of all proprietary information, including but not limited to trade secrets, customer data, financial metrics (such as the $45M Series C funding data or the specific GAAP vs. bookings revenue discrepancies reported in Q3 2023), and internal architectural specifications. This obligation survives the termination of employment. Disclosure of confidential information, such as the specific SLA terms of enterprise clients like Phoenix Corp, is strictly prohibited.
+
+4. OPEN SOURCE CONTRIBUTION POLICY
+Vertexia Inc. supports the open-source community; however, all contributions must adhere to the following:
+*   Approved Licenses: Contributions to projects under MIT, Apache 2.0, or BSD licenses are generally permissible. 
+*   Prohibited Licenses: Contributions to projects under GPL, AGPL, or other "copyleft" licenses that may impact the proprietary nature of our products (NexusFlow, InsightLens, PulseConnect) are strictly prohibited without prior written approval from the CTO, Sarah Chen.
+*   Approval Process: Before submitting code to external repositories, employees must obtain sign-off from their respective leads (e.g., Marcus Webb for Platform Engineering or Tomás García for Product Engineering).
+
+5. DATA SECURITY AND IP PROTECTION
+Employees must adhere to defined data policies, including 90-day hot storage and 1-year cold storage requirements. Handling of internal data, such as logs (30-day retention) and daily snapshots, must be performed in accordance with security protocols established by the Security Team, led by Daniel Osei.
+
+6. WHISTLEBLOWER PROTECTIONS
+Vertexia Inc. is committed to ethical conduct. Employees are encouraged to report any suspected violations of this policy or illegal activities to the VP Legal, Carmen Reyes, or the VP People & Culture, Zara Ahmed. The Company prohibits retaliation against any employee who reports such concerns in good faith. 
+
+By continuing your employment with Vertexia Inc., you acknowledge that you have read, understood, and agreed to abide by the terms set forth in this Intellectual Property Policy.

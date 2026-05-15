@@ -1,0 +1,45 @@
+File: executive/q3_2023_allhands_notes.txt
+
+Vertexia Inc. - Q3 2023 All-Hands Meeting
+Date: October 12, 2023
+Presenter: Arjun Mehta, CEO
+Recorder: Executive Assistant to the CEO
+
+1. Opening & Series C Announcement
+Arjun opened the meeting by officially celebrating our Series C funding round. The $45M investment led by Sequoia, announced on October 5, is a testament to the hard work put in by all 500 employees since our founding in San Francisco in March 2019. We are now well-positioned to scale our operations across our San Francisco, Austin, and Bangalore hubs.
+
+2. Q3 Financial Performance
+Arjun provided a high-level overview of our financial health. "We hit approximately $4.2M in revenue for Q3," Arjun stated, highlighting the growth in our core product lines. 
+- NexusFlow: $1.6M
+- InsightLens: $1.5M
+- PulseConnect: $1.02M
+While our finance team tracks $4.12M in GAAP revenue, the $4.2M bookings figure reflects the strong momentum our sales team has built heading into Q4. Our total ARR now stands at $16.5M.
+
+3. Product Milestones & Operational Updates
+- NexusFlow (FLOW): Despite the major outage on August 14, 2023, the team has implemented robust safeguards. The outage, which lasted 4h 23min due to a misconfigured rate limiter in the data ingestion service, served as a learning moment. We are doubling down on our commitment to the 99.99% uptime SLA required by Phoenix Corp.
+- InsightLens (LENS): As InsightLens relies on the NexusFlow events_api, the August outage impacted our analytics delivery. We are prioritizing API stability to ensure these downstream dependencies remain resilient.
+- PulseConnect (PULSE): Continuing to stabilize following the transition period.
+- Engineering Structure: Following Sarah Chen’s promotion to CTO in April 2023, the split between Platform Engineering (led by Marcus Webb) and Product Engineering (led by Tomás García) has significantly streamlined our release velocity.
+
+4. Team Shout-outs
+Arjun recognized the following:
+- Kenji Ito: For his calm handling of the on-call rotation during the August 14 NexusFlow incident.
+- Felix Wagner and the DataCraft Integration Team: For the successful completion of the Apache Pulsar migration, finally sunsetting the legacy Kafka stack inherited during the January 2022 acquisition.
+- Sarah Chen: For her leadership in navigating the transition from VP Engineering to CTO, ensuring our technical roadmap remains aligned with our Series C goals.
+
+5. Q4 Priorities
+- Focus on enterprise stability for Phoenix Corp and other high-tier clients.
+- Continued optimization of our data retention policies (90 days hot/1 year cold).
+- Scaling the Bangalore office to support our growing global customer base.
+
+6. Audience Q&A
+Q: How does the $4.12M GAAP revenue vs. $4.2M bookings difference impact our hiring plan?
+Arjun: Robert Okafor and the finance team have accounted for this variance. Our hiring plan remains aggressive but disciplined, focused on roles that directly support our product roadmap.
+
+Q: Any updates on the Python 2→3 migration?
+Arjun: That was "Project Phoenix," which was successfully completed back on June 30, 2022. We are fully on Python 3 for all backend services now.
+
+Q: Are we planning further acquisitions?
+Arjun: We are always looking for talent, but our current focus is integrating the 12 employees who joined us from the DataCraft acquisition and scaling our internal culture under Zara Ahmed’s leadership.
+
+Meeting adjourned at 11:00 AM PST.

@@ -1,0 +1,11 @@
+consuming_service,providing_service,api_endpoint,version,criticality,purpose
+InsightLens,NexusFlow,events_api,v2,critical,Dashboard data ingestion
+InsightLens,NexusFlow,connectors_api,v1,optional,Connector status polling
+PulseConnect,InsightLens,metrics_api,v1,optional,Embedded analytics widget
+PulseConnect,NexusFlow,pipeline_status_api,v1,optional,Pipeline health display
+InsightLens,external_snowflake,jdbc,native,critical,Snowflake data connector
+NexusFlow,external_aws_s3,sdk,native,critical,Cold storage delivery
+NexusFlow,external_pulsar,client,v3.0,critical,Message queue
+PulseConnect,external_sendgrid,api_v3,v3,critical,Email delivery
+PulseConnect,external_twilio,api,v2,optional,SMS notifications
+DataCraft,NexusFlow,ingest_api,v2,critical,DataCraft pipeline handoff

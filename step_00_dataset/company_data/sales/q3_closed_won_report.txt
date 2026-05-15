@@ -1,0 +1,30 @@
+FILE: sales/q3_closed_won_report.txt
+
+TO: Executive Leadership Team
+FROM: Ben Carter, VP Sales
+DATE: October 12, 2023
+SUBJECT: Q3 2023 Closed-Won Sales Performance Report
+
+Q3 2023 has been a pivotal period for Vertexia Inc., characterized by robust expansion within our existing enterprise base and steady acquisition of new logos. As of the close of the quarter, total bookings reached $4.2M. Please note that this figure represents booking-date accounting; the Finance team will report GAAP recognized revenue of $4.12M for Q3 to account for multi-year contract amortizations and specific service delivery timelines.
+
+Performance Summary:
+- Total Bookings: $4.2M
+- New Logos: 8
+- Expansion Deals: 15
+- Net Revenue Retention (NRR): 118%
+
+The momentum following our Series C announcement on October 5 has already begun to impact our pipeline for Q4, but Q3 was defined by our ability to upsell the integrated stack. We saw a particularly strong performance from the InsightLens team, which contributed $1.5M to the quarterly total, alongside NexusFlow’s $1.6M and PulseConnect’s $1.02M.
+
+Key Deal Highlights:
+1. Global Logistics Corp (Expansion): $650k ACV. Successfully migrated their analytics workloads onto InsightLens, leveraging the existing NexusFlow pipeline. 
+2. FinTech Solutions (New Logo): $400k ACV. Secured a multi-year deal for a full-stack deployment of PulseConnect and NexusFlow.
+3. Retail Giant (Expansion): $320k ACV. Deepened our integration within their data warehouse infrastructure.
+
+Despite the operational challenges faced during the NexusFlow v2.1 outage on August 14, our Customer Success team, led by Maya Sharma, did an excellent job managing account health. While the 4h 23min downtime impacted our internal metrics, we successfully mitigated churn risk through proactive communication. It is worth noting that while our standard NexusFlow architecture targets 99.9% uptime, our enterprise customers—most notably Phoenix Corp, signed in June 2022—operate under a 99.99% SLA. Maintaining this tier of service remains the primary focus for our Product Engineering and Platform Engineering leads, Tomás García and Marcus Webb, as we move into the final quarter of the year.
+
+Our NRR of 118% remains a testament to the stickiness of the NexusFlow-InsightLens data loop. With the DataCraft integration team, led by Felix Wagner, now fully embedded in our platform strategy, we are well-positioned to accelerate our enterprise growth trajectory.
+
+Best regards,
+
+Ben Carter
+VP Sales, Vertexia Inc.

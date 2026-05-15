@@ -1,0 +1,36 @@
+BOARD MEETING MINUTES: VERTEXIA INC.
+Date: April 3, 2023
+Location: Vertexia HQ, San Francisco (via Hybrid/Video Conference)
+Attendees: Arjun Mehta (CEO), Robert Okafor (CFO), Nadia Kim (CPO), Sarah Chen (VP Engineering), Board of Directors
+
+1. CALL TO ORDER
+Arjun Mehta called the meeting to order at 9:00 AM PST. A quorum was present.
+
+2. Q1 2023 FINANCIAL REVIEW
+Robert Okafor presented the Q1 2023 financial results. Total revenue for the quarter reached $3.8M. Performance by product line was as follows:
+- NexusFlow: $1.2M
+- InsightLens: $1.4M
+- PulseConnect: $1.2M
+
+The board discussed the growth trajectory of the product suite. While NexusFlow continues to serve as the foundational data pipeline, the board noted the steady adoption of InsightLens. Robert highlighted that while revenue is hitting targets, operational costs remain elevated due to the integration of the DataCraft team and infrastructure.
+
+3. ORGANIZATIONAL RESTRUCTURING PROPOSAL
+Arjun Mehta proposed a strategic restructuring of the Engineering department to better align with the scale required for the upcoming Series C funding round. The proposal involves splitting the current Engineering department into two distinct divisions: Platform Engineering and Product Engineering.
+
+Arjun noted that the previous integration of the 12 employees from the DataCraft acquisition and the successful completion of "Project Phoenix" (the Python 2→3 migration) in June 2022 provided the necessary foundation for this shift. By separating the teams, Vertexia will better isolate infrastructure concerns from product feature velocity.
+
+4. CTO APPOINTMENT
+Arjun Mehta formally proposed the promotion of Sarah Chen from VP Engineering to Chief Technology Officer (CTO). The board reviewed Sarah’s leadership during the transition from the DataCraft acquisition and her management of the engineering team since the company’s founding in March 2019. 
+
+The board unanimously approved the appointment of Sarah Chen as Chief Technology Officer, effective April 10, 2023. Upon this appointment, Sarah will oversee the new organizational structure, with Marcus Webb leading Platform Engineering and Tomás García leading Product Engineering.
+
+5. SERIES C PREPARATION
+Lisa Torres and Robert Okafor provided an update on the Series C preparation. The goal is to secure $45M in funding by Q4 2023. The board emphasized the need to maintain focus on the Phoenix Corp MSA ($2.4M ARR) and ensure that the 99.99% uptime SLA is strictly met, given that the internal architecture for NexusFlow is currently optimized for a 99.9% target. Sarah Chen confirmed that the engineering roadmap for Q2 and Q3 will prioritize infrastructure hardening to bridge this gap for enterprise clients.
+
+6. VOTING AND ADJOURNMENT
+The board unanimously approved the organizational restructuring proposal as presented. 
+
+The meeting was adjourned at 11:45 AM PST.
+
+Minutes submitted by:
+Office of the CEO, Vertexia Inc.

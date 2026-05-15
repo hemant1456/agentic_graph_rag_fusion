@@ -1,0 +1,62 @@
+USER RESEARCH SYNTHESIS — Q3 2023 CUSTOMER INTERVIEWS
+Prepared by: Product Research, Vertexia Inc.
+Sponsor: Nadia Kim (CPO)
+Date: October 2, 2023
+
+OVERVIEW
+Between August 21 and September 22, 2023, the Product Research team conducted 12 semi-structured customer interviews (45-60 min each) across our three products. Mix: 5 NexusFlow, 4 InsightLens, 3 PulseConnect. Customer segments ranged from mid-market ($50k-$200k ACV) to two enterprise accounts. Three of the interviewed accounts experienced impact from the August 14 NexusFlow incident; this is noted where relevant but was not the primary focus of the research.
+
+Method: 1:1 video interviews, two researchers per session, transcripts coded in Dovetail. Findings synthesized below; full tagged transcripts available on the Research Hub.
+
+------------------------------------------------------------
+TOP PAIN POINT #1 — NexusFlow: Setup Complexity
+------------------------------------------------------------
+Across all 5 NexusFlow interviews, the dominant theme was the steep ramp from contract signature to first production pipeline. Customers described the connector configuration, IAM setup, and schema mapping steps as "engineer-only" workflows. Median time-to-first-pipeline reported: 3-5 weeks. Two customers had paid professional services to accelerate.
+
+Representative quotes:
+- "We bought NexusFlow in February. Our first real pipeline shipped in April. That gap is hard to defend internally." — Director of Data Engineering, fintech (Series D)
+- "The docs assume I already know what a Pulsar topic is. I don't, and I shouldn't have to."
+- "Honestly, the product is great once it's running. Getting it running is the problem."
+
+Sub-themes: unclear error messages during connector validation; lack of a guided setup wizard; secrets/credentials management requires too many round-trips with security teams.
+
+------------------------------------------------------------
+TOP PAIN POINT #2 — InsightLens: Slow Dashboard Loads on Large Datasets
+------------------------------------------------------------
+All 4 InsightLens customers raised dashboard performance as their #1 frustration, particularly on datasets exceeding ~50M rows or dashboards with >8 widgets. Reported load times of 20-60 seconds for "executive" dashboards were common. Two customers mentioned that performance degraded noticeably during the week of August 14, which we attribute to the upstream NexusFlow events_api impact during the outage.
+
+Representative quotes:
+- "Our CFO opens the revenue dashboard every Monday at 8am. If it takes 40 seconds, he closes the tab and emails me instead." — VP Analytics, retail
+- "I love the visualizations. I just wish I could see them this quarter." (laughs)
+- "We've started pre-aggregating in our warehouse just to make Lens usable. That defeats the point."
+
+Sub-themes: no visible query progress indicator; caching behavior opaque to end users; mobile/tablet rendering compounds the slowness perception.
+
+------------------------------------------------------------
+TOP PAIN POINT #3 — PulseConnect: Missing Mobile App
+------------------------------------------------------------
+All 3 PulseConnect customers, unprompted, asked about a native mobile experience. The current responsive web app is considered inadequate for field sales and customer success reps who work from phones between meetings.
+
+Representative quotes:
+- "My AEs live in their cars. If it's not on their phone, it doesn't exist." — Head of Sales Ops, SaaS
+- "We almost went with [competitor] because they had an iOS app. Your CSM talked us out of it. I hope you ship one soon."
+- "The mobile web version logs me out every few hours. I've stopped trying."
+
+Sub-themes: push notifications for pipeline events strongly desired; offline mode mentioned by 2 of 3; Apple/Google calendar sync gaps.
+
+------------------------------------------------------------
+CROSS-CUTTING THEMES
+------------------------------------------------------------
+1. Trust after Aug 14: 3 of 12 customers referenced the outage. Tone was patient but watchful. The status-page communication was praised; the post-incident RCA was requested by 2 customers and not yet shared.
+2. Cross-product integration: 6 of 12 customers use 2+ Vertexia products and want unified SSO/audit logs.
+3. Self-serve documentation: consistent ask across all three product lines.
+
+------------------------------------------------------------
+RECOMMENDATIONS (for Q4 planning)
+------------------------------------------------------------
+- NexusFlow (Yuki Tanaka's team): prioritize guided setup wizard; target time-to-first-pipeline ≤ 5 business days for standard connectors.
+- InsightLens (Aisha Johnson's team): commit to a dashboard performance initiative — P95 load < 5s for dashboards up to 100M rows.
+- PulseConnect (Raj Patel's team): formally scope a native iOS app for H1 2024; validate with 5 design-partner customers before build.
+- Cross-product: publish the Aug 14 RCA externally (coordinate with Daniel Osei and Carmen Reyes).
+
+Next research cycle: Q4 2023 interviews kick off week of October 16. Contact: research@vertexia.com.

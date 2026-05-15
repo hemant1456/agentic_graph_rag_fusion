@@ -1,0 +1,94 @@
+============================================================
+VERTEXIA INC. — 2023 PROMOTION ANNOUNCEMENTS
+Compiled by People & Culture (Zara Ahmed)
+Source: #announcements Slack channel + all-company emails
+============================================================
+
+
+------------------------------------------------------------
+From: Arjun Mehta <arjun@vertexia.com>
+To: all@vertexia.com
+Date: Monday, April 10, 2023, 8:02 AM PT
+Subject: Leadership Update — Sarah Chen promoted to CTO; Engineering reorg
+------------------------------------------------------------
+
+Team,
+
+I'm thrilled to share that Sarah Chen has been promoted from VP Engineering to Chief Technology Officer, effective today.
+
+Sarah has been with Vertexia since the very beginning. As our first engineering hire, then VP Engineering, she has built the team that shipped NexusFlow, InsightLens, and PulseConnect, led us through the DataCraft integration last year, and quietly held things together through Project Phoenix. She has more than earned this seat.
+
+Alongside Sarah's promotion, we're restructuring Engineering into two organizations to support our scale:
+
+  • Platform Engineering — led by Marcus Webb. Includes Data Platform (Priya Nair) and Security (Daniel Osei).
+  • Product Engineering — led by Tomás García, who is being elevated from Director to Lead of Product Engineering. Includes the NexusFlow (Yuki Tanaka), InsightLens (Aisha Johnson), and PulseConnect (Raj Patel) teams.
+
+Both Marcus and Tomás will report directly to Sarah.
+
+Please join me in congratulating Sarah and Tomás. Cake in the SF kitchen at 3pm; Austin and Bangalore, we'll send something your way.
+
+Arjun
+
+
+------------------------------------------------------------
+From: Tomás García <tomas@vertexia.com>
+To: all@vertexia.com
+Date: Thursday, June 15, 2023, 9:30 AM PT
+Subject: Promotion — Aisha Johnson to Senior Manager, InsightLens
+------------------------------------------------------------
+
+Hi all,
+
+Quick but very happy note: Aisha Johnson has been promoted to Senior Manager, effective this pay period. She continues to lead the InsightLens team.
+
+Since taking over InsightLens last year, Aisha has delivered the v3 dashboard rewrite, brought InsightLens to $1.4M in Q1 revenue, and built one of the most cohesive squads in the org. Her partnership with Yuki's NexusFlow team on the shared events pipeline has been a model for how we want product teams to collaborate.
+
+Congrats, Aisha — well deserved.
+
+Tomás
+
+
+------------------------------------------------------------
+From: Nadia Kim <nadia@vertexia.com>
+To: all@vertexia.com
+Date: Wednesday, August 2, 2023, 10:15 AM PT
+Subject: Raj Patel — promoted to Staff Product Manager
+------------------------------------------------------------
+
+Team,
+
+I'm excited to announce that Raj Patel has been promoted to Staff Product Manager, continuing as Lead of the PulseConnect team.
+
+Raj joined us in 2022, just in time to take PulseConnect from GA to its first $1M+ quarter. He's been instrumental in shaping the PulseConnect roadmap heading into H2, and his work on the Phoenix Corp engagement workflows has been a standout.
+
+Please join me in congratulating Raj.
+
+Nadia
+
+
+------------------------------------------------------------
+From: Zara Ahmed <zara@vertexia.com>
+To: all@vertexia.com
+Date: Friday, December 15, 2023, 4:00 PM PT
+Subject: 2023 Year-End Promotions
+------------------------------------------------------------
+
+Hi everyone,
+
+A few additional promotions to recognize as we close out the year. Please join me in congratulating:
+
+  • Kenji Ito — promoted to Senior Engineer, Data Platform Team (effective Nov 1). Kenji's steady hand during the Aug 14 incident response and his follow-through on the rate-limiter postmortem actions earned him broad recognition from across Platform Engineering.
+  • Hannah Liu — promoted to Senior Designer, Product Design.
+  • Diego Alvarez — promoted to Senior Account Executive, Enterprise (Ben Carter's team).
+  • Mei Watanabe — promoted to Manager, Customer Success (Bangalore), reporting to Maya Sharma.
+  • Oluwaseun Adebayo — promoted to Senior Recruiter, People & Culture.
+
+Comp adjustments will reflect in the December 29 paycheck. Managers, please reach out individually if you have questions.
+
+Congratulations to everyone — and thank you for an extraordinary year.
+
+Zara
+
+============================================================
+END OF FILE
+============================================================

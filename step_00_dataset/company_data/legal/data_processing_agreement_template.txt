@@ -1,0 +1,54 @@
+VERTEXIA INC. DATA PROCESSING AGREEMENT (DPA)
+
+This Data Processing Agreement (“DPA”) is entered into between Vertexia Inc., a Delaware corporation with its principal place of business at San Francisco, CA (“Processor”), and [CUSTOMER NAME] (“Controller”).
+
+1. DEFINITIONS
+1.1. “Data Protection Laws” means all applicable laws relating to data protection and privacy, including the EU General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA).
+1.2. “Personal Data” means any information relating to an identified or identifiable natural person processed by Processor on behalf of Controller in connection with the provision of NexusFlow, InsightLens, and PulseConnect.
+
+2. PROCESSING OF PERSONAL DATA
+2.1. Scope and Purpose. Processor shall process Personal Data only for the purpose of providing the Services as defined in the Master Services Agreement.
+2.2. Duration. Processor shall process Personal Data for the duration of the agreement, subject to the retention policies defined in Section 5.
+
+3. SECURITY MEASURES
+3.1. Processor shall implement appropriate technical and organizational measures to ensure a level of security appropriate to the risk, including, but not limited to, encryption of data at rest and in transit.
+3.2. Processor maintains a standard uptime target of 99.9% for NexusFlow. Where a specific client agreement (e.g., Phoenix Corp MSA, signed 2022-06-01) mandates a 99.99% SLA, Processor shall employ additional redundancy measures as documented in the internal security architecture.
+3.3. Processor shall ensure that all personnel, including those managed by Sarah Chen (CTO) and the Platform Engineering team led by Marcus Webb, are bound by confidentiality obligations.
+
+4. SUB-PROCESSORS
+4.1. Controller provides general authorization for the use of the following sub-processors:
+- AWS (Cloud Infrastructure)
+- Snowflake (Data Warehousing)
+- Okta (Identity & Access Management)
+4.2. Processor shall remain liable for the acts and omissions of its sub-processors to the same extent as if Processor were performing the services directly.
+
+5. DATA RETENTION AND DELETION
+5.1. Processor adheres to the following retention schedule:
+- Customer Data: 90 days hot storage, 1 year cold storage (S3 Glacier).
+- System Logs: 30 days.
+- Backups: Daily snapshots with 30-day retention.
+5.2. Upon termination, Processor shall delete or return all Personal Data unless applicable law requires continued storage.
+
+6. DATA SUBJECT RIGHTS AND BREACH NOTIFICATION
+6.1. Processor shall provide reasonable assistance to Controller in fulfilling requests from data subjects exercising their rights.
+6.2. In the event of a Personal Data Breach, Processor shall notify Controller without undue delay and, where feasible, no later than 72 hours after becoming aware of the breach. Notifications shall be coordinated through the Security Team led by Daniel Osei.
+
+7. COMPLIANCE
+7.1. This DPA incorporates the standard requirements for processing activities conducted by Vertexia Inc., which has operated since March 2019 and currently supports approximately 500 employees as of end 2023.
+7.2. Any questions regarding the technical implementation of these controls should be directed to the office of the CTO, Sarah Chen, or the Legal Department led by Carmen Reyes.
+
+8. MISCELLANEOUS
+8.1. This agreement is governed by the laws of the State of California.
+8.2. Any updates to the sub-processor list or security measures will be communicated in accordance with the notice provisions of the Master Services Agreement.
+
+IN WITNESS WHEREOF, the parties have caused this DPA to be executed by their authorized representatives.
+
+VERTEXIA INC.
+By: __________________________
+Name: Robert Okafor, CFO
+Date: _________________________
+
+[CUSTOMER NAME]
+By: __________________________
+Name: ________________________
+Date: _________________________

@@ -1,0 +1,55 @@
+MEMORANDUM
+
+TO: Vertexia All-Hands (Engineering Leadership cc'd)
+FROM: Zara Ahmed, VP People & Culture
+DATE: February 3, 2022
+RE: DataCraft Employee Integration — Onboarding Plan & Action Items
+
+---
+
+On January 15, 2022, Vertexia closed its acquisition of DataCraft. As part of the transaction, exactly 12 DataCraft employees have joined Vertexia. This memo outlines their placement within the organization and the integration timeline for People Operations, IT, and benefits enrollment.
+
+NEW HIRES & ORG PLACEMENT
+
+The 12 incoming employees have been mapped as follows. All report into Engineering under Sarah Chen (VP Engineering), with most consolidated into the newly formed DataCraft Integration Team:
+
+DataCraft Integration Team — reports to Sarah Chen
+1.  Felix Wagner — Lead, DataCraft Integration Team (formerly DataCraft Founder & CEO)
+2.  Hannah Brooks — Senior Staff Engineer (streaming infrastructure)
+3.  Oluwaseun Adeyemi — Senior Engineer (Kafka pipelines)
+4.  Mei-Lin Zhou — Senior Engineer (connector framework)
+5.  Patrick O'Donnell — Engineer II (ingestion services)
+6.  Sofia Rinaldi — Engineer II (schema registry)
+7.  Tariq Hassan — Engineer I (tooling)
+8.  Eleanor Park — Staff SRE
+9.  Vincent Dubois — Engineering Manager, Connectors
+
+Embedded placements (also reporting through Engineering)
+10. Rachel Goldberg — Senior Product Manager, embedded with NexusFlow (dotted line to Nadia Kim's org)
+11. Amir Soltani — Technical Writer, Documentation
+12. Beatrice Lindqvist — Customer Solutions Engineer, embedded with Customer Success (dotted line to Maya Sharma)
+
+Felix and Sarah will publish the DataCraft Integration Team's Q1/Q2 roadmap separately. The team's near-term mandate is consolidating DataCraft's connector library into NexusFlow and planning the eventual message-queue convergence.
+
+ACTION ITEMS — DEADLINES
+
+1.  Benefits Enrollment
+    Deadline: Friday, February 18, 2022 (5:00 PM PT).
+    All 12 employees must complete enrollment in Vertexia's medical, dental, vision, 401(k), and FSA plans via Rippling. Prior DataCraft coverage runs through February 28. People Ops office hours: Tuesdays & Thursdays, 11 AM–12 PM PT.
+
+2.  Laptop Replacement
+    IT will issue Vertexia-standard MacBook Pro (16", M1 Pro) units. Pickup windows:
+    – San Francisco HQ: Feb 7–11
+    – Remote employees: shipped via Fedex, ETA Feb 9–14
+    DataCraft-issued hardware must be returned to IT (or shipped using the provided prepaid label) by February 25. Do not wipe devices before return.
+
+3.  Okta Account Setup
+    Accounts have been provisioned and invitations sent to each employee's new vertexia.com address. Please complete MFA enrollment (Okta Verify + hardware key) within 48 hours of first login. Daniel Osei's Security team will run a short SSO/SaaS access walkthrough on February 8 at 10 AM PT.
+
+WELCOME EVENTS
+
+We'll host a welcome lunch at the SF HQ on Wednesday, February 9, and a virtual mixer on February 10 at 9 AM PT for Austin- and remote-based teammates. Arjun and Sarah will both attend.
+
+Please join me in welcoming Felix and the DataCraft team to Vertexia. Questions: #people-ops on Slack or people@vertexia.com.
+
+— Zara

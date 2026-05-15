@@ -1,0 +1,24 @@
+Subject: Investor Update: Series B Milestone and Strategic Roadmap
+
+Dear Investors,
+
+I am thrilled to announce that Vertexia Inc. has officially closed our $18M Series B funding round, led by Andreessen Horowitz. This capital injection marks a pivotal moment in our growth trajectory as we scale our operations to meet the accelerating demand for unified customer data solutions.
+
+As of the close of this round, our ARR stands at $5.2M. We have achieved significant momentum over the past few months, most notably through the successful launch of InsightLens (internal codename LENS) in September 2021. Our platform has now crossed the 50-customer threshold, and we are particularly proud of our current NPS of 67, which reflects the deep value our customers find in the NexusFlow and InsightLens ecosystem.
+
+With this new funding, we are committing to a strategic allocation of resources to ensure we maintain our competitive edge:
+
+*   60% – Engineering Headcount: We will aggressively expand our engineering team to accelerate the product roadmap and deepen our technical moats.
+*   30% – Go-to-Market: We are scaling our sales and customer success organizations to capitalize on our current momentum and expand our footprint in the enterprise segment.
+*   10% – Infrastructure: We are investing in the robustness and scalability of our cloud architecture to ensure we continue to deliver high-performance data pipelines as we grow.
+
+While Diana Volkov and I founded Vertexia in San Francisco in March 2019 with a vision to simplify complex data workflows, the landscape has shifted rapidly. We are now uniquely positioned to lead the market in ETL and business analytics. Our focus for the remainder of the year is on operational excellence, refining our product-market fit, and ensuring that our internal engineering processes—currently led by our VP Engineering, Sarah Chen—are optimized for rapid deployment.
+
+We are incredibly grateful for your partnership and trust in our vision. The road ahead is ambitious, but with this fresh capital and our dedicated team, we are well-prepared to execute on our mission to provide the foundational data intelligence layer for modern enterprises.
+
+We look forward to sharing our Q3 progress in the coming months. Thank you for your continued support as we build the future of Vertexia.
+
+Best regards,
+
+Arjun Mehta
+CEO & Co-founder, Vertexia Inc.

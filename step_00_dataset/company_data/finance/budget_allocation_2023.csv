@@ -1,0 +1,10 @@
+department,annual_budget_usd,headcount,owner,notes
+Platform Engineering,8200000,42,Marcus Webb,Engineering infrastructure and platform
+Product Engineering,9800000,58,Tomás García,Product development across 3 products
+DataCraft Integration,1400000,12,Felix Wagner,DataCraft migration and integration
+Product,2100000,14,Nadia Kim,Product management and design
+Revenue,6400000,38,Lisa Torres,"Sales, CS, and marketing"
+Finance,800000,6,Robert Okafor,"Finance, accounting, FP&A"
+Legal,400000,3,Carmen Reyes,Legal and compliance
+People & Culture,600000,5,Zara Ahmed,"HR, recruiting, culture"
+Executive,500000,3,Arjun Mehta,Executive team and ops

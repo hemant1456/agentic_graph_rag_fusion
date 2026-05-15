@@ -1,0 +1,67 @@
+[project]
+name = "agentic-graph-rag-fusion"
+version = "0.1.0"
+description = "Agentic Graph RAG Fusion — learning project for company-level data"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    # Always needed: LLM clients, utilities
+    "anthropic>=0.40.0",
+    "google-genai>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "rich>=13.0.0",
+    "pydantic>=2.7.0",
+    "tqdm>=4.66.0",
+]
+
+[project.optional-dependencies]
+# Install per step: uv sync --extra step-01
+step-01 = [
+    "chromadb>=0.5.0",
+    "openai>=1.50.0",
+    "pandas>=2.2.0",
+]
+step-02 = [
+    "arize-phoenix>=4.0.0",
+    "opentelemetry-api>=1.25.0",
+    "opentelemetry-sdk>=1.25.0",
+]
+step-03 = [
+    "ragas>=0.1.0",
+    "pandas>=2.2.0",
+]
+step-04 = [
+    "python-docx>=1.1.0",
+    "pymupdf>=1.24.0",
+    "pandas>=2.2.0",
+    "unstructured>=0.15.0",
+]
+step-05 = [
+    "networkx>=3.3",
+    "pandas>=2.2.0",
+]
+step-07 = [
+    "sentence-transformers>=3.0.0",
+    "rank-bm25>=0.2.2",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "mypy>=1.10.0",
+    "ruff>=0.4.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["step_00_dataset/tests"]
+python_files = ["test_*.py"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentic_graph_rag_fusion"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

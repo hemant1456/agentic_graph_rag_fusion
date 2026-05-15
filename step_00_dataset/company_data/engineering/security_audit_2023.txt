@@ -1,0 +1,99 @@
+VERTEXIA INC.
+ANNUAL SECURITY AUDIT REPORT — FY2023
+Prepared by: SecureAudit Partners, LLP
+Audit Period: July 1 – September 15, 2023
+Report Issued: September 22, 2023
+Engagement Lead: M. Brennan, CISSP, SecureAudit Partners
+Vertexia Sponsor: Daniel Osei, Lead, Security Team
+Reviewing Executive: Sarah Chen, CTO
+
+----------------------------------------------------------
+1. EXECUTIVE SUMMARY
+----------------------------------------------------------
+
+SecureAudit Partners conducted Vertexia Inc.'s annual security audit and external penetration test between July 1 and September 15, 2023. The scope covered Vertexia's production environment for NexusFlow, InsightLens, and PulseConnect, supporting corporate infrastructure, and the integrated systems inherited from the DataCraft acquisition (closed January 15, 2022; message queue migration to Apache Pulsar completed Q2 2023).
+
+Overall security posture is rated SATISFACTORY with improvements observed since the FY2022 engagement. Three (3) medium-severity findings and zero (0) critical or high-severity findings were identified. SOC 2 Type II audit is currently in progress, with anticipated report issuance in Q1 2024.
+
+----------------------------------------------------------
+2. SCOPE
+----------------------------------------------------------
+
+In-scope systems:
+- Production AWS environments (us-east-1, us-west-2, eu-west-1)
+- GCP ML workloads (us-central1)
+- Okta tenant (vertexia.okta.com)
+- Source code repositories (GitHub Enterprise)
+- CI/CD pipelines (GitHub Actions, ArgoCD)
+- Customer-facing APIs for FLOW, LENS, PULSE
+
+Out-of-scope: physical security of leased office space (HQ San Francisco, Austin, Bangalore); third-party SaaS not processing customer data.
+
+----------------------------------------------------------
+3. AUTHENTICATION SYSTEMS
+----------------------------------------------------------
+
+Vertexia uses Okta as its identity provider for both employee workforce SSO and internal service authentication. Findings:
+
+- 100% of in-scope production systems enforce SSO via Okta SAML/OIDC.
+- MFA enforcement: all employees enrolled in Okta Verify or WebAuthn; 7 service accounts identified without MFA (acceptable — non-interactive, scoped to least privilege).
+- Session lifetimes: 8 hours for standard users, 1 hour for privileged roles. Conforms to industry guidance.
+- Password policy: 14-character minimum, breach-corpus check enabled via Okta.
+
+No findings issued for authentication.
+
+----------------------------------------------------------
+4. AUTHORIZATION MODEL
+----------------------------------------------------------
+
+Vertexia implements a role-based access control (RBAC) model centralized through Okta groups, with downstream enforcement in AWS IAM, Kubernetes RBAC, and product-level permission services maintained by the Platform Engineering org (Marcus Webb, Lead).
+
+Observations:
+- Production AWS access is gated behind break-glass workflow with auditable approval.
+- Privileged Data Platform access (managed by Priya Nair's team) requires dual approval.
+- Customer-data plane separation is enforced; engineers cannot query customer tables directly from local environments.
+
+FINDING M-1 (Medium): Role drift detected in 9 Okta groups granting access broader than current job functions. Quarterly access reviews recommended (currently semi-annual).
+
+----------------------------------------------------------
+5. DATA ENCRYPTION
+----------------------------------------------------------
+
+At-rest:
+- All customer data encrypted with AES-256 via AWS KMS customer-managed keys.
+- S3 buckets (hot storage 90 days; cold tier S3 Glacier 1 year) verified encrypted; bucket policies deny unencrypted PutObject.
+- RDS, DynamoDB, and EBS volumes confirmed encrypted across all regions.
+
+In-transit:
+- TLS 1.3 enforced on all external endpoints; TLS 1.2 minimum permitted internally with deprecation path.
+- mTLS deployed for service-to-service traffic within the Apache Pulsar message bus.
+
+FINDING M-2 (Medium): Two internal admin tools observed terminating TLS at an older load balancer configuration permitting TLS 1.1 fallback. Remediation owner: Daniel Osei. Target: 2023-10-31.
+
+----------------------------------------------------------
+6. PENETRATION TEST RESULTS
+----------------------------------------------------------
+
+A grey-box external and internal penetration test was conducted between August 21 and September 8, 2023.
+
+Summary: 0 Critical / 0 High / 3 Medium / 7 Low / 12 Informational
+
+Medium findings:
+- M-1: RBAC role drift (see §4)
+- M-2: TLS 1.1 fallback on internal admin path (see §5)
+- M-3: NexusFlow events_api lacked request-size limiting on a debug endpoint reachable only with valid service token. Note: related to but distinct from the August 14, 2023 rate-limiter incident (4h 23min outage). Remediation completed September 12, 2023.
+
+Low and informational findings are tracked in Vertexia's internal Jira project SEC-AUDIT-23.
+
+----------------------------------------------------------
+7. SOC 2 TYPE II STATUS
+----------------------------------------------------------
+
+The SOC 2 Type II audit (observation period April 1 – September 30, 2023) is in progress. Control evidence collection is approximately 85% complete. No material deficiencies identified to date. Final report expected from auditor by late Q1 2024.
+
+----------------------------------------------------------
+8. RECOMMENDATIONS
+----------------------------------------------------------
+
+1. Move Okta group access reviews from semi-annual to quarterly.
+2. Complete TLS 1.1 de
