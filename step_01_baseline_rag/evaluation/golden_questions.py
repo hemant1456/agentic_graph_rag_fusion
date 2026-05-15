@@ -1,16 +1,24 @@
 """
 Golden question set — designed to expose retrieval failure modes progressively.
 
-Target baseline score: ~30–40% PASS (6–9 PASS, 7–9 PARTIAL, 5–8 FAIL) out of 22 questions.
+Target baseline score: 5–6 PASS / 3–4 PARTIAL / 12–13 FAIL out of 22 questions.
 
 Question categories:
-  ANCHOR       — baseline must pass; prove the system works at all
-  HARD_FAIL    — structural retrieval limits; require full CSV table scan or cross-CSV join
-                 with no semantic keyword overlap → vector top-k cannot surface all needed rows
-  PARTIAL      — some facts retrievable, but full answer requires multi-hop or arithmetic step
+  ANCHOR       — baseline must pass; direct semantic match to a single document
+  HARD_FAIL    — structural retrieval limits; require full CSV scan or cross-CSV join
+                 that top-k=5 can never satisfy
+  PARTIAL      — first hop is retrievable, second hop or a final calculation is not
 
-disqualifiers: if any of these strings appear in the answer, grade → FAIL
-regardless of required_facts matches. Used to catch plausible but factually wrong answers.
+Design rules:
+  1. partial_facts must NOT be generic topic keywords (e.g. "arr", "vendor", "deals").
+     They must be intermediate facts the model CAN retrieve — things that represent
+     genuine partial progress toward the answer.
+  2. required_facts use comma-formatted numbers ("1,692" not "1.69") to match how
+     LLMs express large dollar amounts.
+  3. For questions expected to FAIL: partial_facts=[] so generic keyword matches
+     don't promote a wrong answer to PARTIAL.
+  4. For questions expected to PARTIAL: partial_facts contain only the first-hop fact
+     the model CAN find, while required_facts contain the final answer it CANNOT.
 """
 
 from dataclasses import dataclass
@@ -31,7 +39,9 @@ class GoldenQuestion:
 
 GOLDEN_QUESTIONS: list[GoldenQuestion] = [
 
-    # ── ANCHORS (baseline must PASS) ─────────────────────────────────────────
+    # ── ANCHORS — baseline must PASS ─────────────────────────────────────────
+    # Direct semantic match to a single well-indexed document. If baseline fails
+    # any of these the index is broken, not the question.
 
     GoldenQuestion(
         id="Q01",
@@ -58,7 +68,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         disqualifiers=[],
         explanation=(
             "Explicit number in founding_story.txt and datacraft_employee_integration.txt. "
-            "Multiple documents contain '12 engineers'. Baseline anchor."
+            "Multiple documents contain '12 employees / 12 engineers'. Baseline anchor."
         ),
         expected_outcome="PASS",
         fixed_by_step="baseline",
@@ -124,61 +134,62 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     # ── HARD FAIL — structural retrieval limits ───────────────────────────────
-    # These require seeing every row of a CSV (N > top-k=5) or joining two CSVs
-    # that share no semantic keywords with the query.
+    # These questions cannot be answered by top-k=5 retrieval because they require
+    # seeing every row of a CSV, joining two CSVs, or doing arithmetic over a full
+    # table. partial_facts=[] for all: a wrong number is a FAIL, not a PARTIAL.
 
     GoldenQuestion(
         id="Q07",
         type="csv_full_aggregation",
         question="What is the total annual recurring revenue across all of Vertexia's current customers?",
-        required_facts=["11"],   # 20 customers summing to $11,000,000 exactly
-        partial_facts=["phoenix corp", "arr", "customer"],
+        required_facts=["11,000"],   # $11,000,000 exact across 20 customers
+        partial_facts=[],
         disqualifiers=[],
         explanation=(
-            "customer_list.csv has 20 rows. top-k=5 retrieval returns at most 5 rows. "
-            "The model will see Phoenix Corp ($2.4M) and QuantumBank ($3.2M) prominently and sum a partial set. "
-            "Full sum requires reading all 20 rows: $11,000,000. "
-            "Model will likely state $7M–$8M range or refuse to total."
+            "customer_list.csv has 20 rows summing to exactly $11,000,000. "
+            "top-k=5 returns ~5 rows; model computes a partial sum around $4–5M and states "
+            "that confidently. Required fact '11,000' matches '$11,000,000' but not any "
+            "partial sum. partial_facts=[] so a wrong calculation does not earn PARTIAL."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07 (structured CSV query tool: SUM arr_usd)",
+        fixed_by_step="step_07 (structured CSV query: SUM arr_usd)",
     ),
 
     GoldenQuestion(
         id="Q08",
         type="csv_full_aggregation",
         question="What is Vertexia's total annual spend across all vendor contracts?",
-        required_facts=["956"],   # $956,400 across 15 vendors
-        partial_facts=["AWS", "vendor", "annual", "contract"],
+        required_facts=["956,400"],   # exact total across 15 vendors
+        partial_facts=[],
         disqualifiers=[],
         explanation=(
-            "vendor_contracts_summary.csv has 15 rows. AWS ($480K) dominates top-5 retrieval. "
-            "Full sum: 480K+120K+36K+48K+18K+24K+12K+8.4K+9.6K+14.4K+36K+48K+60K+24K+18K = $956,400. "
-            "Model retrieves 5 of 15 rows (AWS + a few others) and computes a partial wrong sum. "
-            "Without seeing all 15 rows the model cannot produce $956,400."
+            "vendor_contracts_summary.csv has 15 rows totalling $956,400. "
+            "AWS ($480K) dominates top-5 retrieval. Model sees 5 of 15 rows and computes "
+            "a partial sum around $130–200K. '956,400' will not appear in that answer. "
+            "partial_facts=[] so any wrong sum is FAIL."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07 (structured CSV query tool: SUM annual_value_usd)",
+        fixed_by_step="step_07 (structured CSV query: SUM annual_value_usd)",
     ),
 
     GoldenQuestion(
         id="Q09",
         type="csv_full_scan_filter",
-        question="Which Vertexia employees are based in Berlin? List all of them.",
-        required_facts=["Emma Fischer", "Noah Zimmermann", "Aleksander Nowak"],   # all 5: Felix Wagner, Ravi Krishnan, Emma Fischer, Noah Zimmermann, Aleksander Nowak
-        partial_facts=["Felix Wagner", "Berlin", "DataCraft"],
-        disqualifiers=[],
+        question="How many Vertexia employees are currently based in the Berlin office?",
+        required_facts=["5"],   # Felix Wagner, Ravi Krishnan, Emma Fischer, Noah Zimmermann, Aleksander Nowak
+        partial_facts=[],
+        disqualifiers=["2", "3", "4"],   # common partial-scan wrong answers
         explanation=(
-            "employee_directory.csv has 48 rows. Only 5 have location=Berlin: "
-            "Felix Wagner (E016), Ravi Krishnan (E026), Emma Fischer (E027), Noah Zimmermann (E028), "
-            "Aleksander Nowak (E047). "
-            "top-k retrieval on 'Berlin employees' will likely return the DataCraft Integration rows "
-            "but Felix Wagner is prominent (team lead) and may appear in prose too. "
-            "Emma Fischer, Noah Zimmermann, and Aleksander Nowak appear only in the CSV. "
-            "PASS requires naming all three less-prominent engineers."
+            "employee_directory.csv has 47 rows; exactly 5 have location=Berlin: "
+            "Felix Wagner (E016), Ravi Krishnan (E026), Emma Fischer (E027), "
+            "Noah Zimmermann (E028), Aleksander Nowak (E047). "
+            "top-k=5 retrieval from org_chart + employee_directory typically surfaces "
+            "1–2 Berlin rows → model says '2' or '3'. Disqualifiers catch those wrong counts. "
+            "partial_facts=[] so naming some but not all Berlin employees does not earn PARTIAL. "
+            "Changed from 'list all' to count because the scoring system can't check exhaustiveness."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07 (structured CSV query: WHERE location='Berlin')",
+        fixed_by_step="step_07 (structured CSV query: WHERE location='Berlin' COUNT)",
     ),
 
     GoldenQuestion(
@@ -190,17 +201,17 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         ),
         required_facts=["Platform Engineering", "195"],   # $8.2M / 42 HC = $195,238/head
         partial_facts=["budget", "headcount", "department"],
-        disqualifiers=["166,666", "166666"],   # model sees 5/9 rows, declares Executive ($167K) as winner — wrong
+        disqualifiers=["166,666", "166666"],   # model sees 5/9 rows, names Executive as winner — wrong
         explanation=(
-            "budget_allocation_2023.csv has 9 department rows. Finding the highest ratio "
-            "requires dividing budget by headcount for all 9 rows and comparing. "
-            "Platform Engineering: $8,200,000 / 42 = $195,238/head is the highest. "
-            "top-k retrieval returns ~5 rows (Executive, Finance, Product, Legal, Revenue) "
-            "and the model declares Executive at $166,666/head as winner — a confident wrong answer. "
-            "Disqualifiers catch the wrong $166,666 figure."
+            "budget_allocation_2023.csv has 9 department rows. Highest ratio: "
+            "Platform Engineering $8,200,000 / 42 = $195,238/head. "
+            "top-k=5 returns Executive, Finance, Product, Legal, DataCraft rows; "
+            "model declares Executive at $166,666/head as winner — disqualifiers catch this. "
+            "partial_facts kept because the model demonstrates correct methodology (dividing "
+            "budget by headcount) even when it uses incomplete data."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07 (structured query: computed column + ORDER BY)",
+        fixed_by_step="step_07 (structured query: computed column budget/headcount + ORDER BY DESC)",
     ),
 
     GoldenQuestion(
@@ -210,17 +221,18 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "How many deals did Vertexia close as Closed-Won in Q3 2023, "
             "and what was their combined ARR?"
         ),
-        required_facts=["1.69"],   # 8 deals, $1,692,000
-        partial_facts=["closed-won", "q3", "deals"],
+        required_facts=["1,692"],   # 8 deals, $1,692,000 (comma format to match LLM output)
+        partial_facts=[],
         disqualifiers=[],
         explanation=(
-            "deal_pipeline_q3_2023.csv has 8 Closed-Won rows (D100–D107). "
-            "Total ARR: 240K+180K+420K+96K+360K+144K+192K+60K = $1,692,000. "
-            "top-k=5 retrieves 5 of 8 rows; model gets an incomplete sum. "
-            "Two Closed-Lost deals in the same CSV also risk confusing the model."
+            "deal_pipeline_q3_2023.csv has 8 Closed-Won deals (D100–D107): "
+            "240K+180K+420K+96K+360K+144K+192K+60K = $1,692,000. "
+            "top-k=5 retrieves 3 of 8 Closed-Won rows; model computes an incomplete sum. "
+            "'1,692' matches '$1,692,000' but not any partial sum. "
+            "partial_facts=[] so any wrong sum is FAIL, not PARTIAL."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07 (structured query: WHERE stage='Closed-Won' AND SUM arr)",
+        fixed_by_step="step_07 (structured query: WHERE stage='Closed-Won' AND SUM arr_usd)",
     ),
 
     GoldenQuestion(
@@ -230,16 +242,17 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "What percentage of Vertexia's total annual recurring revenue "
             "comes from enterprise-segment customers?"
         ),
-        required_facts=["65"],   # $7.16M / $11M = 65.1% (Phoenix Corp $2.4M + QuantumBank $3.2M + Redwood Analytics $720K + Northgate Bank $840K)
-        partial_facts=["Phoenix Corp", "enterprise", "percent"],
+        required_facts=["65"],   # $7,160,000 / $11,000,000 = 65.1%
+        partial_facts=[],
         disqualifiers=[],
         explanation=(
-            "Requires two full-table passes: (1) filter customer_list.csv WHERE segment='enterprise' "
-            "→ 4 enterprise customers: Phoenix Corp ($2.4M), QuantumBank ($3.2M), "
-            "Redwood Analytics ($720K), Northgate Bank ($840K) = $7,160,000; "
+            "Requires two full-table passes over customer_list.csv: "
+            "(1) filter WHERE segment='enterprise' → 4 customers: Phoenix Corp ($2.4M), "
+            "QuantumBank ($3.2M), Redwood Analytics ($720K), Northgate Bank ($840K) = $7,160,000; "
             "(2) SUM all 20 ARRs = $11,000,000; (3) divide = 65.1%. "
-            "top-k retrieval surfaces Phoenix Corp and QuantumBank prominently but cannot scan all 20 customers "
-            "for the denominator, and may miss Redwood Analytics or Northgate Bank as enterprise."
+            "top-k=5 retrieves prose strategy docs that mention enterprise broadly but "
+            "never the full customer table. Model cannot calculate without all 20 rows. "
+            "partial_facts=[] so a generic mention of 'enterprise' does not earn PARTIAL."
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_07 (structured query: GROUP BY segment + total SUM)",
@@ -253,17 +266,19 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "what is the name of their direct manager?"
         ),
         required_facts=["Priya Nair"],
-        partial_facts=["Adrian Blake", "manager", "FinDataCo", "E010"],
+        partial_facts=[],
         disqualifiers=[],
         explanation=(
-            "3-hop cross-CSV with zero keyword overlap on the final hop: "
+            "3-hop cross-CSV: "
             "(1) offboarding_records_2023.csv: 'FinDataCo' → Adrian Blake (E029); "
             "(2) employee_directory.csv row E029: manager_id = E010; "
             "(3) employee_directory.csv row E010: Priya Nair. "
-            "The query contains 'FinDataCo' which retrieves offboarding CSV → Adrian Blake. "
-            "But linking E029 → E010 → Priya Nair requires two lookups in employee_directory.csv "
-            "that have no keyword connection to 'FinDataCo'. "
-            "Model will say 'Adrian Blake departed to join FinDataCo' but cannot name the manager."
+            "Query retrieves offboarding CSV → Adrian Blake is findable. "
+            "But linking E029 → E010 → 'Priya Nair' requires two directory lookups "
+            "with no keyword bridge from 'FinDataCo'. "
+            "partial_facts=[] because Adrian Blake (the intermediate entity) is not "
+            "the answer — giving PARTIAL credit for finding the departing employee "
+            "would misrepresent the question's difficulty."
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_05 (graph: Person→reports_to edge traversal)",
@@ -276,17 +291,20 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Who is listed as the owner of our Snowflake data warehouse contract, "
             "and who is their direct manager?"
         ),
-        required_facts=["Priya Nair", "Marcus Webb"],
-        partial_facts=["Snowflake", "contract", "owner"],
+        required_facts=["Marcus Webb"],   # the manager — that's the answer being tested
+        partial_facts=[],
         disqualifiers=[],
         explanation=(
             "3-hop cross-CSV: "
-            "(1) vendor_contracts_summary.csv: Snowflake owner = Priya Nair; "
-            "(2) employee_directory.csv: Priya Nair (E010), manager_id = E009; "
-            "(3) employee_directory.csv row for E009 = Marcus Webb. "
-            "Query 'Snowflake contract owner manager' retrieves vendor CSV (Priya Nair) "
-            "but has no keywords to pull Marcus Webb's employee row. "
-            "The join requires matching E009 ID across two unrelated CSV rows."
+            "(1) vendor_contracts_summary.csv: Snowflake owner = Priya Nair (E010); "
+            "(2) employee_directory.csv row E010: manager_id = E009; "
+            "(3) employee_directory.csv row E009: Marcus Webb. "
+            "Query 'Snowflake contract owner manager' retrieves vendor CSV (Priya Nair). "
+            "But linking E010 → E009 → Marcus Webb requires two lookups with no keyword "
+            "connection to the Snowflake query. "
+            "required_facts=[Marcus Webb] only — the question is asking for the manager. "
+            "partial_facts=[] to avoid Priya Nair (the contract owner, not the answer) "
+            "accidentally triggering PARTIAL."
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_05 (graph: Person→reports_to edge) + step_07 (vendor lookup)",
@@ -300,18 +318,18 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "to the two engineering departments combined (Platform Engineering and Product Engineering)?"
         ),
         required_facts=["59"],   # ($8.2M + $9.8M) / $30.2M = 59.6%
-        partial_facts=["Platform Engineering", "Product Engineering", "budget"],
+        partial_facts=[],
         disqualifiers=[],
         explanation=(
             "budget_allocation_2023.csv: 9 department rows. "
-            "Platform Engineering $8.2M + Product Engineering $9.8M = $18M. "
-            "Total across all 9 departments = $30.2M. "
+            "Platform Engineering $8.2M + Product Engineering $9.8M = $18M (numerator). "
+            "Total across all 9 departments = $30.2M (denominator). "
             "Percentage = 18 / 30.2 = 59.6%. "
-            "top-k=5 retrieval will surface Platform Eng and Product Eng rows (largest budgets). "
-            "But computing the denominator ($30.2M total) requires all 9 rows. "
-            "Without the total, the model cannot compute the percentage and will say "
-            "'I cannot determine the total company budget to calculate the percentage.' "
-            "Model correctly identifies numerator (~$18M) but cannot get denominator."
+            "top-k=5 surfaces Platform Eng and Product Eng rows (largest budgets) so the "
+            "numerator ($18M) is computable, but the denominator requires all 9 rows. "
+            "Without the total, the model says it cannot compute the percentage. "
+            "partial_facts=[] so correctly naming the engineering departments does not "
+            "earn PARTIAL — the question is about the percentage, not the departments."
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_07 (structured query: SUM annual_budget_usd for denominator)",
@@ -324,23 +342,26 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "What is the total combined ARR of all customers who signed contracts "
             "in the second half of 2023 (July through December)?"
         ),
-        required_facts=["3.12"],   # 11 customers: 420K+180K+360K+96K+144K+192K+60K+480K+48K+840K+300K = $3,120,000
-        partial_facts=["TechVenture", "2023", "contract"],
+        required_facts=["3,120"],   # 11 customers, $3,120,000 (comma format to match LLM output)
+        partial_facts=[],
         disqualifiers=[],
         explanation=(
             "customer_list.csv: 11 customers have contract_start >= 2023-07-01: "
             "TechVenture ($420K), GreenLeaf ($180K), Meridian ($360K), Harbor ($96K), "
             "Cascade ($144K), Pinnacle ($192K), Stellarpath ($60K), BlueRidge Energy ($480K), "
             "Pacific Dynamics ($48K), Northgate Bank ($840K), Crestwood Pharma ($300K) = $3,120,000. "
-            "Requires date-range filter on the contract_start column + SUM across all 11 rows. "
-            "Cosine search on 'H2 2023 contracts' retrieves 2-3 rows at best; "
-            "model cannot see all 11 to produce the correct sum."
+            "Requires date-range filter on contract_start column + SUM across 11 rows. "
+            "top-k=5 on 'H2 2023 contracts ARR' retrieves 2–3 rows at best. "
+            "'3,120' matches '$3,120,000'; no partial sum would hit this string. "
+            "partial_facts=[] so finding one H2 customer does not earn PARTIAL."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07 (structured query: WHERE contract_start >= '2023-07-01' AND SUM)",
+        fixed_by_step="step_07 (structured query: WHERE contract_start >= '2023-07-01' AND SUM arr_usd)",
     ),
 
     # ── SHOULD BE PARTIAL AT BASELINE ────────────────────────────────────────
+    # First-hop fact is retrievable by vector search; final fact requires a
+    # second hop or a calculation the baseline cannot complete.
 
     GoldenQuestion(
         id="Q17",
@@ -356,14 +377,15 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation=(
             "customer_list.csv names Preet Kaur as CSM for Apex Financial. "
             "offboarding_records_2023.csv has departure_type='voluntary' for her. "
-            "csm_account_history.csv shows the transition but does NOT have departure_type. "
+            "csm_account_history.csv shows the account transition but says only "
+            "'CSM departure (Preet Kaur relocated internationally)' — no 'voluntary' field. "
             "Vector search for 'CSM Apex Financial HR records' retrieves csm_account_history "
-            "and customer_list — but NOT offboarding_records (no semantic overlap). "
-            "Model will say 'Preet Kaur departed' (PARTIAL) but cannot confirm 'voluntary' "
-            "without retrieving offboarding_records."
+            "and customer_list, which gives 'Preet Kaur' + 'departed' but NOT 'voluntary'. "
+            "offboarding_records has no semantic overlap with this query string. "
+            "PARTIAL: model identifies the person and departure; cannot confirm circumstances."
         ),
         expected_outcome="PARTIAL",
-        fixed_by_step="step_05 (graph: Person node with employment_status edge)",
+        fixed_by_step="step_05 (graph: Person node with employment_status + departure_type)",
     ),
 
     GoldenQuestion(
@@ -380,9 +402,11 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "The shared name is 'Phoenix' — never stated in the query. "
             "Engineering 'Project Phoenix' = Python 2→3 migration (completed June 2022). "
             "Sales 'Phoenix' = Phoenix Corp enterprise contract (signed June 2022). "
-            "founding_story.txt mentions both, but the model needs to identify the "
-            "disambiguation and state BOTH outcomes precisely. "
-            "'signed' specifically (for the contract) is the hardest fact to surface."
+            "founding_story.txt mentions both, but the model must identify the "
+            "ambiguity and state BOTH outcomes precisely. "
+            "'signed' (for the Phoenix Corp deal outcome) is the fact the baseline "
+            "most consistently misses — it describes the partnership's status rather "
+            "than its strategic rationale, which is what the model tends to focus on."
         ),
         expected_outcome="PARTIAL",
         fixed_by_step="step_08 (agent: entity disambiguation + multi-query strategy)",
@@ -390,46 +414,47 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
 
     GoldenQuestion(
         id="Q19",
-        type="sla_breach_inference",
+        type="csv_full_aggregation",
         question=(
-            "Based on the August 2023 incident report, did Vertexia meet its "
-            "standard 99.9% uptime commitment to customers that month? "
-            "Show your calculation."
+            "What is Vertexia's total planned headcount across all departments "
+            "as outlined in the 2023 budget allocation?"
         ),
-        required_facts=["did not", "99.4", "263"],   # 263 min downtime / 44640 min in August = 99.411%
-        partial_facts=["4 hour", "outage", "99.9", "uptime"],
-        disqualifiers=["yes"],
+        required_facts=["181"],   # sum of all 9 department headcounts: 42+58+12+14+38+6+3+5+3 = 181
+        partial_facts=[],
+        disqualifiers=[],
         explanation=(
-            "Requires: (1) postmortem → 4h 23min outage duration; "
-            "(2) nexusflow_architecture.md → 99.9% SLO; "
-            "(3) 263 min / 44640 min in August = 0.589% downtime = 99.411% uptime < 99.9% → MISSED. "
-            "Model often retrieves the postmortem and knows there was an outage, but "
-            "must also retrieve the architecture doc for the SLO target AND do the arithmetic. "
-            "'99.4' must appear as the calculated uptime figure (99.411% rounds to 99.4%)."
+            "budget_allocation_2023.csv has 9 department rows. "
+            "Total headcount: Platform Eng 42 + Product Eng 58 + DataCraft 12 + "
+            "Product 14 + Revenue 38 + Finance 6 + Legal 3 + People & Culture 5 + Executive 3 = 181. "
+            "top-k=5 retrieves the 5 largest-budget departments (~164 headcount partial sum). "
+            "The org_chart files mention ~430–480 total employees (a different metric) "
+            "which the model may cite instead. Either way, '181' will not appear. "
+            "partial_facts=[] so naming some departments does not earn PARTIAL."
         ),
-        expected_outcome="PARTIAL",
-        fixed_by_step="step_10 (context engineering: chain-of-thought + calculation prompt)",
+        expected_outcome="FAIL",
+        fixed_by_step="step_07 (structured query: SUM headcount FROM budget_allocation_2023)",
     ),
 
     GoldenQuestion(
         id="Q20",
-        type="multi_format_multi_hop",
+        type="csv_arithmetic_full_scan",
         question=(
-            "Which products were directly or indirectly affected by the August 2023 NexusFlow outage, "
-            "and what was their combined revenue in the month the outage occurred?"
+            "What was Vertexia's total combined revenue across all product lines "
+            "in Q3 2023 (July, August, and September combined)?"
         ),
-        required_facts=["InsightLens", "1.02"],   # NexusFlow $520K + InsightLens $500K = $1.02M in Aug
-        partial_facts=["NexusFlow", "outage", "revenue"],
-        disqualifiers=["PulseConnect"],   # PulseConnect was NOT critically affected
+        required_facts=["4,120"],   # $1,310K + $1,360K + $1,450K = $4,120,000
+        partial_facts=[],
+        disqualifiers=[],
         explanation=(
-            "Chain: postmortem → NexusFlow outage → "
-            "api_dependencies.csv → InsightLens critical dep on events_api → "
-            "revenue_by_product_2023.csv → August: NexusFlow $520K + InsightLens $500K = $1.02M. "
-            "Baseline names NexusFlow (retrieved via postmortem) but misses InsightLens "
-            "(requires api_dependencies lookup) and won't compute the revenue sum."
+            "revenue_by_product_2023.csv has one row per month. "
+            "Q3 2023 total revenue: July $1,310,000 + August $1,360,000 + September $1,450,000 = $4,120,000. "
+            "top-k=5 from 11 rows returns a mix of months — model sees 3–4 months total, "
+            "not the 3 consecutive Q3 months needed. Partial sums will be wrong. "
+            "'4,120' matches '$4,120,000'; no partial quarterly sum will contain this string. "
+            "partial_facts=[] so retrieving any revenue row does not earn PARTIAL."
         ),
-        expected_outcome="PARTIAL",
-        fixed_by_step="step_05 (graph: product dependency edges) + step_07 (revenue lookup)",
+        expected_outcome="FAIL",
+        fixed_by_step="step_07 (structured query: WHERE month BETWEEN '2023-07' AND '2023-09' SUM total_revenue)",
     ),
 
     GoldenQuestion(
@@ -439,20 +464,23 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "If the analytics dashboard had an ingestion failure on August 29, 2023, "
             "which on-call Data Platform engineer would be responsible for the fix?"
         ),
-        required_facts=["Priya Nair"],
-        partial_facts=["on-call", "data platform", "august"],
+        required_facts=["Priya Nair", "InsightLens"],
+        partial_facts=["on-call", "data platform"],
         disqualifiers=["Kenji Ito", "Lin Wei", "James O'Brien", "Yuki Tanaka"],
         explanation=(
-            "4-hop chain: 'analytics dashboard' = InsightLens → events_api → Data Platform Team → "
-            "on_call_schedule_aug2023.csv: week of Aug 28–Sep 3 = Priya Nair (E010). "
-            "founding_story.txt prominently names Kenji Ito for 'the August 2023 outage' → "
-            "the model anchors to Kenji Ito for ANY August 2023 analytics question. "
-            "Aug 29 is week Aug 28-Sep 3; the correct answer is Priya Nair. "
-            "This question exploits the model's retrieval bias toward the famous outage narrative "
-            "(Kenji Ito) instead of the correct schedule row for Aug 29."
+            "4-hop chain: 'analytics dashboard' → InsightLens (product name for the analytics UI) "
+            "→ InsightLens depends on events_api (api_dependencies.csv) → events_api owned by "
+            "Data Platform Team → on_call_schedule_aug2023.csv: week Aug 28–Sep 3 = Priya Nair (E010). "
+            "PASS requires: (1) identifying 'analytics dashboard' = InsightLens by name, "
+            "AND (2) naming Priya Nair as the on-call engineer. "
+            "Baseline shortcut: model retrieves on_call_schedule directly from 'on-call August 29' "
+            "semantic match → finds Priya Nair correctly but never identifies InsightLens by name. "
+            "PARTIAL: model names Priya Nair but not InsightLens. "
+            "Disqualifiers catch the common confusion with Kenji Ito (Aug 2023 outage incident lead "
+            "who is prominent in founding_story and postmortem)."
         ),
         expected_outcome="PARTIAL",
-        fixed_by_step="step_08 (agent: structured date-range query on CSV)",
+        fixed_by_step="step_08 (agent: resolve 'analytics dashboard' to InsightLens via product catalog)",
     ),
 
     GoldenQuestion(
@@ -464,19 +492,19 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "and which specific enterprise customers would lose service?"
         ),
         required_facts=["InsightLens", "events_api", "QuantumBank"],
-        partial_facts=["Pulsar", "NexusFlow", "pipeline", "Phoenix Corp", "enterprise"],
+        partial_facts=["Pulsar", "NexusFlow", "pipeline", "Phoenix Corp"],
         disqualifiers=[],
         explanation=(
-            "Chain: Pulsar down → NexusFlow (critical dep on external_pulsar in api_dependencies.csv) → "
-            "NexusFlow events_api fails → InsightLens dashboard ingestion fails (critical dep) → "
+            "Chain: Pulsar down → NexusFlow (critical dep on external_pulsar) → "
+            "NexusFlow events_api fails → InsightLens (critical dep on events_api) fails → "
             "enterprise customers on NexusFlow or InsightLens lose service → "
-            "includes QuantumBank ($3.2M ARR, NexusFlow+InsightLens+PulseConnect) and Phoenix Corp. "
-            "'events_api' requires api_dependencies.csv. "
-            "'QuantumBank' requires customer_list.csv (only enterprise customers data source). "
-            "Baseline retrieves architecture/postmortem prose docs; neither api_dependencies.csv "
-            "nor customer_list.csv is pulled by cosine similarity on this query. "
-            "Model names NexusFlow and InsightLens generically but cannot name QuantumBank "
-            "without retrieving customer_list.csv."
+            "QuantumBank ($3.2M ARR, NexusFlow+InsightLens+PulseConnect) is one such customer. "
+            "'events_api' is in api_dependencies.csv; 'InsightLens' link requires that CSV. "
+            "'QuantumBank' is only in customer_list.csv — not in any prose blast-radius docs. "
+            "Baseline retrieves architecture/postmortem prose: gets NexusFlow + Phoenix Corp "
+            "(mentioned in postmortem SLA context) but not api_dependencies.csv or customer_list.csv. "
+            "PARTIAL: model gets InsightLens + events_api (architecture docs) + Phoenix Corp "
+            "(postmortem) but not QuantumBank (customer_list.csv only)."
         ),
         expected_outcome="PARTIAL",
         fixed_by_step="step_05 (graph: product→dependency→customer edges)",

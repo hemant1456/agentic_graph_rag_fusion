@@ -1,14 +1,14 @@
 {
   "step": "01_baseline_rag",
-  "timestamp": "2026-05-15T16:27:33",
+  "timestamp": "2026-05-15T18:18:46",
   "total_questions": 22,
   "grade_counts": {
-    "PASS": 8,
-    "PARTIAL": 13,
-    "FAIL": 1
+    "PASS": 6,
+    "PARTIAL": 4,
+    "FAIL": 12
   },
-  "pass_rate": 0.36,
-  "pass_or_partial_rate": 0.95,
+  "pass_rate": 0.27,
+  "pass_or_partial_rate": 0.45,
   "results": [
     {
       "id": "Q01",
@@ -38,8 +38,8 @@
         0.852
       ],
       "context_chars": 8658,
-      "retrieval_latency_ms": 653.2,
-      "generation_latency_ms": 1014.9,
+      "retrieval_latency_ms": 577.1,
+      "generation_latency_ms": 981.4,
       "provider": "gemini"
     },
     {
@@ -69,8 +69,8 @@
         0.859
       ],
       "context_chars": 9202,
-      "retrieval_latency_ms": 630.3,
-      "generation_latency_ms": 1313.0,
+      "retrieval_latency_ms": 627.4,
+      "generation_latency_ms": 1318.2,
       "provider": "gemini"
     },
     {
@@ -101,8 +101,8 @@
         0.849
       ],
       "context_chars": 8706,
-      "retrieval_latency_ms": 744.3,
-      "generation_latency_ms": 1510.6,
+      "retrieval_latency_ms": 627.2,
+      "generation_latency_ms": 969.5,
       "provider": "gemini"
     },
     {
@@ -132,8 +132,8 @@
         0.846
       ],
       "context_chars": 9137,
-      "retrieval_latency_ms": 631.9,
-      "generation_latency_ms": 1006.7,
+      "retrieval_latency_ms": 537.9,
+      "generation_latency_ms": 836.0,
       "provider": "gemini"
     },
     {
@@ -163,8 +163,8 @@
         0.848
       ],
       "context_chars": 7532,
-      "retrieval_latency_ms": 628.1,
-      "generation_latency_ms": 1427.4,
+      "retrieval_latency_ms": 567.0,
+      "generation_latency_ms": 980.6,
       "provider": "gemini"
     },
     {
@@ -194,8 +194,8 @@
         0.85
       ],
       "context_chars": 9330,
-      "retrieval_latency_ms": 580.2,
-      "generation_latency_ms": 1153.3,
+      "retrieval_latency_ms": 820.6,
+      "generation_latency_ms": 1010.0,
       "provider": "gemini"
     },
     {
@@ -203,12 +203,12 @@
       "type": "csv_full_aggregation",
       "question": "What is the total annual recurring revenue across all of Vertexia's current customers?",
       "answer": "The total annual recurring revenue (ARR) across the listed customers is $4,944,000.\n\nThis is calculated as follows:\n*   **TechVenture AI:** $420,000\n*   **Redwood Analytics:** $720,000\n*   **QuantumBank:** $3,200,000\n*   **Apex Financial:** $240,000\n*   **NovaTech Systems:** $264,000\n\nTotal: $4,944,000",
-      "grade": "PARTIAL",
+      "grade": "FAIL",
       "expected_outcome": "FAIL",
-      "matched_expected": false,
+      "matched_expected": true,
       "required_hits": [],
       "required_missing": [
-        "11"
+        "11,000"
       ],
       "sources_retrieved": [
         "sales/customer_list.csv",
@@ -225,8 +225,8 @@
         0.845
       ],
       "context_chars": 1390,
-      "retrieval_latency_ms": 571.2,
-      "generation_latency_ms": 1065.9,
+      "retrieval_latency_ms": 625.9,
+      "generation_latency_ms": 1034.3,
       "provider": "gemini"
     },
     {
@@ -234,12 +234,12 @@
       "type": "csv_full_aggregation",
       "question": "What is Vertexia's total annual spend across all vendor contracts?",
       "answer": "Based on the provided vendor contracts, the total annual spend is $135,600.\n\nHere is the breakdown:\n*   **Twilio:** $24,000\n*   **Atlassian:** $36,000\n*   **Notion:** $9,600\n*   **Slack:** $48,000\n*   **Zoom:** $18,000\n\n**Total:** $135,600",
-      "grade": "PARTIAL",
+      "grade": "FAIL",
       "expected_outcome": "FAIL",
-      "matched_expected": false,
+      "matched_expected": true,
       "required_hits": [],
       "required_missing": [
-        "956"
+        "956,400"
       ],
       "sources_retrieved": [
         "finance/vendor_contracts_summary.csv",
@@ -256,42 +256,39 @@
         0.863
       ],
       "context_chars": 1393,
-      "retrieval_latency_ms": 632.9,
-      "generation_latency_ms": 1110.1,
+      "retrieval_latency_ms": 606.0,
+      "generation_latency_ms": 1195.0,
       "provider": "gemini"
     },
     {
       "id": "Q09",
       "type": "csv_full_scan_filter",
-      "question": "Which Vertexia employees are based in Berlin? List all of them.",
-      "answer": "Based on the provided employee directory, the following Vertexia employees are based in Berlin:\n\n*   **Ravi Krishnan** (Senior Engineer, DataCraft)\n*   **Noah Zimmermann** (Data Engineer, DataCraft)",
-      "grade": "PARTIAL",
+      "question": "How many Vertexia employees are currently based in the Berlin office?",
+      "answer": "The provided documents do not contain information regarding a Berlin office. The context states that Vertexia Inc. has employees across San Francisco, Austin, and Bangalore.",
+      "grade": "FAIL",
       "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "Noah Zimmermann"
-      ],
+      "matched_expected": true,
+      "required_hits": [],
       "required_missing": [
-        "Emma Fischer",
-        "Aleksander Nowak"
+        "5"
       ],
       "sources_retrieved": [
         "hr/org_chart_q1_2023.txt",
-        "hr/org_chart_q1_2023.txt",
         "hr/org_chart_q3_2023.txt",
-        "hr/employee_directory.csv",
-        "hr/employee_directory.csv"
+        "hr/org_chart_q1_2023.txt",
+        "executive/founding_story.txt",
+        "legal/ip_policy.txt"
       ],
       "source_similarities": [
+        0.855,
+        0.852,
         0.845,
-        0.843,
-        0.837,
-        0.833,
-        0.83
+        0.84,
+        0.834
       ],
-      "context_chars": 5521,
-      "retrieval_latency_ms": 535.2,
-      "generation_latency_ms": 1211.9,
+      "context_chars": 8426,
+      "retrieval_latency_ms": 649.7,
+      "generation_latency_ms": 1119.8,
       "provider": "gemini"
     },
     {
@@ -322,8 +319,8 @@
         0.859
       ],
       "context_chars": 1239,
-      "retrieval_latency_ms": 724.4,
-      "generation_latency_ms": 1521.0,
+      "retrieval_latency_ms": 702.1,
+      "generation_latency_ms": 2176.4,
       "provider": "gemini"
     },
     {
@@ -331,12 +328,12 @@
       "type": "csv_full_aggregation",
       "question": "How many deals did Vertexia close as Closed-Won in Q3 2023, and what was their combined ARR?",
       "answer": "Based on the provided documents, there is not enough information to determine the total number of deals closed as \"Closed-Won\" or their combined ARR for Q3 2023.\n\nThe documents provide the following partial information:\n*   **Total Bookings:** The Q3 2023 Closed-Won Sales Performance Report states total bookings reached $4.2M.\n*   **Deal Counts:** The report mentions 8 new logos and 15 expansion deals, but does not explicitly state the total number of individual deals closed.\n*   **Pipeline Data:** The provided CSV snippets list three specific deals (D102, D100, and D106) with a combined ARR of $852,000 ($420,000 + $240,000 + $192,000), but this does not represent the full list of deals closed in the quarter.\n\nBecause the provided context does not contain a complete list of all closed deals or their individual ARR values, a total count and combined ARR cannot be calculated.",
-      "grade": "PARTIAL",
+      "grade": "FAIL",
       "expected_outcome": "FAIL",
-      "matched_expected": false,
+      "matched_expected": true,
       "required_hits": [],
       "required_missing": [
-        "1.69"
+        "1,692"
       ],
       "sources_retrieved": [
         "sales/q3_closed_won_report.txt",
@@ -353,8 +350,8 @@
         0.865
       ],
       "context_chars": 3741,
-      "retrieval_latency_ms": 581.7,
-      "generation_latency_ms": 1772.5,
+      "retrieval_latency_ms": 609.5,
+      "generation_latency_ms": 1566.3,
       "provider": "gemini"
     },
     {
@@ -362,9 +359,9 @@
       "type": "csv_arithmetic_cross_doc",
       "question": "What percentage of Vertexia's total annual recurring revenue comes from enterprise-segment customers?",
       "answer": "Based on the provided documents, there is not enough information to determine the exact percentage of Vertexia's total annual recurring revenue (ARR) that comes from enterprise-segment customers.\n\nWhile the documents note that the company's total ARR was $16.5M at the close of Q3 2023 and mention specific enterprise accounts like Phoenix Corp ($2.4M ARR), they do not provide a breakdown of the total revenue percentage attributed to the enterprise segment.",
-      "grade": "PARTIAL",
+      "grade": "FAIL",
       "expected_outcome": "FAIL",
-      "matched_expected": false,
+      "matched_expected": true,
       "required_hits": [],
       "required_missing": [
         "65"
@@ -384,8 +381,8 @@
         0.86
       ],
       "context_chars": 9200,
-      "retrieval_latency_ms": 731.7,
-      "generation_latency_ms": 1316.2,
+      "retrieval_latency_ms": 639.0,
+      "generation_latency_ms": 1052.8,
       "provider": "gemini"
     },
     {
@@ -393,9 +390,9 @@
       "type": "cross_csv_multi_hop",
       "question": "The engineer who departed Vertexia to join FinDataCo \u2014 what is the name of their direct manager?",
       "answer": "Based on the provided offboarding records, the engineer who departed to join FinDataCo is Adrian Blake (employee_id: E029). The records list their manager_id as E010.\n\nThe provided documents do not contain a mapping of employee IDs to names for managers (such as a directory or employee roster), so the name of the manager associated with ID E010 is not available in the context.",
-      "grade": "PARTIAL",
+      "grade": "FAIL",
       "expected_outcome": "FAIL",
-      "matched_expected": false,
+      "matched_expected": true,
       "required_hits": [],
       "required_missing": [
         "Priya Nair"
@@ -415,8 +412,8 @@
         0.863
       ],
       "context_chars": 6995,
-      "retrieval_latency_ms": 835.4,
-      "generation_latency_ms": 1249.3,
+      "retrieval_latency_ms": 633.3,
+      "generation_latency_ms": 1121.6,
       "provider": "gemini"
     },
     {
@@ -424,12 +421,10 @@
       "type": "cross_csv_multi_hop",
       "question": "Who is listed as the owner of our Snowflake data warehouse contract, and who is their direct manager?",
       "answer": "The owner of the Snowflake data warehouse contract is Priya Nair. The provided documents do not contain information regarding who her direct manager is.",
-      "grade": "PARTIAL",
+      "grade": "FAIL",
       "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "Priya Nair"
-      ],
+      "matched_expected": true,
+      "required_hits": [],
       "required_missing": [
         "Marcus Webb"
       ],
@@ -448,8 +443,8 @@
         0.865
       ],
       "context_chars": 1403,
-      "retrieval_latency_ms": 593.7,
-      "generation_latency_ms": 914.3,
+      "retrieval_latency_ms": 814.3,
+      "generation_latency_ms": 1025.7,
       "provider": "gemini"
     },
     {
@@ -457,9 +452,9 @@
       "type": "csv_arithmetic_full_scan",
       "question": "What percentage of Vertexia's total 2023 annual budget is allocated to the two engineering departments combined (Platform Engineering and Product Engineering)?",
       "answer": "Based on the provided budget allocation documents for 2023, the budget is distributed as follows:\n\n*   **Platform Engineering:** $8,200,000\n*   **Product Engineering:** $9,800,000\n*   **Product (Department):** $2,100,000\n\nThe total budget for these three departments is $20,100,000.\n\nThe combined budget for the two engineering departments (Platform Engineering and Product Engineering) is **$18,000,000** ($8,200,000 + $9,800,000).\n\nThis represents approximately **89.55%** of the total $20,100,000 allocated across these three departments. \n\n*Note: The provided context does not contain the total company-wide annual budget for Vertexia Inc., only the specific departmental allocations listed above. Therefore, it is not possible to calculate the percentage of the total company budget.*",
-      "grade": "PARTIAL",
+      "grade": "FAIL",
       "expected_outcome": "FAIL",
-      "matched_expected": false,
+      "matched_expected": true,
       "required_hits": [],
       "required_missing": [
         "59"
@@ -479,8 +474,8 @@
         0.864
       ],
       "context_chars": 4667,
-      "retrieval_latency_ms": 622.2,
-      "generation_latency_ms": 1707.5,
+      "retrieval_latency_ms": 619.0,
+      "generation_latency_ms": 1562.2,
       "provider": "gemini"
     },
     {
@@ -488,12 +483,12 @@
       "type": "csv_date_filter_aggregation",
       "question": "What is the total combined ARR of all customers who signed contracts in the second half of 2023 (July through December)?",
       "answer": "To calculate the total combined ARR for customers who signed contracts in the second half of 2023 (July through December), we look at the following entries:\n\n*   **TechVenture AI:** Contract start 2023-07-01, ARR $420,000\n*   **Crestwood Pharma:** Contract start 2023-12-01, ARR $300,000\n\nThe total combined ARR for these customers is **$720,000**.",
-      "grade": "PARTIAL",
+      "grade": "FAIL",
       "expected_outcome": "FAIL",
-      "matched_expected": false,
+      "matched_expected": true,
       "required_hits": [],
       "required_missing": [
-        "3.12"
+        "3,120"
       ],
       "sources_retrieved": [
         "sales/customer_list.csv",
@@ -510,8 +505,8 @@
         0.853
       ],
       "context_chars": 1367,
-      "retrieval_latency_ms": 589.0,
-      "generation_latency_ms": 1424.8,
+      "retrieval_latency_ms": 592.6,
+      "generation_latency_ms": 1216.6,
       "provider": "gemini"
     },
     {
@@ -544,8 +539,8 @@
         0.862
       ],
       "context_chars": 1418,
-      "retrieval_latency_ms": 536.6,
-      "generation_latency_ms": 1276.1,
+      "retrieval_latency_ms": 519.0,
+      "generation_latency_ms": 1525.8,
       "provider": "gemini"
     },
     {
@@ -579,73 +574,70 @@
         0.834
       ],
       "context_chars": 9365,
-      "retrieval_latency_ms": 587.6,
-      "generation_latency_ms": 1432.4,
+      "retrieval_latency_ms": 628.2,
+      "generation_latency_ms": 1418.5,
       "provider": "gemini"
     },
     {
       "id": "Q19",
-      "type": "sla_breach_inference",
-      "question": "Based on the August 2023 incident report, did Vertexia meet its standard 99.9% uptime commitment to customers that month? Show your calculation.",
-      "answer": "Based on the provided documents, Vertexia did not meet its uptime commitment for the affected services in August 2023.\n\n**1. The Commitment:**\nAccording to the Master Service Agreement with Phoenix Corp, Vertexia warrants a Monthly Uptime Percentage of at least **99.99%**. (Note: While your question mentions a 99.9% commitment, the provided legal documentation explicitly specifies a 99.99% SLA).\n\n**2. The Incident:**\nThe NexusFlow v2.1 ingestion outage occurred on August 14, 2023, and lasted for **4 hours and 23 minutes** (263 minutes total).\n\n**3. Calculation:**\n*   **Total minutes in August:** 31 days \u00d7 24 hours \u00d7 60 minutes = 44,640 minutes.\n*   **Downtime:** 263 minutes.\n*   **Uptime Percentage:** (44,640 - 263) / 44,640 = 44,377 / 44,640 \u2248 **99.4108%**.\n\n**Conclusion:**\nThe uptime for August 2023 was approximately **99.41%**. This falls below the 99.99% SLA requirement. Consequently, Vertexia failed to meet its uptime commitment for that month.",
-      "grade": "PASS",
-      "expected_outcome": "PARTIAL",
-      "matched_expected": false,
-      "required_hits": [
-        "did not",
-        "99.4",
-        "263"
+      "type": "csv_full_aggregation",
+      "question": "What is Vertexia's total planned headcount across all departments as outlined in the 2023 budget allocation?",
+      "answer": "Based on the provided budget allocation documents, the total headcount across the departments listed is 104.\n\nHere is the breakdown:\n*   **Revenue:** 38\n*   **Product Engineering:** 58\n*   **Executive:** 3\n*   **People & Culture:** 5\n\nThe provided documents do not contain headcount information for all departments within Vertexia Inc., so a total headcount for the entire company cannot be calculated from the budget allocation files alone. (Note: The HR organizational chart mentions a company-wide target of approximately 500 by the end of the year, but this is a target rather than a sum of the specific departmental budget allocations provided.)",
+      "grade": "FAIL",
+      "expected_outcome": "FAIL",
+      "matched_expected": true,
+      "required_hits": [],
+      "required_missing": [
+        "181"
       ],
-      "required_missing": [],
       "sources_retrieved": [
-        "executive/q3_2023_allhands_notes.txt",
-        "finance/q3_2023_finance_report.txt",
-        "engineering/nexusflow_v21_postmortem.txt",
-        "engineering/security_audit_2023.txt",
-        "legal/phoenix_corp_msa.txt"
+        "finance/budget_allocation_2023.csv",
+        "finance/budget_allocation_2023.csv",
+        "hr/org_chart_q3_2023.txt",
+        "finance/budget_allocation_2023.csv",
+        "finance/budget_allocation_2023.csv"
       ],
       "source_similarities": [
-        0.869,
-        0.864,
-        0.861,
-        0.856,
-        0.854
+        0.865,
+        0.865,
+        0.863,
+        0.863,
+        0.862
       ],
-      "context_chars": 9128,
-      "retrieval_latency_ms": 550.8,
-      "generation_latency_ms": 2015.7,
+      "context_chars": 2933,
+      "retrieval_latency_ms": 560.7,
+      "generation_latency_ms": 1414.8,
       "provider": "gemini"
     },
     {
       "id": "Q20",
-      "type": "multi_format_multi_hop",
-      "question": "Which products were directly or indirectly affected by the August 2023 NexusFlow outage, and what was their combined revenue in the month the outage occurred?",
-      "answer": "The provided documents do not contain information regarding an August 2023 NexusFlow outage or its impact on any products. Therefore, I cannot answer your question.",
-      "grade": "PARTIAL",
-      "expected_outcome": "PARTIAL",
+      "type": "csv_arithmetic_full_scan",
+      "question": "What was Vertexia's total combined revenue across all product lines in Q3 2023 (July, August, and September combined)?",
+      "answer": "Based on the provided financial reports, Vertexia Inc.'s total GAAP recognized revenue for Q3 2023 was $4.12 million.\n\nThe breakdown by product line for the quarter is as follows:\n*   **NexusFlow:** $1.6 million\n*   **InsightLens:** $1.5 million\n*   **PulseConnect:** $1.02 million\n\n(Note: While the provided CSV data for July and September is available, the context does not provide the specific revenue figures for August, so the total cannot be calculated by summing the individual months from the CSV files alone. However, the Q3 2023 Financial Performance Report explicitly states the total GAAP recognized revenue for the quarter was $4.12 million.)",
+      "grade": "FAIL",
+      "expected_outcome": "FAIL",
       "matched_expected": true,
       "required_hits": [],
       "required_missing": [
-        "InsightLens",
-        "1.02"
+        "4,120"
       ],
       "sources_retrieved": [
+        "finance/q3_2023_finance_report.txt",
+        "sales/q3_closed_won_report.txt",
+        "executive/q3_2023_allhands_notes.txt",
         "finance/revenue_by_product_2023.csv",
-        "finance/revenue_by_product_2023.csv",
-        "finance/revenue_by_product_2022.csv",
-        "finance/revenue_by_product_2022.csv",
         "finance/revenue_by_product_2023.csv"
       ],
       "source_similarities": [
-        0.892,
-        0.887,
-        0.884,
-        0.878,
-        0.876
+        0.886,
+        0.883,
+        0.883,
+        0.879,
+        0.874
       ],
-      "context_chars": 1273,
-      "retrieval_latency_ms": 629.6,
-      "generation_latency_ms": 1111.5,
+      "context_chars": 5847,
+      "retrieval_latency_ms": 479.9,
+      "generation_latency_ms": 1479.0,
       "provider": "gemini"
     },
     {
@@ -653,13 +645,15 @@
       "type": "multi_hop_implicit",
       "question": "If the analytics dashboard had an ingestion failure on August 29, 2023, which on-call Data Platform engineer would be responsible for the fix?",
       "answer": "Priya Nair (employee ID E010) would be responsible for the fix, as she was the on-call engineer for the Data Platform Team for the week of August 28, 2023, to September 3, 2023.",
-      "grade": "PASS",
+      "grade": "PARTIAL",
       "expected_outcome": "PARTIAL",
-      "matched_expected": false,
+      "matched_expected": true,
       "required_hits": [
         "Priya Nair"
       ],
-      "required_missing": [],
+      "required_missing": [
+        "InsightLens"
+      ],
       "sources_retrieved": [
         "engineering/on_call_schedule_aug2023.csv",
         "engineering/on_call_schedule_aug2023.csv",
@@ -675,8 +669,8 @@
         0.89
       ],
       "context_chars": 1317,
-      "retrieval_latency_ms": 629.0,
-      "generation_latency_ms": 915.4,
+      "retrieval_latency_ms": 539.1,
+      "generation_latency_ms": 1064.5,
       "provider": "gemini"
     },
     {
@@ -709,8 +703,8 @@
         0.85
       ],
       "context_chars": 9231,
-      "retrieval_latency_ms": 601.1,
-      "generation_latency_ms": 2255.8,
+      "retrieval_latency_ms": 692.0,
+      "generation_latency_ms": 2067.1,
       "provider": "gemini"
     }
   ]
