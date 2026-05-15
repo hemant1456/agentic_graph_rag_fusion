@@ -24,27 +24,24 @@ from step_01_baseline_rag.implementation.pipeline import BaselineRAG, RAGResult
 
 def score(result: RAGResult, question: GoldenQuestion) -> dict:
     """
-    PASS   — all required_facts found in answer (case-insensitive)
-    PARTIAL— at least one required_fact missing, but partial_facts found
-    FAIL   — neither required nor partial facts found
+    FAIL   — any disqualifier found in answer (wrong answer caught)
+    PASS   — all required_facts found (and no disqualifiers)
+    PARTIAL— some required_facts missing, but partial_facts found
+    FAIL   — nothing useful found
     """
     answer_lower = result.answer.lower()
 
-    required_hits = [
-        fact for fact in question.required_facts
-        if fact.lower() in answer_lower
-    ]
-    partial_hits = [
-        fact for fact in question.partial_facts
-        if fact.lower() in answer_lower
-    ]
+    disqualifier_hits = [d for d in question.disqualifiers if d.lower() in answer_lower]
+    required_hits = [f for f in question.required_facts if f.lower() in answer_lower]
+    partial_hits = [f for f in question.partial_facts if f.lower() in answer_lower]
 
     all_required = len(required_hits) == len(question.required_facts)
-    has_partial = len(partial_hits) > 0
 
-    if all_required:
+    if disqualifier_hits:
+        grade = "FAIL"
+    elif all_required:
         grade = "PASS"
-    elif has_partial or required_hits:
+    elif required_hits or partial_hits:
         grade = "PARTIAL"
     else:
         grade = "FAIL"
@@ -54,6 +51,7 @@ def score(result: RAGResult, question: GoldenQuestion) -> dict:
         "required_hits": required_hits,
         "required_missing": [f for f in question.required_facts if f not in required_hits],
         "partial_hits": partial_hits,
+        "disqualifier_hits": disqualifier_hits,
     }
 
 

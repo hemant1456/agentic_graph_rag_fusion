@@ -55,6 +55,10 @@ dev = [
 testpaths = ["step_00_dataset/tests", "step_01_baseline_rag/tests"]
 python_files = ["test_*.py"]
 
+[tool.pyright]
+pythonVersion = "3.12"
+extraPaths = ["."]
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"

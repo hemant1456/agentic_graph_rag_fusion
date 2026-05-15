@@ -1,7 +1,7 @@
 # Step 01 — Baseline Vector RAG
 
 ## Goal
-Build the simplest possible working RAG system. Measure it against our 10 golden questions. Establish the floor.
+Build the simplest possible working RAG system. Measure it against 10 golden questions. Establish the floor.
 
 ---
 
@@ -12,108 +12,102 @@ Split on blank lines, accumulate paragraphs until ~2000 chars, carry 200-char ov
 
 **Why this is naive**: chunk boundaries ignore semantic meaning — a critical sentence can be split across chunks, or irrelevant paragraphs lumped together.
 
-**CSV exception**: Each row becomes its own chunk rendered as `key: value | key: value`. This is the right call even for a naive baseline — CSV rows are independent facts, not continuous prose.
+**CSV exception**: Each row becomes its own chunk rendered as `key: value | key: value`. CSV rows are independent facts, not continuous prose.
 
 ### Embedding — `gemini-embedding-2` (3072-dim)
-Free via Google API. One API call per chunk (the SDK's `embed_content` doesn't support true batching — each call returns exactly 1 embedding regardless of input list length, so we call it once per text).
-
-**Note for Step 04+**: If embedding latency matters at scale, switch to a local model (e.g., `all-MiniLM-L6-v2`, 384-dim) — no API calls, runs on CPU in milliseconds.
+Free via Google API. One call per chunk — the SDK's `embed_content` doesn't support true batching (each call returns exactly 1 embedding regardless of input list length).
 
 ### Vector Store — ChromaDB (local persistent, cosine similarity)
-Zero infra, persists to disk. For a 190-chunk corpus this is fine. We'll need something more scalable (Qdrant, Weaviate) when we're at 10k+ chunks.
+Zero infra, persists to disk. Fine for a 190-chunk corpus.
 
 ### Retrieval — Top-5 cosine similarity, no filtering
-The dumbest possible retrieval. No metadata filtering, no query rewriting, no reranking.
+No metadata filtering, no query rewriting, no reranking.
 
 ### LLM — `gemini-3.1-flash-lite-preview` with Claude fallback
-Temperature 0.0 for deterministic, reproducible evaluation results.
+Temperature 0.0 for deterministic, reproducible evaluation.
 
 ---
 
 ## Evaluation Results (2025-05-15)
 
-| ID  | Type | Question (abbreviated) | Grade | Expected | Sources Retrieved |
-|-----|------|------------------------|-------|----------|-------------------|
-| Q01 | simple_lookup | Data retention policy? | **PASS** | PASS | onboarding_handbook ✓ |
-| Q02 | comparative | Q3 vs Q2 NexusFlow revenue? | **PARTIAL** | PARTIAL | Got Q3 ($1.6M), missed Q2 ($1.4M) |
-| Q03 | multi_hop | On-call engineer Aug 2023? | **PARTIAL** | FAIL | Retrieved schedule CSV but model didn't synthesize Kenji Ito |
-| Q04 | temporal | Sarah Chen's title Jan 2023? | **PASS** | PARTIAL | Q1 org chart retrieved correctly |
-| Q05 | disambiguation | What is Project Phoenix? | **PARTIAL** | PARTIAL | Retrieved engineering docs + sales deal, but answered only one |
-| Q06 | implicit_link | Phoenix Corp SLA > NexusFlow target? | **PASS** | FAIL | Both legal and engineering docs retrieved in top-5 |
-| Q07 | contradictory | Q3 2023 total revenue? | **PASS** | PARTIAL | Retrieved both finance report and all-hands notes — surfaced both figures |
-| Q08 | aggregation | DataCraft employees count? | **PASS** | PASS | Integration memo retrieved, "12" found |
-| Q09 | stale_reference | VP of Customer Success? | **PASS** | PASS | Org chart retrieved, Maya Sharma returned |
-| Q10 | cross_format | Was InsightLens affected by outage? | **PASS** | FAIL | Postmortem + RFC mentioned events_api |
+**Final score: 6 PASS / 4 PARTIAL / 0 FAIL — 60% pass rate**
 
-**Final score: 7 PASS / 3 PARTIAL / 0 FAIL — 70% pass rate**
-
----
-
-## Where We Beat Our Hypotheses (Surprises)
-
-### Q03 — PARTIAL instead of FAIL
-We predicted the on-call schedule CSV would not be retrieved. It *was* retrieved (top source). But the model still didn't extract Kenji Ito's name from the CSV context. The failure mode shifted: **retrieval was fine, generation/synthesis failed**. The model said "the documents don't contain info about an outage" even while showing the schedule. This is a **generation faithfulness issue**, not a retrieval issue.
-
-**Lesson**: Bad answers aren't always caused by bad retrieval. Sometimes the model fails to synthesize across retrieved chunks.
-
-### Q06 — PASS instead of FAIL
-We predicted this would fail because it requires connecting a legal doc to an engineering doc from different departments. It passed because both `phoenix_corp_msa.txt` and `nexusflow_architecture.md` happened to land in the top-5 for the query. The key terms ("SLA", "availability", "uptime") created enough semantic overlap to pull both documents.
-
-**Lesson**: Semantic similarity is sometimes enough for cross-document questions — when the question explicitly names the link. The graph becomes necessary when the link is *implicit* (the question doesn't contain the connecting terms).
-
-### Q07 — PASS instead of PARTIAL
-We expected RAG to return one number and hallucinate. Instead, both the finance report ($4.12M GAAP) and the all-hands notes ($4.2M bookings) were retrieved, and Gemini correctly synthesized both as different accounting methods.
-
-**Lesson**: The model's instruction-following ("answer based only on context") combined with multiple contradictory sources can actually produce a *better* answer than a human reading one document.
-
-### Q10 — PASS instead of FAIL
-We predicted the CSV row for the `events_api` dependency would not surface. It didn't — but the `rfc_001_event_schema.md` and the postmortem *together* gave the model enough context. The RFC explicitly mentions InsightLens consuming NexusFlow's events_api.
-
-**Lesson**: The "trap" was partially defused by the prose document (RFC) that served as a secondary source for the same fact. The CSV-only trap still holds — if the RFC hadn't mentioned it, this would have been a FAIL.
+| ID  | Type | Expected | Got | Notes |
+|-----|------|----------|-----|-------|
+| Q01 | simple_lookup | PASS | **PASS** | Retention policy in single doc |
+| Q02 | simple_aggregation | PASS | **PASS** | "12" employees found directly |
+| Q03 | csv_arithmetic | FAIL | **PASS** | Gemini retrieves both docs + reasons through 99.99−99.9=0.09 |
+| Q04 | multi_hop_implicit | FAIL | **PASS** | Aug 14 CSV row retrieved; model picks Kenji Ito correctly |
+| Q05 | temporal_inference | PARTIAL | **PASS** | Board meeting notes connect Sarah Chen → VP Engineering |
+| Q06 | stale_reference | PARTIAL | **PARTIAL** | Finds Preet Kaur; cannot confirm she departed (cross-CSV gap) |
+| Q07 | csv_aggregation | FAIL | **PARTIAL** | Retrieves only 2/5 NexusFlow customers; admits it can't total |
+| Q08 | multi_format_multi_hop | FAIL | **PARTIAL** | Finds InsightLens; misses combined revenue $1.02M |
+| Q09 | disambiguation_no_name | PARTIAL | **PARTIAL** | Finds Python migration + completed; misses "signed" for Phoenix Corp deal |
+| Q10 | sla_breach_inference | PARTIAL | **PASS** | Retrieves postmortem + SLA; calculates 99.4% uptime correctly |
 
 ---
 
-## Remaining Failures — Why They Matter
+## Where the Model Outperformed Predictions
 
-### Q02 — Comparative (PARTIAL)
-The revenue CSV *was* retrieved, but only the September row landed in context — not the Q2 rows. The model correctly said "Q3 NexusFlow = $1.6M" but couldn't find Q2 data.
+### Q03 — csv_arithmetic (expected FAIL → PASS)
+We expected the model to retrieve both uptime numbers but skip the subtraction. Gemini surprised us by performing `99.99 − 99.9 = 0.09` and stating the gap explicitly.
 
-**Why**: Cosine similarity matches "Q3 NexusFlow revenue compare to Q2" to Q3 documents, not Q2 documents. The query's *subject* is Q3 so Q2 data ranks lower. Fixing this requires either: query decomposition (split into two sub-queries: Q2 and Q3), or structured retrieval (query the CSV directly by month column).
+**Lesson**: Strong LLMs compensate for retrieval design gaps via reasoning. Q03 would still fail for a weaker model or if either source document missed the top-5.
 
-### Q05 — Disambiguation (PARTIAL)
-Both "Project Phoenix" documents were retrieved, but the model answered about only the engineering migration. The sales doc was retrieved (2nd source) but under-weighted in synthesis.
+### Q04 — multi_hop_implicit (expected FAIL → PASS)
+The on-call CSV was the *only* source retrieved (all 5 slots were CSV rows). The model correctly filtered to the Aug 14 week row and named Kenji Ito. The failure we designed for — model anchoring to "tonight" and reading the last row — didn't materialize.
 
-**Why**: The query "What is Project Phoenix?" has strong semantic overlap with the engineering migration document (which uses the phrase "Project Phoenix" extensively). The sales document uses "Phoenix Corp" more than "Project Phoenix". The model picked the dominant retrieved signal. Fixing this requires explicit disambiguation: detect entity ambiguity → ask clarifying question, or surface both answers with confidence scores.
+**Lesson**: The trap assumed the model would confuse the query's temporal reference. Gemini's instruction following is precise enough to handle date-anchored CSV lookups when the relevant rows are retrieved.
 
-### Q03 — Multi-hop (PARTIAL)
-The on-call schedule was retrieved but Kenji Ito wasn't extracted as the answer.
+### Q05, Q10 — temporal/arithmetic (expected PARTIAL → PASS)
+Both require multi-step reasoning that we predicted would break. Gemini handled both correctly when the supporting documents landed in top-5.
 
-**Why**: The model was anchored to "August 2023 outage" context from the postmortem (which it also retrieved), and the postmortem says "the on-call engineer was paged" without naming them. The model appeared to weight the postmortem's vague reference over the specific CSV data, producing a confused answer that listed all on-call engineers without connecting them to the outage date.
-
-**Fix direction**: Step 08 (Agentic RAG) — an agent can recognize it needs to cross-reference the outage date against the on-call schedule rather than letting the LLM synthesize across disconnected chunks.
+**Lesson**: At 60% baseline, the genuine failures are retrieval failures (wrong chunks returned), not synthesis failures. The model is smarter than the retrieval.
 
 ---
 
-## Latency and Cost Profile
+## Genuine Failures — Why They Matter
+
+### Q06 — stale_reference (PARTIAL)
+`customer_list.csv` names Preet Kaur as CSM. `hr/offboarding_records_2023.csv` records her departure. The model finds the customer record but never retrieves the offboarding CSV — these two files share no semantic overlap in the query space.
+
+**Fix**: Step 05 — Graph RAG. A Person node for Preet Kaur with edges to both CustomerAccount and EmploymentRecord lets us follow the relationship regardless of query semantics.
+
+### Q07 — csv_aggregation (PARTIAL)
+Only 2 of 5 NexusFlow customers appear in the retrieved context. The model correctly diagnoses incomplete data and refuses to invent a total. The sum ($3.612M) requires seeing all 5 rows.
+
+**Fix**: Step 07 — Structured query tool. SQL-like filter on `products contains 'NexusFlow'` + sum, bypassing retrieval entirely.
+
+### Q08 — multi_format_multi_hop (PARTIAL)
+The model correctly identifies InsightLens as an indirect victim via the postmortem. But it doesn't compute the August revenue sum ($520k + $500k = $1.02M) — the revenue CSV rows don't appear in top-5 for this query.
+
+**Fix**: Step 07 + Step 05 (graph traversal to find affected products, then structured query for their August revenue).
+
+### Q09 — disambiguation_no_name (PARTIAL)
+The query never says "Phoenix" — so cosine search has no anchor. The model retrieves engineering docs (Project Phoenix = Python migration) but not the sales deal (Phoenix Corp enterprise contract). The "signed" fact for the Phoenix Corp deal is missing.
+
+**Fix**: Step 08 — Agentic RAG. An agent can recognize entity ambiguity, enumerate possible meanings, and run separate sub-queries for each.
+
+---
+
+## Latency Profile
 
 | Metric | Value |
 |--------|-------|
-| Avg retrieval latency | ~630ms (1 embedding API call per query) |
+| Avg retrieval latency | ~580ms (1 embedding API call per query) |
 | Avg generation latency | ~1,000ms |
-| Avg total latency | ~1,630ms |
 | Index build time | ~45s (190 chunks × 1 API call each) |
 | Index size on disk | ~4MB (ChromaDB) |
-| LLM calls for 10 questions | 10 (Gemini free tier) |
 
 ---
 
 ## What Naive RAG Is and Isn't Good At
 
-**Good at**: Questions where the exact answer is in a single chunk, retrievable by semantic similarity. Simple lookup, aggregation of explicit facts, single-document reasoning.
+**Good at**: Single-document lookup, explicit aggregation where the answer is in one chunk, arithmetic when both operands land in context.
 
-**Fragile at**: Multi-hop chains (no mechanism to follow links), temporal disambiguation (all eras mixed together), pure CSV facts (short rows rank lower than rich prose), and questions where the connecting term isn't in the query.
+**Fragile at**: Cross-document joins with no semantic overlap (Q06), full-table aggregation where rows don't all fit in top-k (Q07), implicit multi-hop chains where the connecting entity isn't in the query (Q09).
 
-**Counter-intuitive finding**: Cross-document questions sometimes work when the query explicitly names the entities in both documents. Graph RAG's advantage will emerge most clearly for *implicit* connections.
+**Counter-intuitive finding**: A strong LLM can compensate for retrieval gaps when the required facts happen to land in top-5. The baseline score reflects *both* the retrieval system and the model's reasoning. Improvements in later steps will be most visible in the questions where retrieval structurally cannot return the right chunks.
 
 ---
 
