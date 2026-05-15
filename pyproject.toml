@@ -52,8 +52,9 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["step_00_dataset/tests", "step_01_baseline_rag/tests"]
+testpaths = ["step_00_dataset/tests", "step_01_baseline_rag/tests", "step_02_observability/tests"]
 python_files = ["test_*.py"]
+markers = ["integration: requires live API keys and built index"]
 
 [tool.pyright]
 pythonVersion = "3.12"
