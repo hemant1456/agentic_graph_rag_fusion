@@ -10,9 +10,14 @@ Output:
   step_02_observability/results/eval_report.json — scored results + cost summary
 
 Usage:
+    # JSONL traces only (no external server needed):
     uv run python step_02_observability/evaluation/run_traced_eval.py
+
+    # JSONL + Arize Phoenix UI at http://localhost:6006:
+    uv run python step_02_observability/evaluation/run_traced_eval.py --phoenix
 """
 
+import argparse
 import json
 import sys
 import time
@@ -35,14 +40,21 @@ GRADE_SYMBOL = {"PASS": "✓", "PARTIAL": "~", "FAIL": "✗"}
 RESET = "\033[0m"
 
 
-def run_traced_evaluation() -> dict:
+def run_traced_evaluation(use_phoenix: bool = False) -> dict:
     print("=== Step 02: Traced RAG Evaluation ===\n")
+
+    otel_tracer = None
+    if use_phoenix:
+        from step_02_observability.implementation.phoenix_exporter import PhoenixExporter
+        exporter = PhoenixExporter()
+        otel_tracer = exporter.start()
+        print(f"Traces visible at {exporter.url}\n")
 
     rag = BaselineRAG(k=5).build()
     store = TraceStore(TRACE_FILE)
     store.clear()   # fresh trace file on each run
 
-    traced = TracedRAG(rag, store)
+    traced = TracedRAG(rag, store, otel_tracer=otel_tracer)
 
     grade_counts = {"PASS": 0, "PARTIAL": 0, "FAIL": 0}
     all_results = []
@@ -137,4 +149,10 @@ def run_traced_evaluation() -> dict:
 
 
 if __name__ == "__main__":
-    run_traced_evaluation()
+    parser = argparse.ArgumentParser(description="Step 02: traced RAG evaluation")
+    parser.add_argument(
+        "--phoenix", action="store_true",
+        help="Launch Arize Phoenix UI and send spans (requires step-02 extras)",
+    )
+    args = parser.parse_args()
+    run_traced_evaluation(use_phoenix=args.phoenix)
