@@ -347,17 +347,20 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         type="stale_reference",
         question=(
             "According to our customer records, who is the customer success manager "
-            "for Apex Financial, and are they currently employed at Vertexia?"
+            "for Apex Financial, and based on all available HR records, are they "
+            "still at Vertexia and under what circumstances did they leave?"
         ),
-        required_facts=["Preet Kaur", "departed"],
+        required_facts=["Preet Kaur", "departed", "voluntary"],
         partial_facts=["Apex", "customer success", "CSM"],
         disqualifiers=[],
         explanation=(
             "customer_list.csv names Preet Kaur as CSM for Apex Financial. "
-            "hr/offboarding_records_2023.csv shows she departed June 30 2023. "
-            "These are in separate CSVs with no explicit link. "
-            "Baseline will name Preet Kaur (PARTIAL) but almost certainly won't "
-            "cross-reference the offboarding CSV to confirm departure."
+            "offboarding_records_2023.csv has departure_type='voluntary' for her. "
+            "csm_account_history.csv shows the transition but does NOT have departure_type. "
+            "Vector search for 'CSM Apex Financial HR records' retrieves csm_account_history "
+            "and customer_list — but NOT offboarding_records (no semantic overlap). "
+            "Model will say 'Preet Kaur departed' (PARTIAL) but cannot confirm 'voluntary' "
+            "without retrieving offboarding_records."
         ),
         expected_outcome="PARTIAL",
         fixed_by_step="step_05 (graph: Person node with employment_status edge)",
@@ -458,20 +461,22 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         question=(
             "If Vertexia's primary message queue infrastructure went down completely, "
             "trace the full blast radius: which internal products would be affected "
-            "and which customer segments would lose service?"
+            "and which specific enterprise customers would lose service?"
         ),
-        required_facts=["InsightLens", "events_api", "enterprise"],
-        partial_facts=["Pulsar", "NexusFlow", "pipeline"],
+        required_facts=["InsightLens", "events_api", "QuantumBank"],
+        partial_facts=["Pulsar", "NexusFlow", "pipeline", "Phoenix Corp", "enterprise"],
         disqualifiers=[],
         explanation=(
             "Chain: Pulsar down → NexusFlow (critical dep on external_pulsar in api_dependencies.csv) → "
             "NexusFlow events_api fails → InsightLens dashboard ingestion fails (critical dep) → "
-            "customers using NexusFlow or InsightLens lose service → includes enterprise segment "
-            "(Phoenix Corp). "
-            "'events_api' specifically requires api_dependencies.csv to be retrieved — it is the "
-            "API endpoint name that does NOT appear in architecture or postmortem prose docs. "
-            "Baseline retrieves architecture/postmortem and names NexusFlow; will NOT retrieve "
-            "api_dependencies.csv because 'message queue blast radius' doesn't semantically match it."
+            "enterprise customers on NexusFlow or InsightLens lose service → "
+            "includes QuantumBank ($3.2M ARR, NexusFlow+InsightLens+PulseConnect) and Phoenix Corp. "
+            "'events_api' requires api_dependencies.csv. "
+            "'QuantumBank' requires customer_list.csv (only enterprise customers data source). "
+            "Baseline retrieves architecture/postmortem prose docs; neither api_dependencies.csv "
+            "nor customer_list.csv is pulled by cosine similarity on this query. "
+            "Model names NexusFlow and InsightLens generically but cannot name QuantumBank "
+            "without retrieving customer_list.csv."
         ),
         expected_outcome="PARTIAL",
         fixed_by_step="step_05 (graph: product→dependency→customer edges)",
