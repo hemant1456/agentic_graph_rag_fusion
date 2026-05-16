@@ -1391,7 +1391,10 @@ def tab_step_progress() -> None:
     ]
 
     evals = [(label, short, load_eval(path), note) for label, short, path, note in STEP_META]
-    available = [(label, short, d, note) for label, short, d, note in evals if d is not None]
+    available = [
+        (label, short, d, note) for label, short, d, note in evals
+        if d is not None and sum(d.get("grade_counts", {}).values()) > 0
+    ]
 
     if not available:
         st.warning("No eval results found. Run evaluation scripts first.")
