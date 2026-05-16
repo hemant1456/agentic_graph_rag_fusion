@@ -58,8 +58,7 @@ def run_with_config(
     from step_10_context_engineering.implementation.context_engineer import engineer_context
 
     analysis = query_analyst.analyze(question)
-    needs_graph = analysis.needs_graph or config.force_graph
-    needs_csv   = analysis.needs_csv   or config.force_csv
+    needs_csv = analysis.needs_csv or config.force_csv
 
     retrieval_q = question
     if config.query_augmentation:
@@ -72,12 +71,12 @@ def run_with_config(
         sub_ret = retrieval_specialist.retrieve(sub_q, retriever, k=10)
         raw_chunks.extend(sub_ret.chunks)
 
+    # Always run graph navigation using retrieved chunks as seeds — mirrors step 07.
+    # force_graph still used by slice config; this makes graph a floor, not an opt-in.
     csv_data  = ""
-    graph_ctx = ""
-    if needs_graph:
-        graph_res = graph_navigator.navigate(question, analysis.primary_entities, graph)
-        if graph_res.success:
-            graph_ctx = graph_res.context
+    graph_seeds = [c.text for c in raw_chunks] if raw_chunks else analysis.primary_entities
+    graph_res = graph_navigator.navigate(question, graph_seeds, graph)
+    graph_ctx = graph_res.context if graph_res.success else ""
     if needs_csv:
         csv_res = structured_data.query(question)
         if csv_res.success:

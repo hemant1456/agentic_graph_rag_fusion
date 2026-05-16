@@ -78,13 +78,12 @@ class Step10RAG:
             sub_ret = retrieval_specialist.retrieve(sub_q, self._retriever, k=10)
             raw_chunks.extend(sub_ret.chunks)
 
-        # Graph + CSV contexts (not compressed — exact data must survive)
+        # Graph + CSV contexts (not compressed — exact data must survive).
+        # Always run graph navigation using retrieved chunks as seeds, mirroring step 07.
         csv_data = ""
-        graph_ctx = ""
-        if analysis.needs_graph:
-            graph_res = graph_navigator.navigate(question, analysis.primary_entities, self._graph)
-            if graph_res.success:
-                graph_ctx = graph_res.context
+        graph_seeds = [c.text for c in raw_chunks] if raw_chunks else analysis.primary_entities
+        graph_res = graph_navigator.navigate(question, graph_seeds, self._graph)
+        graph_ctx = graph_res.context if graph_res.success else ""
         if analysis.needs_csv:
             csv_res = structured_data.query(question)
             if csv_res.success:

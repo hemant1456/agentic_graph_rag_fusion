@@ -72,18 +72,21 @@ def run(
             latency_ms=(time.perf_counter() - t0) * 1000,
         ))
 
-    if analysis.needs_graph:
-        t0 = time.perf_counter()
-        graph_res = graph_navigator.navigate(question, analysis.primary_entities, graph)
-        if graph_res.success:
-            contexts["Graph"] = graph_res.context
-        traces.append(AgentTrace(
-            agent_id="graph_navigator",
-            input_summary=f"entities={analysis.primary_entities[:4]}",
-            output_summary=f"success={graph_res.success}, {len(graph_res.context)} chars",
-            latency_ms=(time.perf_counter() - t0) * 1000,
-            status="ok" if graph_res.success else "skipped",
-        ))
+    # Always run graph navigation — pass retrieved chunk texts as seeds so traversal
+    # finds relevant nodes even when QueryAnalyst doesn't flag needs_graph.
+    # Mirrors step 07's unconditional build_graph_context() call.
+    t0 = time.perf_counter()
+    graph_seeds = [c.text for c in ret.chunks] if ret.chunks else analysis.primary_entities
+    graph_res = graph_navigator.navigate(question, graph_seeds, graph)
+    if graph_res.success:
+        contexts["Graph"] = graph_res.context
+    traces.append(AgentTrace(
+        agent_id="graph_navigator",
+        input_summary=f"seeds={len(graph_seeds)} chunks, entities={analysis.primary_entities[:4]}",
+        output_summary=f"success={graph_res.success}, {len(graph_res.context)} chars",
+        latency_ms=(time.perf_counter() - t0) * 1000,
+        status="ok" if graph_res.success else "skipped",
+    ))
 
     if analysis.needs_csv:
         t0 = time.perf_counter()
