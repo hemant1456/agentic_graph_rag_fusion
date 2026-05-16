@@ -183,17 +183,19 @@ def build_graph_context(question: str, chunk_texts: list[str], g: nx.DiGraph) ->
     entity_ids = list(dict.fromkeys(exact_ids + alias_ids))  # dedup, preserve order
     parts: list[str] = []
 
-    # Prepend alias resolution as factual statements the LLM should reproduce
+    # Prepend alias resolution as factual statements the LLM must reproduce
     if alias_resolutions:
         facts = [
             f'The term {r.strip().split(" → ")[0]} in this query refers to the product/service'
             f' {r.strip().split(" → ")[1]} in Vertexia\'s system.'
             for r in alias_resolutions
         ]
+        resolved_names = [r.strip().split(" → ")[1] for r in alias_resolutions]
         parts.append(
-            "[RESOLVED ENTITY FACTS — include these in your answer]\n"
+            "[RESOLVED ENTITY FACTS — you MUST name the following in your answer: "
+            + ", ".join(resolved_names) + "]\n"
             + "\n".join(alias_resolutions)
-            + "\n\nFor context:\n"
+            + "\n\nFact (include verbatim):\n"
             + "\n".join(facts)
         )
 

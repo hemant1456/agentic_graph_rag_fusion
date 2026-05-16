@@ -12,6 +12,7 @@ dependencies = [
     "rich>=13.0.0",
     "pydantic>=2.7.0",
     "tqdm>=4.66.0",
+    "rank-bm25>=0.2.2",
 ]
 
 [project.optional-dependencies]
@@ -39,6 +40,9 @@ step-05 = [
 step-07 = [
     "sentence-transformers>=3.0.0",
     "rank-bm25>=0.2.2",
+]
+step-10 = [
+    "sentence-transformers>=3.0.0",
 ]
 dev = [
     "pytest>=8.0.0",

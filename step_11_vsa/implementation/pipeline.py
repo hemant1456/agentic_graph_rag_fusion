@@ -1,0 +1,105 @@
+"""
+Step 11 pipeline — Vertical Slice Architecture (VSA).
+
+Upgrades over Step 10:
+  - Every incoming question is routed to one of four domain slices
+    (Finance, HR/People, Engineering/Product, General/Company)
+  - Each slice has its own: system prompt, retrieval overrides (force_csv /
+    force_graph), retrieval augmentation terms, and CE parameters
+  - The router is pure keyword-matching — zero LLM calls, zero latency cost
+  - Adding a new domain = one new file + one line in router.py
+
+All retrieval and CE mechanics are unchanged from Step 10; VSA sits above them
+as a domain dispatch layer, ensuring the right prompt and overrides reach the
+right question type.
+
+Reuses: Step 07 retriever, Step 06 graph, Step 09 agents, Step 10 CE pipeline.
+"""
+
+from __future__ import annotations
+
+import sys
+import time
+from pathlib import Path
+
+_PROJECT_ROOT = Path(__file__).parent.parent.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+from dotenv import load_dotenv
+load_dotenv(_PROJECT_ROOT / ".env")
+
+from dataclasses import dataclass
+
+import networkx as nx
+
+from step_01_baseline_rag.implementation.pipeline import RAGResult
+from step_07_rag_fusion.implementation.pipeline import Step07RAG
+from step_11_vsa.implementation.router import dispatch as vsa_dispatch
+
+CORPUS_PATH = _PROJECT_ROOT / "step_00_dataset"  / "company_data"
+GRAPH_PATH  = _PROJECT_ROOT / "step_05_knowledge_graph" / "results" / "graph.json"
+
+
+@dataclass
+class Step11Result:
+    """Extended result that carries routing metadata."""
+    rag_result: RAGResult
+    slice_name: str
+    router_confidence: float
+    ce_metrics: dict
+
+
+class Step11RAG:
+    """
+    VSA-aware RAG pipeline.
+
+    Usage:
+        rag = Step11RAG(k=5).build()
+        ext = rag.query_extended("What is the total ARR?")   # → Step11Result
+        res = rag.query("What is the total ARR?")             # → RAGResult
+    """
+
+    def __init__(self, k: int = 5) -> None:
+        self.k = k
+        self._retriever: Step07RAG | None = None
+        self._graph: nx.DiGraph | None = None
+
+    def build(self) -> "Step11RAG":
+        # Wide candidate set — reranker will select the best 8
+        self._retriever = Step07RAG(k=20).build()
+        from step_05_knowledge_graph.implementation.graph_store import load_or_build
+        self._graph = load_or_build(CORPUS_PATH, GRAPH_PATH)
+        return self
+
+    def query_extended(self, question: str) -> Step11Result:
+        if self._retriever is None or self._graph is None:
+            raise RuntimeError("Call .build() before .query()")
+
+        t0 = time.perf_counter()
+        answer, provider, ce_metrics, slice_name, confidence = vsa_dispatch(
+            question, self._retriever, self._graph
+        )
+        total_ms = (time.perf_counter() - t0) * 1000
+
+        display_chunks = self._retriever.retrieve(question, k=self.k)
+
+        rag_result = RAGResult(
+            question=question,
+            answer=answer,
+            provider=f"vsa:{slice_name}:{provider}",
+            retrieved_chunks=display_chunks,
+            context_sent=f"[VSA slice={slice_name} conf={confidence:.2f}]",
+            context_chars=ce_metrics.get("engineered_chars", 0),
+            retrieval_latency_ms=total_ms,
+            generation_latency_ms=0.0,
+        )
+        return Step11Result(
+            rag_result=rag_result,
+            slice_name=slice_name,
+            router_confidence=confidence,
+            ce_metrics=ce_metrics,
+        )
+
+    def query(self, question: str) -> RAGResult:
+        return self.query_extended(question).rag_result
