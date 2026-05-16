@@ -279,7 +279,7 @@ def _comparison_bar(runs: list[tuple[str, dict]]) -> go.Figure:
 
 
 def _grade_heatmap(runs: list[tuple[str, dict]]) -> go.Figure:
-    """Heatmap: rows = Q01..Q22, columns = run labels, colour = grade."""
+    """Heatmap: rows = Q01..Q27, columns = run labels, colour = grade."""
     if not runs:
         return go.Figure()
 
@@ -339,7 +339,7 @@ def _build_custom_index(
     include_csv_agg: bool,
 ) -> dict:
     """
-    Full pipeline: rechunk corpus → embed → store in ChromaDB → run 22 golden questions.
+    Full pipeline: rechunk corpus → embed → store in ChromaDB → run 27 golden questions.
 
     local_model: fastembed model name, or None to use Gemini API.
     strategy: "paragraph" | "fixed"
@@ -436,7 +436,7 @@ def _build_custom_index(
     st.write(f"  → Stored {coll.count()} chunks at `{db_path.relative_to(ROOT)}`")
 
     # ── 4. Evaluate ───────────────────────────────────────────────────────────
-    st.write(f"**4 / 4** — Evaluating 22 golden questions (k={k_eval})…")
+    st.write(f"**4 / 4** — Evaluating {len(GOLDEN_QUESTIONS)} golden questions (k={k_eval})…")
     grade_counts: dict[str, int] = {"PASS": 0, "PARTIAL": 0, "FAIL": 0}
     all_results: list[dict[str, Any]] = []
     q_prog = st.progress(0.0, text="Running questions…")
@@ -540,17 +540,17 @@ def _sidebar() -> None:
         st.markdown("**Steps built**")
         steps = [
             ("✅", "Step 00", "Synthetic company dataset"),
-            ("✅", "Step 01", "Baseline vector RAG (27%)"),
+            ("✅", "Step 01", "Baseline vector RAG (22%)"),
             ("✅", "Step 02", "Observability (Arize Phoenix)"),
             ("✅", "Step 03", "Evaluation framework"),
-            ("✅", "Step 04", "Format-aware chunking (59%)"),
-            ("✅", "Step 05", "Knowledge graph (82%)"),
-            ("✅", "Step 06", "Graph RAG (91%)"),
-            ("✅", "Step 07", "RAG Fusion + BM25 (95%)"),
-            ("✅", "Step 08", "Agentic RAG / Gateway (95%)"),
-            ("✅", "Step 09", "Multi-Agent System (95%+)"),
-            ("✅", "Step 10", "Context Engineering (rerank+compress)"),
-            ("✅", "Step 11", "Vertical Slice Architecture (VSA)"),
+            ("✅", "Step 04", "Format-aware chunking (48%)"),
+            ("✅", "Step 05", "Knowledge graph (67%)"),
+            ("✅", "Step 06", "Graph RAG (74%)"),
+            ("✅", "Step 07", "RAG Fusion + BM25 (78%)"),
+            ("✅", "Step 08", "Agentic RAG / Gateway (81%)"),
+            ("✅", "Step 09", "Multi-Agent System (85%)"),
+            ("✅", "Step 10", "Context Engineering (89%)"),
+            ("✅", "Step 11", "Vertical Slice Architecture (100%)"),
             ("✅", "Step 12", "Production Hardening (cache + retry + confidence)"),
         ]
         for icon, step_id, desc in steps:
@@ -591,7 +591,7 @@ def _sidebar() -> None:
 
 def tab_experiment_lab() -> None:
     st.info(
-        "**Step 01 (27%) and Step 04 (59%) are fixed baselines** — their numbers never change. "
+        "**Step 01 (22%) and Step 04 (48%) are fixed baselines** — their numbers never change. "
         "Each time you click **Run**, you create a **new experiment** added to the history below. "
         "The comparison shows how your experiments stack up against the baselines.",
         icon="ℹ️",
@@ -789,7 +789,7 @@ def tab_experiment_lab() -> None:
         st.plotly_chart(_comparison_bar(all_runs), use_container_width=True)
 
         # Grade heatmap
-        st.markdown("#### Grade Heatmap (Q01–Q22)")
+        st.markdown("#### Grade Heatmap (Q01–Q27)")
         st.plotly_chart(_grade_heatmap(all_runs), use_container_width=True)
 
         # Per-experiment detail
@@ -849,17 +849,17 @@ def tab_analysis() -> None:
     # Build run registry (baselines always present)
     base_runs: list[tuple[str, dict]] = []
     if s1:
-        base_runs.append(("Step01 (27%)", s1))
+        base_runs.append(("Step01 (22%)", s1))
     if s4:
-        base_runs.append(("Step04 (59%)", s4))
+        base_runs.append(("Step04 (48%)", s4))
     if s5:
-        base_runs.append(("Step05 (82%)", s5))
+        base_runs.append(("Step05 (67%)", s5))
     if s6:
-        base_runs.append(("Step06 (91%)", s6))
+        base_runs.append(("Step06 (74%)", s6))
     if s7:
-        base_runs.append(("Step07 (95%)", s7))
+        base_runs.append(("Step07 (78%)", s7))
     if s8:
-        base_runs.append(("Step08 (95%)", s8))
+        base_runs.append(("Step08 (81%)", s8))
     if s9 and s9.get("grade_counts", {}).get("PASS", 0) > 0:
         pct9 = round(s9["pass_rate"] * 100)
         base_runs.append((f"Step09 ({pct9}%)", s9))
