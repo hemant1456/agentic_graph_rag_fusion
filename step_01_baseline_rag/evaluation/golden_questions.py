@@ -473,4 +473,129 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         expected_outcome="PARTIAL",
         fixed_by_step="step_05 (graph: product→dependency→customer edges)",
     ),
+
+    # ── Q23–Q27: target steps 09–11 (step 12 adds operational hardening, not accuracy) ──
+
+    GoldenQuestion(
+        id="Q23",
+        type="csm_multi_source_join",
+        question=(
+            "The CSM listed for Apex Financial in Vertexia's customer records is no longer "
+            "with the company. According to all available records, who currently manages this "
+            "account, when did they take over, and what is the account's current renewal risk?"
+        ),
+        required_facts=["Sam Rivera", "2023-07-01", "high"],
+        partial_facts=["Apex Financial", "CSM", "Preet Kaur", "transition"],
+        disqualifiers=[],
+        explanation=(
+            "3-source join: customer_list.csv (Preet Kaur as CSM) + "
+            "csm_account_history.csv (Sam Rivera took over 2023-07-01) + "
+            "customer_health_scores.csv (renewal_risk=high for Apex Financial). "
+            "Step 08 retrieves customer_list.csv (shows Preet Kaur) but its single-turn "
+            "CSV query lacks the sub-question strategy to also pull csm_account_history "
+            "and health_scores in the same pass. "
+            "Step 09 QueryAnalyst generates: 'current CSM for Apex Financial?', "
+            "'account transition date?', 'renewal risk?' — three targeted sub-queries "
+            "that surface all three files. required_facts=[Sam Rivera, 2023-07-01, high]."
+        ),
+        expected_outcome="PASS",
+        fixed_by_step="step_09 (multi-agent: QueryAnalyst sub-questions across 3 CSVs)",
+    ),
+
+    GoldenQuestion(
+        id="Q24",
+        type="technical_precision",
+        question=(
+            "Per the NexusFlow V2.1 post-mortem, what was the exact configuration key "
+            "that was misconfigured, the incorrect value that was deployed, and the "
+            "intended correct value?"
+        ),
+        required_facts=["max_connections", "10", "1000"],
+        partial_facts=["rate limiter", "configuration", "ingestion", "outage"],
+        disqualifiers=[],
+        explanation=(
+            "nexusflow_v21_postmortem.txt ROOT CAUSE section: "
+            "rate_limiter.yaml had max_connections: 10 instead of max_connections: 1000. "
+            "Steps 09 retrieves many near-duplicate postmortem chunks (root cause, timeline, "
+            "lessons learned); the LLM paraphrases as 'rate limiter set too low' without "
+            "citing the exact key 'max_connections' or the exact values 10 / 1000. "
+            "Step 10 CrossEncoder re-ranks and selects precisely the ROOT CAUSE passage "
+            "that contains the config key and both values; extractive compression keeps "
+            "that sentence intact → LLM has no choice but to cite the exact values."
+        ),
+        expected_outcome="PASS",
+        fixed_by_step="step_10 (context engineering: CrossEncoder elevates exact ROOT CAUSE section)",
+    ),
+
+    GoldenQuestion(
+        id="Q25",
+        type="finance_exact_computation",
+        question=(
+            "What is the average annual contract value across all Vertexia mid-market "
+            "customers? State the exact dollar figure."
+        ),
+        required_facts=["303,273"],
+        partial_facts=["mid-market", "average", "303"],
+        disqualifiers=["276,000", "330,000"],
+        explanation=(
+            "customer_list.csv: 11 mid-market customers, total ARR = $3,336,000, "
+            "average = $3,336,000 / 11 = $303,272.73 → $303,273. "
+            "Steps 09/10 with a generic synthesis prompt produce 'approximately $303K' "
+            "or round to '$303,000' — both miss the required '303,273' string. "
+            "Finance slice (step 11) uses force_csv=True + a system prompt that mandates "
+            "comma-formatted exact numbers → LLM outputs '$303,273' → PASS. "
+            "Disqualifiers catch wrong segment averages: $276K (enterprise) or $330K (SMB)."
+        ),
+        expected_outcome="PASS",
+        fixed_by_step="step_11 (Finance slice: force_csv + exact-number system prompt)",
+    ),
+
+    GoldenQuestion(
+        id="Q26",
+        type="hr_graph_skip_level",
+        question=(
+            "For each employee who departed Vertexia in 2023, who was their "
+            "skip-level manager (their manager's manager)?"
+        ),
+        required_facts=["Marcus Webb", "Lisa Torres"],
+        partial_facts=["Adrian Blake", "Preet Kaur", "departed", "skip"],
+        disqualifiers=[],
+        explanation=(
+            "2023 departures: Adrian Blake (E029) and Preet Kaur (E030). "
+            "Skip-level chain: Adrian Blake → Priya Nair (E010) → Marcus Webb (E009). "
+            "Skip-level chain: Preet Kaur → Maya Sharma (E019) → Lisa Torres (E006). "
+            "QueryAnalyst's graph heuristic triggers on keywords like 'reports to', "
+            "'manager', 'org chart' — but 'skip-level' is not in that vocabulary, "
+            "so steps 09/10 never invoke GraphNavigator → miss Marcus Webb and Lisa Torres. "
+            "HR slice (step 11) sets force_graph=True, bypassing QueryAnalyst — "
+            "GraphNavigator always runs and resolves the 2-hop chain for each departure."
+        ),
+        expected_outcome="PASS",
+        fixed_by_step="step_11 (HR slice: force_graph overrides QueryAnalyst heuristic)",
+    ),
+
+    GoldenQuestion(
+        id="Q27",
+        type="engineering_rfc_precision",
+        question=(
+            "According to RFC-001, what is the author's exact job title and the name "
+            "of their direct manager?"
+        ),
+        required_facts=["Lead, Data Platform Team", "Marcus Webb"],
+        partial_facts=["Priya Nair", "RFC", "event schema", "Platform Engineering"],
+        disqualifiers=[],
+        explanation=(
+            "rfc_001_event_schema.md: author = Priya Nair. "
+            "employee_directory.csv E010: role = 'Lead, Data Platform Team', manager_id = E009. "
+            "employee_directory.csv E009: Marcus Webb. "
+            "QueryAnalyst may not trigger graph for an RFC authorship question "
+            "(no 'reports to' / 'manager' / 'org chart' keywords in the question) → "
+            "steps 09/10 retrieve the RFC document (Priya Nair ✓) but skip GraphNavigator "
+            "→ miss the exact role title and Marcus Webb. "
+            "Engineering slice (step 11) sets force_graph=True → GraphNavigator resolves "
+            "Priya Nair's node → returns exact title 'Lead, Data Platform Team' + manager Marcus Webb."
+        ),
+        expected_outcome="PASS",
+        fixed_by_step="step_11 (Engineering slice: force_graph + precision system prompt)",
+    ),
 ]
