@@ -1,17 +1,3 @@
-"""
-Near-duplicate deduplicator — removes redundant chunks before synthesis.
-
-Algorithm: character 6-gram Jaccard similarity.  Two chunks are considered
-duplicates when their 6-gram sets overlap by more than `threshold`.  We keep
-the higher-ranked chunk and drop the lower-ranked near-duplicate.
-
-Why 6-grams:
-- Robust to minor rephrasing ("the CEO is" vs "the Chief Executive Officer is")
-  while still catching verbatim or lightly edited duplicates from overlapping
-  document windows.
-- Faster than token-level methods and requires no tokenizer dependency.
-"""
-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

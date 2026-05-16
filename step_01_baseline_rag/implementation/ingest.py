@@ -1,15 +1,3 @@
-"""
-Document ingestion pipeline for Step 01 — Baseline Vector RAG.
-
-Intentionally naive:
-  - Fixed-size paragraph-aware chunking (~512 tokens / ~2000 chars)
-  - Minimal metadata (source file, department, format, chunk index)
-  - CSV rows become individual "chunks" (each row = one retrievable unit)
-  - JSON files ingested as pretty-printed text
-
-This is the floor. Every later step will improve on something here.
-"""
-
 import csv
 import hashlib
 import json
@@ -26,7 +14,7 @@ load_dotenv()
 
 CHUNK_SIZE_CHARS = 2000   # ~512 tokens
 CHUNK_OVERLAP_CHARS = 200
-EMBED_BATCH_SIZE = 50     # Google embedding API batch size
+EMBED_BATCH_SIZE = 50
 GEMINI_EMBED_MODEL = "gemini-embedding-2"
 CHROMA_COLLECTION = "vertexia_baseline"
 
@@ -53,8 +41,6 @@ class Chunk:
             "chunk_index": self.chunk_index,
         }
 
-
-# ── Text chunking ─────────────────────────────────────────────────────────────
 
 def _chunk_text(text: str, source: str, department: str, fmt: str) -> list[Chunk]:
     """Paragraph-aware chunker. Splits on blank lines, accumulates to CHUNK_SIZE_CHARS."""
@@ -92,16 +78,13 @@ def _chunk_csv(path: Path, source: str, department: str) -> list[Chunk]:
     chunks: list[Chunk] = []
     with open(path, newline="") as f:
         reader = csv.DictReader(f)
-        headers = reader.fieldnames or []
         for idx, row in enumerate(reader):
-            # Render row as readable key=value pairs
             row_text = f"[{source}]\n" + " | ".join(f"{k}: {v}" for k, v in row.items())
             chunks.append(Chunk(row_text, source, department, "csv", idx))
     return chunks
 
 
 def _chunk_json(path: Path, source: str, department: str) -> list[Chunk]:
-    """JSON files are small enough to chunk as pretty-printed text."""
     with open(path) as f:
         data = json.load(f)
     text = json.dumps(data, indent=2)
@@ -125,12 +108,9 @@ def load_and_chunk(corpus_path: Path) -> list[Chunk]:
         elif suffix in (".txt", ".md", ".py"):
             text = file_path.read_text(errors="replace")
             all_chunks.extend(_chunk_text(text, source, department, suffix.lstrip(".")))
-        # skip unknown formats
 
     return all_chunks
 
-
-# ── Embedding ─────────────────────────────────────────────────────────────────
 
 def embed_chunks(chunks: list[Chunk]) -> list[list[float]]:
     """
@@ -169,8 +149,6 @@ def embed_query(query: str) -> list[float]:
     return response.embeddings[0].values
 
 
-# ── ChromaDB storage ──────────────────────────────────────────────────────────
-
 def get_chroma_collection(persist_dir: Path, reset: bool = False) -> chromadb.Collection:
     db = chromadb.PersistentClient(path=str(persist_dir))
     if reset:
@@ -201,8 +179,6 @@ def store_chunks(
             metadatas=[c.to_metadata() for c in batch_chunks],
         )
 
-
-# ── Entry point ───────────────────────────────────────────────────────────────
 
 def build_index(corpus_path: Path, persist_dir: Path, reset: bool = False) -> chromadb.Collection:
     """Full ingestion pipeline: load → chunk → embed → store."""

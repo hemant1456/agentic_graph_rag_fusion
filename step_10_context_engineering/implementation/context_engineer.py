@@ -1,24 +1,3 @@
-"""
-ContextEngineer — the Step 10 context engineering pipeline.
-
-Sits between retrieval and synthesis.  Takes the raw outputs from the Step 09
-multi-agent retrieval layer and applies four transformations in sequence:
-
-  1. Rerank    — CrossEncoder scores all candidate chunks; keep top-k
-  2. Deduplicate — remove near-duplicate passages (6-gram Jaccard > 0.72)
-  3. Compress  — extractive sentence filtering per passage (60% retention)
-  4. Format    — structured XML with source attribution + token budget cap
-
-The result is a smaller, higher-signal context that the synthesis LLM can
-attend to more precisely — demonstrating "same quality, less noise, lower cost".
-
-Usage:
-    from step_10_context_engineering.implementation.context_engineer import engineer_context
-
-    ctx, metrics = engineer_context(question, raw_chunks, csv_data, graph_ctx)
-    # metrics: raw_chars, engineered_chars, compression_ratio, chunks_before/after
-"""
-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -56,14 +35,11 @@ def engineer_context(
     """
     chunks_before = len(raw_chunks)
 
-    # ── 1. Rerank ──────────────────────────────────────────────────────────────
     scored = reranker.rerank(question, raw_chunks, k=rerank_k)
 
-    # ── 2. Deduplicate ─────────────────────────────────────────────────────────
     deduped = deduplicator.deduplicate(scored)
     chunks_after_dedup = len(deduped)
 
-    # ── 3. Compress each passage (vector chunks only; CSV/Graph skipped) ───────
     compressed: list[tuple[float, "RetrievedChunk"]] = []
     for score, chunk in deduped:
         # Shallow-copy the chunk so we don't mutate the shared retriever cache
@@ -72,7 +48,6 @@ def engineer_context(
         c.text = compressor.compress(question, chunk.text, ratio=compress_ratio)
         compressed.append((score, c))
 
-    # ── 4. Format + budget ─────────────────────────────────────────────────────
     raw_passage_chars = sum(len(c.text) for c in raw_chunks)
     raw_extra_chars   = len(csv_data) + len(graph_context)
     raw_total_chars   = raw_passage_chars + raw_extra_chars

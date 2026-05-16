@@ -1,13 +1,3 @@
-"""
-Markdown parser for Step 04 — section-aware chunking.
-
-Splits on H1/H2/H3 heading lines. Each heading + its following content
-until the next same-or-higher-level heading = one "section" chunk.
-
-If a section exceeds 3000 chars, it is sub-chunked paragraph-by-paragraph
-(like the baseline 2000-char chunker) to avoid oversized chunks.
-"""
-
 import re
 from pathlib import Path
 
@@ -26,10 +16,7 @@ def _paragraph_chunks(
     start_index: int,
     section_title: str,
 ) -> list[SmartChunk]:
-    """
-    Split a long section into paragraph-aware sub-chunks.
-    Used when a section exceeds MAX_SECTION_CHARS.
-    """
+    """Split a long section into paragraph-aware sub-chunks. Used when a section exceeds MAX_SECTION_CHARS."""
     paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
     chunks: list[SmartChunk] = []
     current = ""
@@ -93,7 +80,6 @@ def parse_markdown(path: Path, source: str, department: str) -> list[SmartChunk]
     text = path.read_text(errors="replace")
     lines = text.splitlines()
 
-    # Collect (heading_title, content_lines) pairs
     sections: list[tuple[str, list[str]]] = []
     current_heading = "__preamble__"
     current_lines: list[str] = []
@@ -101,14 +87,12 @@ def parse_markdown(path: Path, source: str, department: str) -> list[SmartChunk]
     for line in lines:
         m = HEADING_RE.match(line)
         if m:
-            # Flush previous section
             sections.append((current_heading, current_lines))
             current_heading = m.group(2).strip()
             current_lines = [line]  # include the heading line itself
         else:
             current_lines.append(line)
 
-    # Flush last section
     sections.append((current_heading, current_lines))
 
     chunks: list[SmartChunk] = []
@@ -131,7 +115,6 @@ def parse_markdown(path: Path, source: str, department: str) -> list[SmartChunk]
             ))
             chunk_index += 1
         else:
-            # Sub-chunk large sections
             sub = _paragraph_chunks(
                 text=section_text,
                 source=source,

@@ -1,25 +1,3 @@
-"""
-Extractive sentence compressor — keeps only query-relevant sentences per chunk.
-
-This is a zero-LLM-call approach: split text into sentences, score each by
-overlap with query terms, retain the top `ratio` fraction while preserving
-sentence order.
-
-Why extractive over abstractive (LLMLingua-style):
-- No extra LLM call → no added latency or cost.
-- Zero hallucination risk — only original sentences are kept.
-- Predictable: the same input always produces the same output.
-
-Tradeoffs vs abstractive:
-- Cannot merge or paraphrase across sentences.
-- A key fact buried in a low-scoring sentence can be dropped.
-
-Mitigations applied here:
-- Minimum floor of 2 sentences per chunk regardless of ratio.
-- CSV / structured sections are NEVER compressed (exact numbers must survive).
-- Short chunks (≤ 3 sentences) are passed through unchanged.
-"""
-
 from __future__ import annotations
 
 import re

@@ -1,14 +1,3 @@
-"""
-Format dispatcher for Step 04 — load_and_chunk() entry point.
-
-Dispatches each file to the appropriate parser based on file extension:
-  .csv  → csv_parser  (row chunks + aggregate summary chunk)
-  .md   → markdown_parser (section-aware H1/H2/H3 splits)
-  .txt  → text_parser (structure-aware, falls back to paragraph chunking)
-  .json → pretty-print text, then markdown_parser
-  .py   → text_parser (treat as plain text)
-"""
-
 import json
 from pathlib import Path
 
@@ -52,9 +41,6 @@ def load_and_chunk(corpus_path: Path) -> list[SmartChunk]:
             except (json.JSONDecodeError, OSError):
                 json_text = file_path.read_text(errors="replace")
 
-            # Write to a temp-like in-memory parse by creating a temporary path wrapper
-            # We reuse text_parser since JSON pretty-prints are prose-like
-            # But we need a Path object — use a helper that treats the string as text
             _chunks = _chunk_text_string(
                 text=json_text,
                 source=source,
@@ -66,8 +52,6 @@ def load_and_chunk(corpus_path: Path) -> list[SmartChunk]:
         elif suffix == ".py":
             all_chunks.extend(parse_text(file_path, source, department))
 
-        # Skip unknown formats silently
-
     return all_chunks
 
 
@@ -77,10 +61,7 @@ def _chunk_text_string(
     department: str,
     fmt: str,
 ) -> list[SmartChunk]:
-    """
-    Paragraph-aware chunking for in-memory text strings (used for JSON).
-    Mirrors the baseline's _chunk_text logic but returns SmartChunks.
-    """
+    """Paragraph-aware chunking for in-memory text strings (used for JSON)."""
     CHUNK_SIZE = 2000
     OVERLAP = 200
 

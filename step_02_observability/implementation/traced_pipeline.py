@@ -1,32 +1,3 @@
-"""
-Step 02 — Observability: TracedRAG.
-
-Wraps Step 01's BaselineRAG with transparent trace emission.
-The retrieval and generation logic are identical — we just record everything.
-
-Outputs per query:
-  1. JSONL trace → TraceStore (always)
-  2. OpenTelemetry spans → Arize Phoenix (when otel_tracer is provided)
-
-Usage — JSONL only:
-    rag = BaselineRAG(k=5).build()
-    store = TraceStore(Path("step_02_observability/results/traces.jsonl"))
-    traced = TracedRAG(rag, store)
-    result, trace = traced.query("What is the data retention policy?")
-
-Usage — JSONL + Phoenix:
-    from step_02_observability.implementation.phoenix_exporter import PhoenixExporter
-    exporter = PhoenixExporter()
-    otel_tracer = exporter.start()        # launches Phoenix at localhost:6006
-    traced = TracedRAG(rag, store, otel_tracer=otel_tracer)
-    result, trace = traced.query("...")   # spans visible in Phoenix UI immediately
-
-Phoenix span hierarchy:
-    rag_query  (CHAIN)
-    ├── retrieval  (RETRIEVER)   — wraps the actual ChromaDB + embed call
-    └── llm_generation  (LLM)   — wraps the actual Gemini/Anthropic call
-"""
-
 import json
 import sys
 import time
@@ -78,7 +49,6 @@ class TracedRAG:
         trace_id = new_trace_id()
         t = self._otel
 
-        # Root span wraps the entire query (CHAIN in OpenInference conventions)
         chain_ctx = t.start_as_current_span("rag_query") if t else nullcontext()
         with chain_ctx as chain_span:
             if chain_span:
@@ -88,7 +58,6 @@ class TracedRAG:
 
             t_start = time.perf_counter()
 
-            # ── Retrieval ─────────────────────────────────────────────────────
             r_ctx = t.start_as_current_span("retrieval") if t else nullcontext()
             with r_ctx as r_span:
                 t0 = time.perf_counter()
@@ -129,7 +98,6 @@ class TracedRAG:
                 ],
             )
 
-            # ── Generation ────────────────────────────────────────────────────
             g_ctx = t.start_as_current_span("llm_generation") if t else nullcontext()
             with g_ctx as g_span:
                 t1 = time.perf_counter()
@@ -172,7 +140,6 @@ class TracedRAG:
                 chain_span.set_attribute("output.value", gen_out.answer)
                 chain_span.set_attribute("total_latency_ms", total_ms)
 
-            # ── Build + persist JSONL trace ────────────────────────────────────
             query_trace = QueryTrace(
                 trace_id=trace_id,
                 timestamp=time.strftime("%Y-%m-%dT%H:%M:%S"),

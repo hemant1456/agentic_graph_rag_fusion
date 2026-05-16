@@ -1,12 +1,10 @@
-"""
-Retry and timeout utilities for Step 12 production hardening.
-"""
 from __future__ import annotations
 import functools
 import time
 from typing import Callable, TypeVar
 
 T = TypeVar("T")
+
 
 def with_retry(
     max_attempts: int = 3,

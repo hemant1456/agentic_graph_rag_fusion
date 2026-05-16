@@ -1,16 +1,11 @@
-"""
-Health monitor for Step 12 production hardening.
-
-Keeps a rolling window of the last N query results and exposes p50/p95 latency,
-error rate, cache hit rate, and SLO compliance (target: 95% of queries < 10 s).
-"""
 from __future__ import annotations
 import threading
 import time
 from collections import deque
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 _SLO_LATENCY_MS = 10_000   # 10-second budget
+
 
 @dataclass
 class QueryRecord:
@@ -20,6 +15,7 @@ class QueryRecord:
     from_cache: bool
     slice_name: str
     confidence_label: str
+
 
 class HealthMonitor:
     def __init__(self, window: int = 100):

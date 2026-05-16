@@ -1,16 +1,3 @@
-"""
-Engineering & Product Slice — handles service architecture, SLOs, dependencies,
-blast-radius, and product feature questions.
-
-Overrides:
-  force_graph=True — service dependency chains require graph traversal
-  system_prompt    — enforces exact service names, dependency listing, SLO precision,
-                     product alias resolution, and disambiguation rules
-  keywords         — technical vocabulary for router scoring
-
-Owns: Q05, Q06, Q18, Q21, Q22
-"""
-
 from step_11_vsa.implementation.slices.base import SliceConfig
 
 _SYSTEM = """\

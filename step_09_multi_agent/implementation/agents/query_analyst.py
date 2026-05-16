@@ -1,14 +1,3 @@
-"""
-QueryAnalystAgent — classifies query type and decomposes compound questions.
-
-Uses a lightweight LLM call (via Gateway V2) to return a JSON classification.
-Falls back to heuristic rules if the LLM call fails or returns unparseable JSON.
-
-Contract:
-  Input : question (str)
-  Output: QueryAnalysis
-"""
-
 from __future__ import annotations
 
 import json
@@ -101,7 +90,6 @@ def analyze(question: str) -> QueryAnalysis:
             temperature=0.0,
         )
         raw = result.get("text", "")
-        # Strip markdown fences if present
         raw = re.sub(r"```(?:json)?\s*|\s*```", "", raw).strip()
         obj = json.loads(raw)
         return QueryAnalysis(

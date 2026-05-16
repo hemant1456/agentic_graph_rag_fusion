@@ -1,10 +1,3 @@
-"""
-Evaluation runner for Step 08 — Agentic RAG.
-
-Usage:
-    uv run python step_08_agentic_rag/evaluation/run_eval.py
-"""
-
 import json
 import sys
 import time

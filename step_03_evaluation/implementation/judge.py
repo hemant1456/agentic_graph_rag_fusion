@@ -1,14 +1,3 @@
-"""
-Step 03 — Evaluation Framework: LLM-as-judge.
-
-Makes a single structured LLM call and returns a parsed JSON dict.
-Used by every metric function in metrics.py.
-
-The judge uses the same LLM providers as the RAG pipeline (Gemini primary,
-Anthropic fallback) but with a lower token budget — evaluation prompts ask
-for a score + one-sentence reasoning, not a full answer.
-"""
-
 import json
 import os
 import sys

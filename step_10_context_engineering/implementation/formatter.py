@@ -1,17 +1,3 @@
-"""
-Structured context formatter — wraps retrieved content in labelled XML sections.
-
-Structured context vs raw concatenation:
-- LLMs attend more precisely when sources are clearly demarcated.
-- XML tags give the LLM named anchors ("in <csv_data>…</csv_data>") it can
-  reference when quoting facts, reducing cross-source confusion.
-- The `src` attribute on each passage lets the model attribute claims without
-  hallucinating file names.
-
-Budget enforcement: if total char length exceeds `max_chars`, sections are
-truncated in priority order — CSV first (exact), Graph second, passages last.
-"""
-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -39,7 +25,6 @@ def format_context(
       compression_ratio  — engineered / raw  (< 1.0 means we trimmed)
       chunks_used        — number of passages included
     """
-    # ── Assemble sections ────────────────────────────────────────────────────
     sections: dict[str, str] = {}
 
     if csv_data and csv_data.strip():
@@ -59,10 +44,8 @@ def format_context(
             )
         sections["passages"] = "\n".join(passage_parts)
 
-    # ── Raw size (before budget) ──────────────────────────────────────────────
     raw_chars = sum(len(v) for v in sections.values())
 
-    # ── Budget enforcement ────────────────────────────────────────────────────
     remaining = max_chars
     trimmed: dict[str, str] = {}
     for key in _PRIORITY:
@@ -75,9 +58,7 @@ def format_context(
         elif remaining > 200:
             trimmed[key] = text[:remaining] + "\n  … [truncated — token budget reached]"
             remaining = 0
-        # else: skip the section entirely
 
-    # ── Build XML ─────────────────────────────────────────────────────────────
     xml_parts = [f'<context query="{question[:120]}">']
     for key, content in trimmed.items():
         xml_parts.append(f"  <{key}>\n{content}\n  </{key}>")

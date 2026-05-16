@@ -1,15 +1,3 @@
-"""
-HR / People Slice — handles employee, org chart, departure, and on-call questions.
-
-Overrides:
-  force_graph=True — always activates graph traversal (org relationships critical)
-  system_prompt    — enforces exact field values: voluntary, departed, active;
-                     on-call precision (one engineer per date, not a roster)
-  keywords         — people and HR vocabulary for router scoring
-
-Owns: Q09, Q13, Q14, Q17
-"""
-
 from step_11_vsa.implementation.slices.base import SliceConfig
 
 _SYSTEM = """\

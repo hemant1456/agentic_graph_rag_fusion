@@ -1,21 +1,13 @@
-"""
-Semantic cache for Step 12 production hardening.
-
-Near-duplicate queries get an instant cached answer instead of going through
-the full retrieval + synthesis pipeline.  Uses cosine similarity on
-SentenceTransformer embeddings rather than exact string matching.
-
-Performance: cache hit latency <10 ms vs 3-15 s for a full pipeline call.
-"""
 from __future__ import annotations
 import threading
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
 import numpy as np
 
 _EMBED_MODEL_NAME = "all-MiniLM-L6-v2"
 _embed_model = None  # lazy-loaded singleton
+
 
 def _get_model():
     global _embed_model
@@ -23,6 +15,7 @@ def _get_model():
         from sentence_transformers import SentenceTransformer
         _embed_model = SentenceTransformer(_EMBED_MODEL_NAME)
     return _embed_model
+
 
 @dataclass
 class CacheEntry:
@@ -33,6 +26,7 @@ class CacheEntry:
     ce_metrics: dict
     timestamp: float
     hits: int = 0
+
 
 class SemanticCache:
     def __init__(self, threshold: float = 0.92, max_size: int = 200):

@@ -1,18 +1,3 @@
-"""
-Evaluation runner for Step 11 — Vertical Slice Architecture.
-
-In addition to standard grade tallying, this runner records:
-  - slice_used         — which domain slice handled each question
-  - router_confidence  — the routing confidence score
-  - ce_* metrics       — context engineering stats (from Step 10 layer)
-
-A per-slice breakdown is printed and stored in the summary so the dashboard
-can show which domain is strong / weak independently.
-
-Usage:
-    uv run python step_11_vsa/evaluation/run_eval.py
-"""
-
 from __future__ import annotations
 
 import json
@@ -35,7 +20,6 @@ def run_evaluation() -> dict:
 
     rag = Step11RAG(k=5).build()
 
-    # Print the registered slices + their owned questions
     print("Registered slices:")
     for cfg in all_slice_configs():
         owns = ", ".join(cfg.owns_questions) if cfg.owns_questions else "(auto-routed)"
@@ -94,7 +78,6 @@ def run_evaluation() -> dict:
     pass_rate    = grade_counts["PASS"] / n
     pass_partial = (grade_counts["PASS"] + grade_counts["PARTIAL"]) / n
 
-    # Per-slice summary
     slice_summary = {}
     for sl, gc in slice_grades.items():
         total_sl = sum(gc.values())

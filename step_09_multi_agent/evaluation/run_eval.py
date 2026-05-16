@@ -1,13 +1,3 @@
-"""
-Evaluation runner for Step 09 — Multi-Agent RAG.
-
-Each question exercises the full orchestrator: QueryAnalyst → Retrieval/Graph/CSV
-specialists → Synthesis → Critic.  Expect 3–5 LLM calls per question.
-
-Usage:
-    uv run python step_09_multi_agent/evaluation/run_eval.py
-"""
-
 from __future__ import annotations
 
 import json

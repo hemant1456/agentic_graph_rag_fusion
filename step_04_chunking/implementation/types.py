@@ -1,12 +1,3 @@
-"""
-SmartChunk dataclass for Step 04 — format-aware chunking.
-
-Extends the baseline Chunk with:
-- chunk_type: "row" | "aggregate" | "section" | "prose"
-- extra: arbitrary metadata dict (section titles, etc.)
-- Deterministic chunk_id based on source + chunk_type + chunk_index
-"""
-
 import hashlib
 from dataclasses import dataclass, field
 from typing import Any
@@ -42,7 +33,6 @@ class SmartChunk:
             "chunk_type": self.chunk_type,
             "chunk_index": self.chunk_index,
         }
-        # Flatten scalar fields from extra
         for k, v in self.extra.items():
             if isinstance(v, (str, int, float, bool)):
                 meta[k] = v

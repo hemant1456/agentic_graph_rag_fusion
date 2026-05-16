@@ -1,14 +1,3 @@
-"""
-RetrievalSpecialistAgent — BM25 + dense vector retrieval via Step 07 pipeline.
-
-No LLM call needed. Wraps Step07RAG's retrieve() and applies the same
-query augmentations proven in Step 08 (departure/offboarding boost, Phoenix boost).
-
-Contract:
-  Input : question (str), retriever (Step07RAG), k (int)
-  Output: RetrievalResult
-"""
-
 from __future__ import annotations
 
 import sys

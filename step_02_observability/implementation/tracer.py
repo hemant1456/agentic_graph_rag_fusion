@@ -1,18 +1,5 @@
-"""
-Step 02 — Observability: trace data model and JSONL store.
-
-Every RAG query produces a QueryTrace capturing:
-  - What was asked and answered
-  - What was retrieved: rank, source, similarity score, text preview
-  - What was sent to the LLM: context size, token count
-  - Cost estimate and latency per phase
-
-Storage: append-only JSONL file — one JSON object per line, easy to grep and parse.
-"""
-
 import json
 import uuid
-import time
 from dataclasses import dataclass, asdict
 from pathlib import Path
 
@@ -81,7 +68,6 @@ def new_trace_id() -> str:
     return str(uuid.uuid4())[:8]
 
 
-# ── Cost tables ───────────────────────────────────────────────────────────────
 # (input $/1M tokens, output $/1M tokens)
 COST_PER_MILLION: dict[str, tuple[float, float]] = {
     "gemini":    (0.075, 0.300),   # gemini flash variants
@@ -96,8 +82,6 @@ def estimate_cost(provider: str, prompt_tokens: int, completion_tokens: int) -> 
         + (completion_tokens / 1_000_000) * output_price
     )
 
-
-# ── Trace store ───────────────────────────────────────────────────────────────
 
 class TraceStore:
     """Append-only JSONL trace store. One JSON object per line."""

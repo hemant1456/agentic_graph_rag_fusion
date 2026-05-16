@@ -1,19 +1,3 @@
-"""
-Orchestrator — coordinates specialized subagents to answer a question.
-
-Flow:
-  1. QueryAnalystAgent  → classify query type, decompose compound questions
-  2. RetrievalSpecialist → BM25+dense retrieval (always runs)
-     ├─ Sub-question retrieval (for multi-hop / compound queries)
-  3. GraphNavigatorAgent → graph traversal (only when needs_graph=True)
-  4. StructuredDataAgent → CSV aggregation (only when needs_csv=True)
-  5. SynthesisAgent      → assemble final answer from all contexts
-  6. CriticAgent         → faithfulness check; revise once if low confidence
-
-Each agent is independently invokable and has a typed I/O contract (see contracts.py).
-The orchestrator records an AgentTrace per invocation for full observability.
-"""
-
 from __future__ import annotations
 
 import time
@@ -50,7 +34,6 @@ def run(
     """
     traces: list[AgentTrace] = []
 
-    # ── 1. Query Analyst ──────────────────────────────────────────────────────
     t0 = time.perf_counter()
     analysis: QueryAnalysis = query_analyst.analyze(question)
     traces.append(AgentTrace(
@@ -66,7 +49,6 @@ def run(
 
     contexts: dict[str, str] = {}
 
-    # ── 2. Retrieval Specialist (always runs) ─────────────────────────────────
     t0 = time.perf_counter()
     ret = retrieval_specialist.retrieve(question, retriever, k=10)
     contexts["Vector"] = ret.context
@@ -90,7 +72,6 @@ def run(
             latency_ms=(time.perf_counter() - t0) * 1000,
         ))
 
-    # ── 3. Graph Navigator (conditional) ─────────────────────────────────────
     if analysis.needs_graph:
         t0 = time.perf_counter()
         graph_res = graph_navigator.navigate(question, analysis.primary_entities, graph)
@@ -104,7 +85,6 @@ def run(
             status="ok" if graph_res.success else "skipped",
         ))
 
-    # ── 4. Structured Data Agent (conditional) ────────────────────────────────
     if analysis.needs_csv:
         t0 = time.perf_counter()
         csv_res = structured_data.query(question)
@@ -118,7 +98,6 @@ def run(
             status="ok" if csv_res.success else "error",
         ))
 
-    # ── 5. Synthesis ──────────────────────────────────────────────────────────
     t0 = time.perf_counter()
     synth = synthesis.synthesize(question, contexts, analysis.query_type)
     traces.append(AgentTrace(
@@ -129,7 +108,6 @@ def run(
         status="ok" if synth.provider != "error" else "error",
     ))
 
-    # ── 6. Critic ─────────────────────────────────────────────────────────────
     t0 = time.perf_counter()
     critic_res = critic.review(question, synth.answer, contexts)
     traces.append(AgentTrace(

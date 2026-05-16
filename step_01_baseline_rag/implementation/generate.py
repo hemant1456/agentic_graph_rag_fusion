@@ -1,9 +1,3 @@
-"""
-Answer generation for Step 01 — Baseline Vector RAG.
-
-Gemini-first, Anthropic fallback. Same pattern as Step 00.
-"""
-
 import os
 
 import anthropic

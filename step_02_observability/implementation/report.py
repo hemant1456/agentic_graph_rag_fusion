@@ -1,23 +1,3 @@
-"""
-Step 02 — Observability: trace inspector CLI.
-
-Answers the core observability question for any past query:
-  "What chunks drove that answer, how many tokens did it cost, and how long did it take?"
-
-Usage:
-    # Full detail for one trace (query, sources, answer, cost):
-    uv run python step_02_observability/implementation/report.py --trace-id <id>
-
-    # Show exactly which chunks were retrieved and their similarities:
-    uv run python step_02_observability/implementation/report.py --sources <id>
-
-    # Summary table across all stored traces:
-    uv run python step_02_observability/implementation/report.py --summary
-
-    # Read from a different trace file:
-    uv run python step_02_observability/implementation/report.py --summary --file path/to/traces.jsonl
-"""
-
 import argparse
 import json
 import sys
@@ -76,7 +56,6 @@ def print_sources(t: dict) -> None:
 
 
 def print_summary(traces: list[dict]) -> None:
-    """Summary table: one row per trace, sorted by ID."""
     if not traces:
         print("No traces found.")
         return

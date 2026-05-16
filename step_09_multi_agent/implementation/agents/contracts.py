@@ -1,17 +1,7 @@
-"""
-Typed contracts for all Step 09 agents.
-
-Every agent accepts and returns these dataclasses — no implicit coupling,
-no string-to-string handoffs. If an agent changes its output shape, callers
-get a type error at the boundary rather than a silent downstream failure.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-
-# ── Query classification ───────────────────────────────────────────────────────
 
 @dataclass
 class QueryAnalysis:
@@ -23,8 +13,6 @@ class QueryAnalysis:
     sub_questions: list[str] # decomposed sub-questions for compound/multi-hop queries
     primary_entities: list[str]  # named entities mentioned in the question
 
-
-# ── Per-agent results ──────────────────────────────────────────────────────────
 
 @dataclass
 class RetrievalResult:
@@ -65,8 +53,6 @@ class CriticResult:
     confidence: str           # high | medium | low
     notes: str                # brief critic note (empty string if approved cleanly)
 
-
-# ── Observability ─────────────────────────────────────────────────────────────
 
 @dataclass
 class AgentTrace:

@@ -1,18 +1,3 @@
-"""
-Step 04 RAG pipeline — format-aware chunking with aggregate summaries.
-
-Same interface as BaselineRAG (.build() / .query()) but backed by
-the step04 ChromaDB collection built from SmartChunks.
-
-Key improvement over baseline:
-  - CSV files get an "aggregate" chunk with pre-computed sums, breakdowns,
-    and date-period aggregations → aggregation queries answered from 1 chunk
-  - Markdown files use section-aware chunking (better precision)
-  - Text files use structure-aware chunking with section detection
-  - k=10 by default (up from 5) to improve recall; aggregate chunks are
-    compact enough that larger k doesn't balloon context size
-"""
-
 import time
 from pathlib import Path
 

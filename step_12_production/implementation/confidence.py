@@ -1,14 +1,3 @@
-"""
-Confidence scoring for Step 12 production hardening.
-
-Heuristic: key-term recall (how many important question terms appear in the answer)
-combined with a length signal.  Fast, zero LLM calls.
-
-Thresholds (empirically tuned on the 22 golden questions):
-  high   >= 0.65  -- answer is probably correct
-  medium >= 0.40  -- answer exists but may be incomplete
-  low    < 0.40   -- answer is thin; consider "I don't know" fallback
-"""
 from __future__ import annotations
 import re
 
@@ -18,9 +7,11 @@ _STOP = frozenset(
     "where why how of in on at to for by with from about into over after".split()
 )
 
+
 def _key_terms(text: str) -> frozenset[str]:
     tokens = re.findall(r"\b[a-z]{3,}\b", text.lower())
     return frozenset(t for t in tokens if t not in _STOP)
+
 
 def score_answer(question: str, answer: str) -> dict:
     """Return {"score": float, "label": str, "matched_terms": int, "total_terms": int}"""

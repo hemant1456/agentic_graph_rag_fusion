@@ -1,26 +1,3 @@
-"""
-Golden question set — designed to expose retrieval failure modes progressively.
-
-Target baseline score: 5–6 PASS / 3–4 PARTIAL / 12–13 FAIL out of 22 questions.
-
-Question categories:
-  ANCHOR       — baseline must pass; direct semantic match to a single document
-  HARD_FAIL    — structural retrieval limits; require full CSV scan or cross-CSV join
-                 that top-k=5 can never satisfy
-  PARTIAL      — first hop is retrievable, second hop or a final calculation is not
-
-Design rules:
-  1. partial_facts must NOT be generic topic keywords (e.g. "arr", "vendor", "deals").
-     They must be intermediate facts the model CAN retrieve — things that represent
-     genuine partial progress toward the answer.
-  2. required_facts use comma-formatted numbers ("1,692" not "1.69") to match how
-     LLMs express large dollar amounts.
-  3. For questions expected to FAIL: partial_facts=[] so generic keyword matches
-     don't promote a wrong answer to PARTIAL.
-  4. For questions expected to PARTIAL: partial_facts contain only the first-hop fact
-     the model CAN find, while required_facts contain the final answer it CANNOT.
-"""
-
 from dataclasses import dataclass
 
 
@@ -38,10 +15,6 @@ class GoldenQuestion:
 
 
 GOLDEN_QUESTIONS: list[GoldenQuestion] = [
-
-    # ── ANCHORS — baseline must PASS ─────────────────────────────────────────
-    # Direct semantic match to a single well-indexed document. If baseline fails
-    # any of these the index is broken, not the question.
 
     GoldenQuestion(
         id="Q01",
@@ -132,11 +105,6 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         expected_outcome="PASS",
         fixed_by_step="baseline",
     ),
-
-    # ── HARD FAIL — structural retrieval limits ───────────────────────────────
-    # These questions cannot be answered by top-k=5 retrieval because they require
-    # seeing every row of a CSV, joining two CSVs, or doing arithmetic over a full
-    # table. partial_facts=[] for all: a wrong number is a FAIL, not a PARTIAL.
 
     GoldenQuestion(
         id="Q07",
@@ -358,10 +326,6 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         expected_outcome="FAIL",
         fixed_by_step="step_07 (structured query: WHERE contract_start >= '2023-07-01' AND SUM arr_usd)",
     ),
-
-    # ── SHOULD BE PARTIAL AT BASELINE ────────────────────────────────────────
-    # First-hop fact is retrievable by vector search; final fact requires a
-    # second hop or a calculation the baseline cannot complete.
 
     GoldenQuestion(
         id="Q17",

@@ -1,15 +1,3 @@
-"""
-Evaluation runner for Step 12 — Production Hardening.
-
-In addition to standard grade tallying, this runner records:
-  - confidence_score / confidence_label  — answer quality heuristic
-  - from_cache                           — whether the semantic cache was hit
-  - health snapshot at the end           — p50/p95 latency, SLO compliance
-
-Usage:
-    uv run python step_12_production/evaluation/run_eval.py
-"""
-
 from __future__ import annotations
 
 import json

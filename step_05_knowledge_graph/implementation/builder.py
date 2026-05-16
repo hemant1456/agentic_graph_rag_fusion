@@ -1,23 +1,3 @@
-"""
-Build the Vertexia knowledge graph from company CSV files.
-
-Node types and IDs
-──────────────────
-  Person          → employee_id ("E001" … "E048")
-  Product         → service name ("NexusFlow", "InsightLens", "PulseConnect", "DataCraft")
-  ExternalService → raw name from api_dependencies ("external_pulsar", "external_snowflake", …)
-  Customer        → company name ("Phoenix Corp", "QuantumBank", …)
-  Vendor          → prefixed name ("vendor:Snowflake", "vendor:AWS", …)
-
-Edge types
-──────────
-  reports_to      Person   → Person
-  depends_on      Service  → Service/ExternalService  (with criticality + api_endpoint attrs)
-  uses            Customer → Product
-  manages_account Person   → Customer   (CSM relationship)
-  owns_contract   Person   → Vendor
-"""
-
 import csv
 import re
 from pathlib import Path
@@ -41,12 +21,11 @@ def _extract_company_from_notes(notes: str) -> str:
 def build_graph(corpus_path: Path) -> nx.DiGraph:
     g: nx.DiGraph = nx.DiGraph()
 
-    hr         = corpus_path / "hr"
+    hr          = corpus_path / "hr"
     engineering = corpus_path / "engineering"
-    sales      = corpus_path / "sales"
-    finance    = corpus_path / "finance"
+    sales       = corpus_path / "sales"
+    finance     = corpus_path / "finance"
 
-    # ── 1. Person nodes from employee directory ───────────────────────────────
     for row in _read_csv(hr / "employee_directory.csv"):
         eid = row["employee_id"]
         g.add_node(
@@ -71,7 +50,6 @@ def build_graph(corpus_path: Path) -> nx.DiGraph:
         if mgr and mgr in g:
             g.add_edge(eid, mgr, edge_type="reports_to")
 
-    # ── 2. Departure info from offboarding records ────────────────────────────
     for row in _read_csv(hr / "offboarding_records_2023.csv"):
         eid = row["employee_id"]
         if eid in g:
@@ -83,7 +61,6 @@ def build_graph(corpus_path: Path) -> nx.DiGraph:
                 departed_to=_extract_company_from_notes(notes),
             )
 
-    # ── 3. Products + external services from api_dependencies ─────────────────
     for row in _read_csv(engineering / "api_dependencies.csv"):
         consumer = row["consuming_service"]
         provider = row["providing_service"]
@@ -107,7 +84,6 @@ def build_graph(corpus_path: Path) -> nx.DiGraph:
                 purpose=row["purpose"],
             )
 
-    # ── 4. Customers + CSM relationships from customer_list ───────────────────
     name_to_id: dict[str, str] = {
         data["name"]: eid
         for eid, data in g.nodes(data=True)
@@ -134,7 +110,6 @@ def build_graph(corpus_path: Path) -> nx.DiGraph:
         if csm_id:
             g.add_edge(csm_id, cname, edge_type="manages_account")
 
-    # ── 5. Vendors + contract ownership ──────────────────────────────────────
     for row in _read_csv(finance / "vendor_contracts_summary.csv"):
         vname = row["vendor"]
         vid = f"vendor:{vname}"

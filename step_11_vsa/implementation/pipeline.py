@@ -1,21 +1,3 @@
-"""
-Step 11 pipeline — Vertical Slice Architecture (VSA).
-
-Upgrades over Step 10:
-  - Every incoming question is routed to one of four domain slices
-    (Finance, HR/People, Engineering/Product, General/Company)
-  - Each slice has its own: system prompt, retrieval overrides (force_csv /
-    force_graph), retrieval augmentation terms, and CE parameters
-  - The router is pure keyword-matching — zero LLM calls, zero latency cost
-  - Adding a new domain = one new file + one line in router.py
-
-All retrieval and CE mechanics are unchanged from Step 10; VSA sits above them
-as a domain dispatch layer, ensuring the right prompt and overrides reach the
-right question type.
-
-Reuses: Step 07 retriever, Step 06 graph, Step 09 agents, Step 10 CE pipeline.
-"""
-
 from __future__ import annotations
 
 import sys

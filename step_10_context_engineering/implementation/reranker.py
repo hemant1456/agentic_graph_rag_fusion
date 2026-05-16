@@ -1,20 +1,3 @@
-"""
-CrossEncoder reranker — scores (query, passage) pairs and returns the top-k.
-
-Retrieves a wide candidate set upstream (k=20) then uses a cross-encoder to
-select the k most relevant passages, discarding noise before synthesis.
-
-Why this wins over similarity-only ordering:
-- Bi-encoder embeddings rank by approximate semantic direction; they can miss
-  key passages whose surface phrasing diverges from the query.
-- A cross-encoder sees the query AND passage together, capturing fine-grained
-  relevance that bi-encoders can't — at the cost of higher per-query compute.
-
-Model: cross-encoder/ms-marco-MiniLM-L-6-v2 (~67 MB, runs on CPU, ~30ms per batch)
-
-Falls back to embedding-score ordering if the model isn't available.
-"""
-
 from __future__ import annotations
 
 import logging

@@ -1,14 +1,3 @@
-"""
-SynthesisAgent — assembles the final answer from all gathered contexts.
-
-Uses LLM Gateway V2 (Gemini via gateway) with the same proven system prompt
-as Step 08 to produce a precise, grounded answer.
-
-Contract:
-  Input : question (str), contexts (dict[str, str]), query_type (str)
-  Output: SynthesisResult
-"""
-
 from __future__ import annotations
 
 import os
@@ -65,7 +54,6 @@ def synthesize(
         f"QUESTION: {question}"
     )
 
-    # Try gateway first
     try:
         from llm_gatewayV2.client import LLM
         llm = LLM(base_url=_GATEWAY_URL, timeout=120)
@@ -80,7 +68,6 @@ def synthesize(
     except Exception:
         pass
 
-    # Gemini direct fallback
     try:
         from google import genai
         from google.genai import types as genai_types

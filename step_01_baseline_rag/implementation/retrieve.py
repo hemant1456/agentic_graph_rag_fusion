@@ -1,16 +1,8 @@
-"""
-Retrieval layer for Step 01 — Baseline Vector RAG.
-
-Straightforward cosine similarity search in ChromaDB.
-No reranking, no filtering, no hybrid search — just top-k nearest neighbors.
-"""
-
 from dataclasses import dataclass
-from pathlib import Path
 
 import chromadb
 
-from .ingest import embed_query, get_chroma_collection
+from .ingest import embed_query
 
 
 @dataclass

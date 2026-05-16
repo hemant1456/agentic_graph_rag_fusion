@@ -1,15 +1,3 @@
-"""
-Step 08 RAG pipeline — Agentic RAG with tool-calling LLM.
-
-Upgrades over Step 07:
-  - LLM agent (Claude Haiku) plans which tools to call and iterates
-  - Multi-query disambiguation: asks targeted follow-up questions until satisfied
-  - Handles "two things with the same name" by searching for each separately
-  - Fixes Q18: Project Phoenix (completed) + Phoenix Corp (signed)
-
-Reuses: Step 07 BM25+dense retriever, Step 06 graph, Step 07 CSV tool.
-"""
-
 import time
 from pathlib import Path
 

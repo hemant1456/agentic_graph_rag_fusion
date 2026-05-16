@@ -1,23 +1,3 @@
-"""
-Step 12 pipeline — Production Hardening on top of Step 11 VSA.
-
-Adds five production layers:
-  1. Semantic cache   — near-duplicate queries answered in <10 ms
-  2. Retry / backoff  — transient LLM failures retried up to 3 times
-  3. Graceful degrad  — extractive fallback when synthesis fails entirely
-  4. Confidence score — every answer gets a quality score (lexical heuristic)
-  5. Health monitor   — rolling p50/p95 latency + SLO compliance window
-
-Architecture: this is a *decorator* around Step11RAG.  The VSA dispatch,
-CE pipeline, and all retrieval mechanics are unchanged.  Production hardening
-sits above and below the core pipeline.
-
-Usage:
-    rag = Step12RAG(k=5).build()
-    ext = rag.query_extended("What is the total ARR?")  # -> Step12Result
-    res = rag.query("What is the total ARR?")            # -> RAGResult
-"""
-
 from __future__ import annotations
 
 import sys
@@ -31,8 +11,6 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 from dotenv import load_dotenv
 load_dotenv(_PROJECT_ROOT / ".env")
-
-import networkx as nx
 
 from step_01_baseline_rag.implementation.pipeline import RAGResult
 from step_11_vsa.implementation.pipeline import Step11RAG, Step11Result
@@ -92,9 +70,7 @@ class Step12RAG:
             raise RuntimeError("Call .build() before .query()")
 
         t0 = time.perf_counter()
-        from_cache = False
 
-        # -- Layer 1: Semantic cache check -------------------------------------
         cached = self._cache.get(question)
         if cached is not None:
             latency_ms = (time.perf_counter() - t0) * 1000
@@ -128,7 +104,6 @@ class Step12RAG:
                 health_snapshot=self._monitor.snapshot(),
             )
 
-        # -- Layer 2: Retry-wrapped VSA dispatch --------------------------------
         answer, provider, ce_metrics, slice_name, router_confidence = (
             None, "error", {}, "unknown", 0.0
         )
@@ -148,7 +123,6 @@ class Step12RAG:
         try:
             _run_pipeline()
         except Exception:
-            # -- Layer 3: Graceful degradation ----------------------------------
             raw_chunks = self._inner._retriever.retrieve(question, k=self.k) if self._inner._retriever else []
             answer, provider = extractive_fallback(question, raw_chunks)
             display_chunks = raw_chunks
@@ -156,7 +130,6 @@ class Step12RAG:
             slice_name = "fallback"
             router_confidence = 0.0
 
-        # -- Layer 4: Confidence scoring ----------------------------------------
         conf = score_answer(question, answer or "")
         if conf["label"] == "low" and not answer.startswith("[Extractive]"):
             # Append uncertainty signal to the answer
@@ -164,7 +137,6 @@ class Step12RAG:
 
         latency_ms = (time.perf_counter() - t0) * 1000
 
-        # -- Layer 5: Health monitoring ------------------------------------------
         self._monitor.record(
             latency_ms=latency_ms,
             grade="PASS" if conf["label"] in ("high", "medium") else "FAIL",
@@ -173,7 +145,6 @@ class Step12RAG:
             confidence_label=conf["label"],
         )
 
-        # Store in cache for future near-duplicate queries
         self._cache.put(question, answer, provider, ce_metrics)
 
         rag_result = RAGResult(

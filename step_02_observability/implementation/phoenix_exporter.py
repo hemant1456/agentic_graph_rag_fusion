@@ -1,27 +1,3 @@
-"""
-Step 02 — Observability: Arize Phoenix exporter.
-
-Launches a local Phoenix server and returns a configured OpenTelemetry tracer.
-The tracer is passed to TracedRAG, which uses it to emit spans around each
-phase of the query (retrieval + generation) with accurate timing.
-
-Usage:
-    from step_02_observability.implementation.phoenix_exporter import PhoenixExporter
-
-    exporter = PhoenixExporter()
-    otel_tracer = exporter.start()          # boots Phoenix at localhost:6006
-    print("Phoenix UI:", exporter.url)      # open this in a browser
-
-    traced = TracedRAG(rag, store, otel_tracer=otel_tracer)
-    result, trace = traced.query("What is the retention policy?")
-    # → trace written to JSONL  AND  spans visible in Phoenix UI
-
-Phoenix span hierarchy per query:
-    rag_query  (CHAIN)
-    ├── retrieval  (RETRIEVER)
-    └── llm_generation  (LLM)
-"""
-
 import time
 
 try:

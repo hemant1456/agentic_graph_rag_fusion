@@ -1,19 +1,3 @@
-"""
-Evaluation runner for Step 10 — Context Engineering.
-
-Runs the full 22-question golden set through the context-engineered pipeline
-and records standard grades PLUS context engineering metrics per question:
-  - raw_chars          (before engineering)
-  - engineered_chars   (after rerank + dedup + compress + budget)
-  - compression_ratio  (engineered / raw)
-  - chunks_before      (candidate set entering the pipeline)
-  - chunks_after_dedup (after near-duplicate removal)
-  - chunks_final       (passages in the XML sent to the LLM)
-
-Usage:
-    uv run python step_10_context_engineering/evaluation/run_eval.py
-"""
-
 from __future__ import annotations
 
 import json
@@ -69,7 +53,6 @@ def run_evaluation() -> dict:
             "retrieval_latency_ms": round(result.retrieval_latency_ms, 1),
             "generation_latency_ms": round(result.generation_latency_ms, 1),
             "provider": result.provider,
-            # Context engineering metrics
             "ce_raw_chars": ce["raw_chars"],
             "ce_engineered_chars": ce["engineered_chars"],
             "ce_compression_ratio": ce["compression_ratio"],

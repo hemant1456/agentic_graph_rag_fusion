@@ -1,5 +1,3 @@
-"""Save, load, and cache the knowledge graph as a JSON file."""
-
 import json
 from pathlib import Path
 

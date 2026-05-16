@@ -1,21 +1,3 @@
-"""
-Step 03 — Evaluation Framework: report CLI.
-
-Reads step_03_evaluation/results/metric_scores.json and presents it in a
-human-readable format.
-
-Usage:
-    # Aggregate scores + per-question table
-    uv run python step_03_evaluation/implementation/report.py --summary
-
-    # Full detail for one question (metrics + reasoning + answer)
-    uv run python step_03_evaluation/implementation/report.py --question Q01
-
-    # All questions ranked by a specific metric (worst first)
-    uv run python step_03_evaluation/implementation/report.py --worst faithfulness
-    uv run python step_03_evaluation/implementation/report.py --worst context_recall
-"""
-
 import argparse
 import json
 import sys
@@ -60,7 +42,6 @@ def cmd_summary(data: dict) -> None:
     print("-" * 52)
     for r in data["results"]:
         color = GRADE_COLOR.get(r["grade"], "")
-        mh = f"{r['multihop_score']:>5.2f}" if r["multihop_score"] >= 0 else "  N/A"
         print(
             f"{r['id']:<6} "
             f"{color}{r['grade']:<9}{RESET}"

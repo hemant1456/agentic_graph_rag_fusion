@@ -1,26 +1,13 @@
-"""
-Evaluation runner for Step 01 — Baseline Vector RAG.
-
-Runs all 10 golden questions through the pipeline, scores them,
-and writes results to step_01_baseline_rag/results/eval_results.json.
-
-Usage:
-    uv run python step_01_baseline_rag/evaluation/run_eval.py
-"""
-
 import json
 import sys
 import time
 from pathlib import Path
 
-# allow running from repo root
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from step_01_baseline_rag.evaluation.golden_questions import GOLDEN_QUESTIONS, GoldenQuestion
 from step_01_baseline_rag.implementation.pipeline import BaselineRAG, RAGResult
 
-
-# ── Scoring ───────────────────────────────────────────────────────────────────
 
 def score(result: RAGResult, question: GoldenQuestion) -> dict:
     """
@@ -55,8 +42,6 @@ def score(result: RAGResult, question: GoldenQuestion) -> dict:
     }
 
 
-# ── Formatting ────────────────────────────────────────────────────────────────
-
 GRADE_SYMBOL = {"PASS": "✓", "PARTIAL": "~", "FAIL": "✗"}
 GRADE_COLOR  = {"PASS": "\033[92m", "PARTIAL": "\033[93m", "FAIL": "\033[91m"}
 RESET = "\033[0m"
@@ -74,8 +59,6 @@ def print_result(q: GoldenQuestion, result: RAGResult, scoring: dict) -> None:
     print(f"  Latency: retrieval={result.retrieval_latency_ms:.0f}ms  gen={result.generation_latency_ms:.0f}ms")
     print(f"  Expected: {q.expected_outcome} → Got: {grade}")
 
-
-# ── Main ─────────────────────────────────────────────────────────────────────
 
 def run_evaluation() -> dict:
     print("=== Step 01: Baseline RAG Evaluation ===\n")

@@ -1,16 +1,3 @@
-"""
-VSA base — shared SliceConfig and the universal slice execution engine.
-
-Architecture principle: each slice is ONE file containing a SliceConfig constant
-and a can_handle() function. There is no inheritance tree. Domain logic lives in
-the config; the shared runner (run_with_config) does the mechanics.
-
-This means:
-  - Adding a new slice  = create one new file + register it in router.py
-  - Changing one slice's prompt = touch only that slice's file
-  - CI can test each slice independently
-"""
-
 from __future__ import annotations
 
 import os
@@ -70,17 +57,14 @@ def run_with_config(
     )
     from step_10_context_engineering.implementation.context_engineer import engineer_context
 
-    # ── Query classification (with slice-level overrides) ─────────────────────
     analysis = query_analyst.analyze(question)
     needs_graph = analysis.needs_graph or config.force_graph
     needs_csv   = analysis.needs_csv   or config.force_csv
 
-    # Augment retrieval query with slice-specific domain terms
     retrieval_q = question
     if config.query_augmentation:
         retrieval_q = f"{question} {config.query_augmentation}"
 
-    # ── Retrieval (wide candidate set for reranker) ────────────────────────────
     ret = retrieval_specialist.retrieve(retrieval_q, retriever, k=20)
     raw_chunks = list(ret.chunks)
 
@@ -99,7 +83,6 @@ def run_with_config(
         if csv_res.success:
             csv_data = csv_res.data
 
-    # ── Context Engineering (rerank → dedup → compress → XML) ─────────────────
     context_xml, ce_metrics = engineer_context(
         question=question,
         raw_chunks=raw_chunks,
@@ -109,7 +92,6 @@ def run_with_config(
         compress_ratio=config.compress_ratio,
     )
 
-    # ── Synthesis with slice-specific system prompt ────────────────────────────
     user_msg = f"RETRIEVED CONTEXT:\n{context_xml}\n\nQUESTION: {question}"
     answer   = ""
     provider = "error"
@@ -141,6 +123,5 @@ def run_with_config(
         answer   = resp.text or ""
         provider = "gemini-direct"
 
-    # ── Critic verification ───────────────────────────────────────────────────
     critic_res = critic.review(question, answer, {"Context": context_xml})
     return critic_res.answer, provider, ce_metrics

@@ -1,14 +1,3 @@
-"""
-General / Company Slice — catch-all for company history, leadership, legal, and
-any question that doesn't clearly belong to another domain.
-
-No force-overrides; relies on the query analyst's dynamic classification.
-System prompt is identical to Step 10's proven baseline — works well across
-all question types.
-
-Owns: Q01, Q02, Q03, Q04, Q13 (company history + cross-domain)
-"""
-
 from step_11_vsa.implementation.slices.base import SliceConfig
 
 _SYSTEM = """\

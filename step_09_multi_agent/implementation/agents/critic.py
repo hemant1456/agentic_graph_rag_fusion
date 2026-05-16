@@ -1,15 +1,3 @@
-"""
-CriticAgent — faithfulness verification before the answer leaves the system.
-
-Makes a short LLM call to check whether the answer is grounded in the
-retrieved context. If confidence is "low", attempts one synthesis revision.
-If that also fails, returns the original answer with a confidence note appended.
-
-Contract:
-  Input : question (str), answer (str), contexts (dict[str, str])
-  Output: CriticResult
-"""
-
 from __future__ import annotations
 
 import json

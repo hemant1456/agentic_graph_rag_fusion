@@ -1,14 +1,3 @@
-"""
-Embedding and ChromaDB storage for Step 04.
-
-Uses the same Gemini embedding model as Step 01 (gemini-embedding-2).
-Collection name: "vertexia_step04"
-Persist dir: step_04_chunking/results/chroma_db
-
-Embedding functions are self-contained (not imported from step_01) to
-avoid tight coupling, but use identical API calls.
-"""
-
 import os
 import time
 from pathlib import Path
@@ -27,10 +16,7 @@ EMBED_BATCH_PAUSE_EVERY = 50   # pause every N chunks to avoid rate limits
 
 
 def embed_chunks(chunks: list[SmartChunk]) -> list[list[float]]:
-    """
-    Embed all SmartChunks using Google gemini-embedding-2.
-    One API call per chunk (same as baseline). Returns list of embedding vectors.
-    """
+    """Embed all SmartChunks using Google gemini-embedding-2. One API call per chunk."""
     api_key = os.environ.get("GOOGLE_API_KEY")
     if not api_key:
         raise EnvironmentError("GOOGLE_API_KEY not set")
@@ -61,7 +47,6 @@ def embed_query(query: str) -> list[float]:
 
 
 def get_chroma_collection(persist_dir: Path, reset: bool = False) -> chromadb.Collection:
-    """Get or create the step04 ChromaDB collection."""
     db = chromadb.PersistentClient(path=str(persist_dir))
     if reset:
         try:

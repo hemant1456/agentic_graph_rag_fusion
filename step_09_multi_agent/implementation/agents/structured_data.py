@@ -1,15 +1,3 @@
-"""
-StructuredDataAgent — exact numerical aggregations over Vertexia's CSV data.
-
-No LLM call needed. Wraps Step 07's detect_intent() + run_query().
-Also attempts common keyword-based intent resolution when the pattern matcher
-returns None but the question clearly needs a CSV lookup.
-
-Contract:
-  Input : question (str)
-  Output: CSVResult
-"""
-
 from __future__ import annotations
 
 import sys

@@ -1,22 +1,3 @@
-"""
-Step 02 — Observability: traced evaluation run.
-
-Re-runs all 22 golden questions through the traced pipeline.
-Identical scores to Step 01 (same retrieval + generation) — this run adds
-per-query observability: token counts, cost, exact sources retrieved.
-
-Output:
-  step_02_observability/results/traces.jsonl  — one trace per question
-  step_02_observability/results/eval_report.json — scored results + cost summary
-
-Usage:
-    # JSONL traces only (no external server needed):
-    uv run python step_02_observability/evaluation/run_traced_eval.py
-
-    # JSONL + Arize Phoenix UI at http://localhost:6006:
-    uv run python step_02_observability/evaluation/run_traced_eval.py --phoenix
-"""
-
 import argparse
 import json
 import sys
@@ -28,7 +9,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from step_01_baseline_rag.evaluation.golden_questions import GOLDEN_QUESTIONS
 from step_01_baseline_rag.evaluation.run_eval import score
 from step_01_baseline_rag.implementation.pipeline import BaselineRAG
-from step_02_observability.implementation.report import print_summary
 from step_02_observability.implementation.traced_pipeline import TracedRAG
 from step_02_observability.implementation.tracer import TraceStore
 

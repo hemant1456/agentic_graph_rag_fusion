@@ -1,15 +1,3 @@
-"""
-Tool definitions and executors for the Step 08 agent.
-
-Three tools:
-  vector_search  — BM25 + dense RRF retrieval over Step 04 index
-  graph_query    — Step 06 knowledge graph context (entity resolution + traversal)
-  csv_query      — Step 07 structured Pandas query over raw CSVs
-
-The agent (Claude Haiku with tool_use) calls these to gather information before
-writing its final answer. Each tool returns a plain string to inject into context.
-"""
-
 from __future__ import annotations
 
 import networkx as nx
@@ -18,8 +6,6 @@ from step_01_baseline_rag.implementation.retrieve import format_context
 from step_06_graph_rag.implementation.graph_query import build_graph_context
 from step_07_rag_fusion.implementation.csv_tool import detect_intent, run_query
 from step_07_rag_fusion.implementation.pipeline import Step07RAG
-
-# ── Anthropic tool schemas ─────────────────────────────────────────────────────
 
 TOOL_SCHEMAS: list[dict] = [
     {
@@ -91,8 +77,6 @@ TOOL_SCHEMAS: list[dict] = [
 ]
 
 
-# ── Tool execution ─────────────────────────────────────────────────────────────
-
 def execute_tool(
     name: str,
     inputs: dict,
@@ -120,7 +104,6 @@ def execute_tool(
         intent_text = str(inputs.get("intent", ""))
         intent = detect_intent(intent_text)
         if intent is None:
-            # Try a few common intents by keyword matching in the description
             intent_lower = intent_text.lower()
             if "q3" in intent_lower and "revenue" in intent_lower:
                 intent = "q3_2023_revenue"

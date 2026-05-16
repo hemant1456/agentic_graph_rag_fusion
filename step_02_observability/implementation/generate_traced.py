@@ -1,11 +1,3 @@
-"""
-Step 02 — Observability: generate_answer variant that also returns token usage.
-
-Extends Step 01's generate_answer() by capturing the usage metadata that the
-Gemini and Anthropic SDKs return in the response object. Step 01 code is
-unchanged — this is an additive Step 02 module.
-"""
-
 import os
 import sys
 from dataclasses import dataclass
@@ -44,7 +36,6 @@ def generate_with_usage(context: str, question: str) -> GenerationOutput:
     """
     user_message = f"CONTEXT:\n{context}\n\nQUESTION: {question}"
 
-    # ── Gemini (primary) ──────────────────────────────────────────────────────
     try:
         client = genai.Client(api_key=os.environ["GOOGLE_API_KEY"])
         response = client.models.generate_content(
@@ -67,7 +58,6 @@ def generate_with_usage(context: str, question: str) -> GenerationOutput:
     except Exception:
         pass
 
-    # ── Anthropic (fallback) ──────────────────────────────────────────────────
     ac = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     message = ac.messages.create(
         model=ANTHROPIC_MODEL,

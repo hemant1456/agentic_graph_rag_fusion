@@ -1,15 +1,3 @@
-"""
-Finance Slice — handles revenue, ARR, deal, budget, and vendor-spend questions.
-
-Overrides:
-  force_csv=True   — always calls the CSV aggregation tool (exact numbers critical)
-  system_prompt    — enforces comma-formatted numbers, exact status labels, and
-                     fiscal period precision
-  keywords         — financial vocabulary for router scoring
-
-Owns: Q07, Q08, Q10, Q11, Q12, Q15, Q16, Q19, Q20
-"""
-
 from step_11_vsa.implementation.slices.base import SliceConfig
 
 _SYSTEM = """\

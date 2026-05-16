@@ -1,16 +1,3 @@
-"""
-Step 03 — Evaluation Framework: main evaluation run.
-
-Runs all 22 golden questions through the RAG pipeline, then computes five
-RAGAS-style metrics per question using an LLM-as-judge.
-
-Output:
-  step_03_evaluation/results/metric_scores.json
-
-Usage:
-    uv run python step_03_evaluation/evaluation/run_eval.py
-"""
-
 import json
 import sys
 import time
@@ -50,7 +37,6 @@ def run_evaluation() -> dict:
 
         color = GRADE_COLOR[record.grade]
         sym   = GRADE_SYMBOL[record.grade]
-        mh_str = f"{record.multihop_success.score:>6.2f}" if record.multihop_success.score >= 0 else "   N/A"
         print(
             f"{q.id:<6} "
             f"{color}[{sym}] {record.grade:<5}{RESET} "

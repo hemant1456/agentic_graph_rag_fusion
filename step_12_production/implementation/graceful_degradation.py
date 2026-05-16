@@ -1,12 +1,6 @@
-"""
-Graceful degradation for Step 12 production hardening.
-
-If synthesis completely fails (exception or empty answer), this module produces
-an extractive fallback answer from the best retrieved chunk rather than returning
-a blank or error string to the user.
-"""
 from __future__ import annotations
 import re
+
 
 def extractive_fallback(question: str, chunks) -> tuple[str, str]:
     """

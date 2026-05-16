@@ -1,19 +1,3 @@
-"""
-Step 03 — Evaluation Framework: five RAG evaluation metrics.
-
-Each function calls the LLM judge once and returns a MetricResult(score, reasoning).
-Score is always 0.0–1.0 except multihop_success which returns -1.0 for non-multi-hop
-questions (sentinel meaning "not applicable").
-
-Metric definitions:
-  faithfulness      — are all answer claims grounded in the retrieved context?
-  answer_relevance  — does the answer actually address the question?
-  context_precision — of the retrieved chunks, what fraction were actually useful?
-  context_recall    — were all required facts present in the retrieved context?
-  multihop_success  — for multi-hop questions: did the chain of reasoning succeed?
-                      (derived from PASS/PARTIAL/FAIL, no extra LLM call)
-"""
-
 from dataclasses import dataclass
 
 from .judge import judge
@@ -28,8 +12,6 @@ class MetricResult:
     score: float      # 0.0 (worst) → 1.0 (best); -1.0 = not applicable
     reasoning: str    # one-sentence explanation from the judge
 
-
-# ── Individual metrics ────────────────────────────────────────────────────────
 
 def faithfulness(question: str, answer: str, context: str) -> MetricResult:
     """

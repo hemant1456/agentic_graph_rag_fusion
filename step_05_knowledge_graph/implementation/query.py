@@ -1,16 +1,5 @@
-"""
-Graph traversal and context generation for Step 05.
-
-Flow:
-  1. scan question + vector chunks for entity mentions (by name)
-  2. for each found entity, traverse 1–2 hops in the graph
-  3. return formatted text appended to the vector context
-"""
-
 import networkx as nx
 
-
-# ── Entity name → node-id index ───────────────────────────────────────────────
 
 def _build_name_index(g: nx.DiGraph) -> dict[str, str]:
     """
@@ -26,7 +15,6 @@ def _build_name_index(g: nx.DiGraph) -> dict[str, str]:
         name: str = data.get("name", "")
         if len(name) >= 4:
             index[name.lower()] = nid
-        # Departure company → employee who left
         departed_to: str = data.get("departed_to", "")
         if len(departed_to) >= 4:
             index[departed_to.lower()] = nid
@@ -43,8 +31,6 @@ def extract_entity_ids(texts: list[str], g: nx.DiGraph) -> list[str]:
             found[nid] = name_lower
     return list(found.keys())
 
-
-# ── Node formatters ───────────────────────────────────────────────────────────
 
 def _fmt_person(nid: str, data: dict) -> str:
     parts = [f"{data['name']} ({nid})", f"role: {data.get('role','?')}",
@@ -73,8 +59,6 @@ def _direct_reports(nid: str, g: nx.DiGraph) -> list[tuple[str, dict]]:
         if g.edges[src, nid].get("edge_type") == "reports_to"
     ]
 
-
-# ── Context expansion ─────────────────────────────────────────────────────────
 
 def expand_context(entity_ids: list[str], g: nx.DiGraph) -> str:
     if not entity_ids:
@@ -105,7 +89,6 @@ def expand_context(entity_ids: list[str], g: nx.DiGraph) -> str:
             rnames = [d.get("name", r) for r, d in reports[:6]]
             suffix = " (+more)" if len(reports) > 6 else ""
             lines.append(f"  Direct reports: {', '.join(rnames)}{suffix}")
-        # Vendor contracts owned by this person
         for dst in g.successors(nid):
             if g.edges[nid, dst].get("edge_type") == "owns_contract":
                 vdata = g.nodes[dst]
@@ -113,7 +96,6 @@ def expand_context(entity_ids: list[str], g: nx.DiGraph) -> str:
                     f"  Owns contract: {vdata.get('name','?')} "
                     f"(${vdata.get('annual_value_usd','?')}/yr, {vdata.get('category','?')})"
                 )
-        # Accounts managed (CSM)
         for dst in g.successors(nid):
             if g.edges[nid, dst].get("edge_type") == "manages_account":
                 cdata = g.nodes[dst]
@@ -136,7 +118,6 @@ def expand_context(entity_ids: list[str], g: nx.DiGraph) -> str:
                 continue
             seen.add(nid)
             lines.append(f"\nService: {nid} (type: {ntype})")
-            # What depends on this (downstream blast radius)
             for src in g.predecessors(nid):
                 edata = g.edges[src, nid]
                 if edata.get("edge_type") == "depends_on":
@@ -144,7 +125,6 @@ def expand_context(entity_ids: list[str], g: nx.DiGraph) -> str:
                         f"  Depended on by: {src} via {edata.get('api_endpoint','?')} "
                         f"[{edata.get('criticality','?')}]"
                     )
-            # What this depends on
             for dst in g.successors(nid):
                 edata = g.edges[nid, dst]
                 if edata.get("edge_type") == "depends_on":
@@ -152,7 +132,6 @@ def expand_context(entity_ids: list[str], g: nx.DiGraph) -> str:
                         f"  Depends on: {dst} via {edata.get('api_endpoint','?')} "
                         f"[{edata.get('criticality','?')}]"
                     )
-            # Customers using this product
             users = [
                 (src, g.nodes[src])
                 for src in g.predecessors(nid)
@@ -175,15 +154,13 @@ def expand_context(entity_ids: list[str], g: nx.DiGraph) -> str:
                 f"segment: {data.get('segment','?')} | "
                 f"industry: {data.get('industry','?')}"
             )
-            # Products used
             prods = [
-                g.nodes[dst].get("name", dst)
+                str(g.nodes[dst].get("name") or dst)
                 for dst in g.successors(nid)
                 if g.edges[nid, dst].get("edge_type") == "uses"
             ]
             if prods:
                 lines.append(f"  Uses products: {', '.join(prods)}")
-            # CSM with status
             for src in g.predecessors(nid):
                 if g.edges[src, nid].get("edge_type") == "manages_account":
                     pd = g.nodes[src]
@@ -192,7 +169,6 @@ def expand_context(entity_ids: list[str], g: nx.DiGraph) -> str:
                     if "departed" in status:
                         extra = f", departed ({pd.get('departure_type','?')})"
                     lines.append(f"  CSM: {pd.get('name',src)} — status: {status}{extra}")
-                    # If CSM departed, add their replacement hint
                     if "departed" in status:
                         lines.append(f"    Departure notes: {pd.get('departure_notes','')}")
 

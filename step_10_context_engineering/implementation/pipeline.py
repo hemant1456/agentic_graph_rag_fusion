@@ -1,24 +1,5 @@
-"""
-Step 10 pipeline — Context Engineering layer on top of Step 09 multi-agent retrieval.
-
-Upgrades over Step 09:
-  - Retrieves a wider candidate set (k=20) then applies CrossEncoder reranking
-    to select the 8 most relevant passages (dropping low-signal noise)
-  - Deduplicates near-duplicate passages before synthesis
-  - Applies extractive sentence compression (60% retention) per passage
-  - Formats context as structured XML with source attribution
-  - Enforces a 24 000-char (~6 000 token) budget with priority ordering
-
-Key metric added: compression_ratio (engineered / raw) — tracks how much
-context was shed while maintaining the same answer quality.
-
-Reuses: Step 09 specialized agents (query_analyst, retrieval_specialist,
-        graph_navigator, structured_data, synthesis, critic).
-"""
-
 from __future__ import annotations
 
-import copy
 import sys
 import time
 from dataclasses import dataclass
@@ -87,10 +68,8 @@ class Step10RAG:
 
         t0 = time.perf_counter()
 
-        # ── Multi-agent retrieval (same as Step 09) ────────────────────────────
         analysis = query_analyst.analyze(question)
 
-        # Wide retrieval (k=20 set in __init__)
         ret = retrieval_specialist.retrieve(question, self._retriever, k=20)
         raw_chunks = list(ret.chunks)
 
@@ -111,7 +90,6 @@ class Step10RAG:
             if csv_res.success:
                 csv_data = csv_res.data
 
-        # ── Context Engineering ────────────────────────────────────────────────
         context_xml, ce_metrics = engineer_context(
             question=question,
             raw_chunks=raw_chunks,
@@ -121,7 +99,6 @@ class Step10RAG:
             compress_ratio=self.compress_ratio,
         )
 
-        # ── Synthesis + Critic (reuses Step 09 agents) ────────────────────────
         synth = synthesis.synthesize(
             question, {"Engineered Context": context_xml}, analysis.query_type
         )

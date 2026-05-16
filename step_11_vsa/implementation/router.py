@@ -1,17 +1,3 @@
-"""
-VSA Router — maps an incoming question to the best-fit domain slice.
-
-Algorithm: each registered slice exports `can_handle(question) -> float` (0–1).
-The router scores all slices and dispatches to the highest scorer.  If all
-slices tie or all score below THRESHOLD, the General slice wins.
-
-This is deliberately stateless and dependency-free — the router itself never
-makes an LLM call.  Speed matters here because routing happens on every query.
-
-Extending: register a new slice in SLICES below and create its module.  Nothing
-else needs to change — the router will pick it up automatically.
-"""
-
 from __future__ import annotations
 
 from step_11_vsa.implementation.slices import (
@@ -22,7 +8,6 @@ from step_11_vsa.implementation.slices import (
 )
 from step_11_vsa.implementation.slices.base import SliceConfig, run_with_config
 
-# ── Registry — add new slices here ────────────────────────────────────────────
 _SLICE_MODULES = [
     finance_slice,
     hr_slice,

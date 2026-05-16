@@ -1,15 +1,3 @@
-"""
-Plain-text parser for Step 04 — structure-aware chunking.
-
-Detects section boundaries using visual cues:
-  - Lines of repeated =, -, or * (3+ chars)
-  - ALL-CAPS lines (look like section headers)
-  - Lines ending with : that are short (<60 chars)
-
-Falls back to paragraph-aware chunking (2000 chars, 200 overlap) when no
-structure is detected — same as the Step 01 baseline.
-"""
-
 import re
 from pathlib import Path
 
@@ -105,13 +93,11 @@ def parse_text(path: Path, source: str, department: str) -> list[SmartChunk]:
     text = path.read_text(errors="replace")
     lines = text.splitlines()
 
-    # Detect section separators
     sep_indices = [i for i, line in enumerate(lines) if _is_section_separator(line)]
 
     if len(sep_indices) >= 2:
         return _section_split(lines, sep_indices, source, department)
 
-    # Fallback: paragraph-aware chunking
     return _paragraph_chunk(text, source, department, start_index=0)
 
 
@@ -125,7 +111,6 @@ def _section_split(
     chunks: list[SmartChunk] = []
     chunk_index = 0
 
-    # Build list of (start, end) line ranges for each section
     boundaries = [-1] + sep_indices + [len(lines)]
 
     for i in range(len(boundaries) - 1):
@@ -136,9 +121,7 @@ def _section_split(
         if not section_lines:
             continue
 
-        # Try to detect a section title: line immediately after separator (if short + non-empty)
         section_title = ""
-        content_lines = section_lines
         if section_lines:
             first_nonempty = next((l for l in section_lines if l.strip()), "")
             if first_nonempty and len(first_nonempty.strip()) < 80:

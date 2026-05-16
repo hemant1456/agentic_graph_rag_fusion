@@ -1,13 +1,3 @@
-"""
-GraphNavigatorAgent — entity resolution and graph traversal via Step 06 pipeline.
-
-No LLM call needed. Wraps Step 06's build_graph_context().
-
-Contract:
-  Input : question (str), entity_hints (list[str]), graph (nx.DiGraph)
-  Output: GraphResult
-"""
-
 from __future__ import annotations
 
 import sys

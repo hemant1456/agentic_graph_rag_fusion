@@ -1,16 +1,3 @@
-"""
-Step 09 pipeline — Multi-Agent RAG System.
-
-Upgrades over Step 08:
-  - Orchestrator coordinates 6 specialized subagents with typed contracts
-  - QueryAnalystAgent decomposes compound questions into sub-questions
-    (each retrieved independently → better multi-hop coverage)
-  - CriticAgent verifies faithfulness before returning the answer
-  - Per-agent traces enable fine-grained observability
-
-Reuses: Step 07 BM25+dense retriever, Step 06 graph, Step 07 CSV tool.
-"""
-
 from __future__ import annotations
 
 import sys

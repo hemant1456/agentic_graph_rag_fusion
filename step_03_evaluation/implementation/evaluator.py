@@ -1,10 +1,3 @@
-"""
-Step 03 — Evaluation Framework: Evaluator.
-
-Ties together all five metrics for a single (golden question, RAG result) pair.
-Each metric is computed with a short delay between calls to stay within API rate limits.
-"""
-
 import sys
 import time
 from dataclasses import dataclass

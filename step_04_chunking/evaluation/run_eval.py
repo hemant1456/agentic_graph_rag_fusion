@@ -1,21 +1,8 @@
-"""
-Evaluation runner for Step 04 — Format-aware Chunking.
-
-Runs all 22 golden questions through the Step04RAG pipeline, scores them,
-and writes results to step_04_chunking/results/eval_results.json.
-
-Reuses scoring and printing utilities from step_01_baseline_rag.evaluation.run_eval.
-
-Usage:
-    uv run python step_04_chunking/evaluation/run_eval.py
-"""
-
 import json
 import sys
 import time
 from pathlib import Path
 
-# Allow running from repo root
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from step_01_baseline_rag.evaluation.golden_questions import GOLDEN_QUESTIONS

@@ -1,19 +1,3 @@
-"""
-Agentic loop for Step 08 — context-first agent via LLM Gateway V2 (free APIs only).
-
-Provider strategy:
-  1. LLM Gateway V2 — Gemini 3.1 Flash-Lite Preview with native tool-use.
-     The gateway handles rate-limit cooldowns internally.
-  2. Gemini direct (google.genai) — fallback when the gateway is unreachable or on
-     cooldown. Answers from the pre-retrieved context without tool calls.
-
-Architecture: "context-first agent"
-  1. Step 07's full pipeline (BM25+dense+graph+CSV) runs first and populates
-     PRE-RETRIEVED CONTEXT — grounds the agent in correct facts before any LLM call.
-  2. The agent reviews that context and decides whether to call tools to fill gaps.
-  3. Max 3 additional tool rounds on top of the pre-fetched context.
-"""
-
 from __future__ import annotations
 
 import os
@@ -25,7 +9,6 @@ from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).parent.parent.parent / ".env")
 
-# Add project root so llm_gatewayV2 is importable
 _PROJECT_ROOT = Path(__file__).parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
@@ -77,7 +60,6 @@ def run_agent(
     Tries Gateway V2 (Gemini with tool-use) first; falls back to Gemini direct
     (pre-context only, no tool-use) if the gateway is unreachable or rate-limited.
     """
-    # ── Pre-retrieve Step 07 context ─────────────────────────────────────────
     chunks = retriever.retrieve(question, k=10)
     vector_ctx = format_context(chunks)
     graph_ctx = build_graph_context(question, [c.text for c in chunks], graph)
@@ -92,7 +74,6 @@ def run_agent(
     ctx_parts.append(vector_ctx)
     pre_context = "\n\n".join(ctx_parts)
 
-    # ── Cascade: gateway (tool-use) → Gemini direct (pre-context) ────────────
     try:
         return _run_gateway_agent(question, pre_context, retriever, graph, max_rounds)
     except Exception as e:
@@ -100,8 +81,6 @@ def run_agent(
 
     return _run_gemini_direct(question, pre_context)
 
-
-# ── Gateway V2 agent loop ─────────────────────────────────────────────────────
 
 def _run_gateway_agent(
     question: str,
@@ -164,7 +143,6 @@ def _run_gateway_agent(
                 "content": result_text,
             })
 
-    # Max rounds — force final answer without tools
     messages.append({
         "role": "user",
         "content": "Based on all the information retrieved above, provide your final answer.",
@@ -177,8 +155,6 @@ def _run_gateway_agent(
     )
     return final["text"], f"gateway:{final.get('provider', 'gemini')}"
 
-
-# ── Gemini direct fallback (pre-context only, no tool-use) ───────────────────
 
 def _run_gemini_direct(question: str, pre_context: str) -> tuple[str, str]:
     from google import genai

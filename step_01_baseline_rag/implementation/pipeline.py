@@ -1,12 +1,5 @@
-"""
-End-to-end Baseline RAG pipeline.
-
-RAGResult captures everything needed for evaluation and later observability work:
-query, retrieved chunks (with metadata), context sent to LLM, answer, latency.
-"""
-
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 import chromadb
