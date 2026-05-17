@@ -37,7 +37,7 @@ CONFIG = SliceConfig(
     query_augmentation="employee org reporting manager team",
     rerank_k=8,
     compress_ratio=0.60,
-    owns_questions=["Q09", "Q13", "Q14", "Q17"],
+    owns_questions=["Q09", "Q13", "Q14", "Q19"],
 )
 
 

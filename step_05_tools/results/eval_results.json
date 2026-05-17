@@ -1,10 +1,10 @@
 {
   "step": "step_05_tools",
   "pass": 17,
-  "partial": 10,
+  "partial": 12,
   "fail": 0,
-  "total": 27,
-  "pass_rate": 0.6296296296296297,
+  "total": 29,
+  "pass_rate": 0.5862068965517241,
   "results": [
     {
       "question_id": "Q01",
@@ -233,6 +233,35 @@
     },
     {
       "question_id": "Q17",
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
+        "events/batch",
+        "events/stream"
+      ],
+      "partial_hits": [
+        "v2.1",
+        "deprecated",
+        "NexusFlow"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q18",
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
+        "Daniel Osei",
+        "October 31, 2023"
+      ],
+      "partial_hits": [
+        "M-2",
+        "security audit"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q19",
       "grade": "PASS",
       "required_hits": [
         "Maya Sharma",
@@ -247,7 +276,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q18",
+      "question_id": "Q20",
       "grade": "PARTIAL",
       "required_hits": [
         "InsightLens"
@@ -263,7 +292,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q19",
+      "question_id": "Q21",
       "grade": "PARTIAL",
       "required_hits": [],
       "required_missing": [
@@ -277,7 +306,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q20",
+      "question_id": "Q22",
       "grade": "PARTIAL",
       "required_hits": [
         "InsightLens",
@@ -292,7 +321,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q21",
+      "question_id": "Q23",
       "grade": "PARTIAL",
       "required_hits": [],
       "required_missing": [
@@ -306,7 +335,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q22",
+      "question_id": "Q24",
       "grade": "PASS",
       "required_hits": [
         "InsightLens",
@@ -323,7 +352,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q23",
+      "question_id": "Q25",
       "grade": "PARTIAL",
       "required_hits": [
         "Phoenix Corp"
@@ -339,7 +368,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q24",
+      "question_id": "Q26",
       "grade": "PASS",
       "required_hits": [
         "99.9",
@@ -355,7 +384,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q25",
+      "question_id": "Q27",
       "grade": "PARTIAL",
       "required_hits": [
         "InsightLens",
@@ -373,7 +402,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q26",
+      "question_id": "Q28",
       "grade": "PARTIAL",
       "required_hits": [],
       "required_missing": [
@@ -388,7 +417,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q27",
+      "question_id": "Q29",
       "grade": "PARTIAL",
       "required_hits": [],
       "required_missing": [
@@ -405,5 +434,5 @@
       "disqualifier_hits": []
     }
   ],
-  "timestamp": "2026-05-17T18:04:34"
+  "timestamp": "2026-05-17T18:42:28"
 }

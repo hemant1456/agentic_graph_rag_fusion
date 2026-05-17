@@ -38,7 +38,7 @@ CONFIG = SliceConfig(
     query_augmentation="Project Phoenix",
     rerank_k=8,
     compress_ratio=0.80,
-    owns_questions=["Q05", "Q06", "Q18", "Q21", "Q22"],
+    owns_questions=["Q05", "Q06", "Q17", "Q18", "Q20", "Q23", "Q24"],
 )
 
 

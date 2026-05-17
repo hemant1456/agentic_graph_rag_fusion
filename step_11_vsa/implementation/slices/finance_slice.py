@@ -32,7 +32,7 @@ CONFIG = SliceConfig(
     force_graph=False,
     rerank_k=8,
     compress_ratio=0.60,
-    owns_questions=["Q07", "Q08", "Q10", "Q11", "Q12", "Q15", "Q16", "Q19", "Q20"],
+    owns_questions=["Q07", "Q08", "Q10", "Q11", "Q12", "Q15", "Q16", "Q21", "Q22"],
 )
 
 

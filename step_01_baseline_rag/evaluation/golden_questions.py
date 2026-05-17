@@ -208,7 +208,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         fixed_by_step="step_05_tools",
     ),
 
-    # ── TIER 3: BM25 / Keyword-Exact Retrieval (Q13–Q16) ───────────────────────
+    # ── TIER 3: BM25 / Keyword-Exact Retrieval (Q13–Q18) ───────────────────────
     # These questions contain technical identifiers, version strings, or proper
     # nouns that dense embedding search misses or confuses with similar docs.
     # BM25 keyword search surfaces the right document by exact term matching.
@@ -283,14 +283,51 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         fixed_by_step="step_06_hybrid_retrieval",
     ),
 
-    # ── TIER 4: Knowledge Graph / Multi-hop (Q17–Q22) ──────────────────────────
+    GoldenQuestion(
+        id="Q17",
+        type="keyword_exact",
+        question="Which NexusFlow API endpoint was deprecated in v2.1, and what endpoint replaced it?",
+        required_facts=["events/batch", "events/stream"],
+        partial_facts=["v2.1", "deprecated", "NexusFlow", "v2.2"],
+        disqualifiers=[],
+        explanation=(
+            "nexusflow_api_changelog.md: 'GET /v2/events/batch — Deprecated in v2.1, removed in v2.2. "
+            "Replaced by GET /v2/events/stream.' Both the version tag 'v2.1' and the endpoint names "
+            "appear in the same chunk (breaking-changes section). Dense search for 'NexusFlow deprecated "
+            "endpoint' returns generic architecture docs; BM25 on 'v2.1' scores the changelog chunk "
+            "directly via exact token match."
+        ),
+        expected_outcome="FAIL",
+        fixed_by_step="step_06_hybrid_retrieval",
+    ),
+
+    GoldenQuestion(
+        id="Q18",
+        type="keyword_exact",
+        question="Who is the remediation owner for security audit finding M-2, and what was the target remediation date?",
+        required_facts=["Daniel Osei", "October 31, 2023"],
+        partial_facts=["M-2", "TLS", "security audit"],
+        disqualifiers=[],
+        explanation=(
+            "security_audit_2023.txt: 'FINDING M-2 (Medium): TLS 1.1 fallback. "
+            "Remediation owner: Daniel Osei. Target: October 31, 2023.' "
+            "The finding ID 'M-2' and 'remediation' are rare tokens that BM25 scores at rank #1 "
+            "for the exact security-findings chunk. Dense search for 'security audit remediation owner' "
+            "returns the audit header (which names Daniel Osei as Vertexia Sponsor but lacks the date) "
+            "or general security docs — so the required date 2023-10-31 is missing."
+        ),
+        expected_outcome="FAIL",
+        fixed_by_step="step_06_hybrid_retrieval",
+    ),
+
+    # ── TIER 4: Knowledge Graph / Multi-hop (Q19–Q24) ──────────────────────────
     # These questions require traversing typed relationships across multiple CSV
     # files — an org hierarchy join, a dependency graph BFS, or a schedule+org
     # chain. No single retrieval or tool call can answer them; a graph is needed.
     # Should FAIL at Steps 01–06 and PASS at Step 07 (Knowledge Graph RAG).
 
     GoldenQuestion(
-        id="Q17",
+        id="Q19",
         type="multi_hop",
         question="Who is the CSM managing the Phoenix Corp account, and who is that person's direct manager?",
         required_facts=["Maya Sharma", "Lisa Torres"],
@@ -306,7 +343,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q18",
+        id="Q20",
         type="multi_hop",
         question="Which services have a critical dependency on NexusFlow's events_api endpoint?",
         required_facts=["InsightLens", "DataCraft"],
@@ -321,7 +358,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q19",
+        id="Q21",
         type="multi_hop",
         question="Who was the on-call engineer for the Data Platform team during the week of August 14, 2023?",
         required_facts=["Kenji Ito"],
@@ -338,7 +375,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q20",
+        id="Q22",
         type="multi_hop",
         question="If NexusFlow goes down entirely, which services are directly or indirectly affected? List all of them.",
         required_facts=["InsightLens", "PulseConnect", "DataCraft"],
@@ -355,7 +392,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q21",
+        id="Q23",
         type="multi_hop",
         question="Who does Aisha Johnson report to, and who does that person report to? Give the full two-hop reporting chain.",
         required_facts=["Tomás García", "Sarah Chen"],
@@ -371,7 +408,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q22",
+        id="Q24",
         type="multi_hop",
         question="What external and internal services does PulseConnect depend on according to the API dependency data?",
         required_facts=["InsightLens", "NexusFlow", "sendgrid", "twilio"],
@@ -386,13 +423,13 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         fixed_by_step="step_07_knowledge_graph",
     ),
 
-    # ── TIER 5: Complex Multi-step Reasoning (Q23–Q27) ─────────────────────────
+    # ── TIER 5: Complex Multi-step Reasoning (Q25–Q29) ─────────────────────────
     # These questions require disambiguation across documents with the same name,
     # cross-document comparison, multi-source synthesis, or cross-quarter joins.
     # Should FAIL at Steps 01–07 and PASS at Step 09 (Multi-Agent RAG).
 
     GoldenQuestion(
-        id="Q23",
+        id="Q25",
         type="disambiguation",
         question="There are two different things at Vertexia referred to as 'Project Phoenix'. What is each one and what was the outcome of each?",
         required_facts=["migration", "signed", "Phoenix Corp"],
@@ -408,7 +445,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q24",
+        id="Q26",
         type="cross_document",
         question="Does Vertexia's documented NexusFlow availability target meet the uptime requirement in the Phoenix Corp contract? What is the gap if any?",
         required_facts=["99.9", "99.99"],
@@ -425,7 +462,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q25",
+        id="Q27",
         type="cross_document",
         question="Was InsightLens impacted by the August 2023 NexusFlow outage? If so, explain why via the dependency chain, and name the on-call engineer for each affected service.",
         required_facts=["InsightLens", "events_api", "Kenji Ito", "Yuki Tanaka"],
@@ -441,7 +478,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q26",
+        id="Q28",
         type="cross_document",
         question="What was the combined ARR from all Closed-Won deals across both Q3 and Q4 2023 (the full second half of the year)?",
         required_facts=["3,456,000"],
@@ -458,7 +495,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q27",
+        id="Q29",
         type="cross_document",
         question="Which employees left Vertexia voluntarily in 2023? For each person, state their department, last day, and the stated reason for departure.",
         required_facts=["Adrian Blake", "FinDataCo", "Preet Kaur", "relocated"],

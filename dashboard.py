@@ -279,7 +279,7 @@ def _comparison_bar(runs: list[tuple[str, dict]]) -> go.Figure:
 
 
 def _grade_heatmap(runs: list[tuple[str, dict]]) -> go.Figure:
-    """Heatmap: rows = Q01..Q27, columns = run labels, colour = grade."""
+    """Heatmap: rows = Q01..Q29, columns = run labels, colour = grade."""
     if not runs:
         return go.Figure()
 
@@ -789,7 +789,7 @@ def tab_experiment_lab() -> None:
         st.plotly_chart(_comparison_bar(all_runs), use_container_width=True)
 
         # Grade heatmap
-        st.markdown("#### Grade Heatmap (Q01–Q27)")
+        st.markdown("#### Grade Heatmap (Q01–Q29)")
         st.plotly_chart(_grade_heatmap(all_runs), use_container_width=True)
 
         # Per-experiment detail

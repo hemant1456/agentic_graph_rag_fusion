@@ -32,7 +32,7 @@ _PATTERNS: list[tuple[re.Pattern, str]] = [
     # Q11 — total planned headcount from budget allocation
     (re.compile(r"(total|planned).{0,30}headcount.{0,40}(budget|department|2023)", re.I), "total_headcount"),
     (re.compile(r"(budget|2023).{0,40}(total|planned).{0,30}headcount", re.I), "total_headcount"),
-    # Q26 — H2 2023 contract ARR (cross-quarter, Tier 5)
+    # Q28 — H2 2023 contract ARR (cross-quarter, Tier 5)
     (re.compile(r"(H2|second half).{0,30}2023.{0,40}(arr|contract|deal)", re.I), "h2_2023_arr"),
     (re.compile(r"(arr|contract|deal).{0,40}(H2|second half).{0,30}2023", re.I), "h2_2023_arr"),
 ]
