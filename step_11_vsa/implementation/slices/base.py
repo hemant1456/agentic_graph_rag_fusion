@@ -58,7 +58,6 @@ def run_with_config(
     from step_10_context_engineering.implementation.context_engineer import engineer_context
 
     analysis = query_analyst.analyze(question)
-    needs_csv = analysis.needs_csv or config.force_csv
 
     retrieval_q = question
     if config.query_augmentation:
@@ -77,10 +76,10 @@ def run_with_config(
     graph_seeds = [c.text for c in raw_chunks] if raw_chunks else analysis.primary_entities
     graph_res = graph_navigator.navigate(question, graph_seeds, graph)
     graph_ctx = graph_res.context if graph_res.success else ""
-    if needs_csv:
-        csv_res = structured_data.query(question)
-        if csv_res.success:
-            csv_data = csv_res.data
+    # Always run structured CSV query — mirrors step 07's unconditional detect_intent() → run_query().
+    csv_res = structured_data.query(question)
+    if csv_res.success:
+        csv_data = csv_res.data
 
     context_xml, ce_metrics = engineer_context(
         question=question,

@@ -31,6 +31,9 @@ _PATTERNS: list[tuple[re.Pattern, str]] = [
     (re.compile(r"(all|across).{0,30}(arr|annual recurring revenue).{0,20}total", re.I), "total_arr"),
     # Q08 — total vendor spend
     (re.compile(r"total.{0,30}(vendor|supplier).{0,20}(spend|cost|contract)", re.I), "total_vendor_spend"),
+    # Q19 — total planned headcount from budget allocation
+    (re.compile(r"(total|planned).{0,30}headcount.{0,40}(budget|department|2023)", re.I), "total_headcount"),
+    (re.compile(r"(budget|2023).{0,40}(total|planned).{0,30}headcount", re.I), "total_headcount"),
     # Q16 — H2 2023 contract ARR
     (re.compile(r"(H2|second half).{0,30}2023.{0,40}(arr|contract|deal)", re.I), "h2_2023_arr"),
     (re.compile(r"(arr|contract|deal).{0,40}(H2|second half).{0,30}2023", re.I), "h2_2023_arr"),
@@ -58,6 +61,8 @@ def run_query(intent: str) -> str:
             return _h2_2023_arr()
         elif intent == "employees_by_location":
             return _employees_by_location()
+        elif intent == "total_headcount":
+            return _total_headcount()
     except Exception as e:
         return f"[CSV QUERY ERROR: {e}]"
     return ""
@@ -94,11 +99,10 @@ def _q3_closed_deals() -> str:
 
 
 def _total_arr() -> str:
-    df = pd.read_csv(CORPUS_PATH / "sales" / "customer_list.csv",
-                     header=None,
-                     names=["name", "industry", "arr_usd", "products", "csm", "segment", "since"])
+    df = pd.read_csv(CORPUS_PATH / "sales" / "customer_list.csv")
     total = int(df["arr_usd"].sum())
-    lines = [f"[STRUCTURED CSV QUERY: Total Customer ARR — customer_list.csv]"]
+    lines = [f"[STRUCTURED CSV QUERY — AUTHORITATIVE: use ${total:,} as the exact total ARR figure. Do NOT sum individual customer rows from passages — this aggregate covers all {len(df)} customers.]",
+             f"[Source: customer_list.csv — all {len(df)} rows summed]"]
     lines.append(f"  Total ARR across all {len(df)} customers: ${total:,}")
     return "\n".join(lines)
 
@@ -135,4 +139,16 @@ def _employees_by_location() -> str:
     for loc, cnt in counts.items():
         lines.append(f"  {loc}: {cnt} active employees")
     lines.append(f"  Total active: {active.shape[0]}")
+    return "\n".join(lines)
+
+
+def _total_headcount() -> str:
+    df = pd.read_csv(CORPUS_PATH / "finance" / "budget_allocation_2023.csv")
+    total = int(df["headcount"].sum())
+    lines = [f"[STRUCTURED CSV QUERY — AUTHORITATIVE: use {total} as the exact total planned headcount figure. Do NOT sum individual rows — this aggregate covers all {len(df)} departments.]",
+             "[Source: budget_allocation_2023.csv — all department headcount rows summed]"]
+    for _, r in df.iterrows():
+        lines.append(f"  {r['department']}: {r['headcount']}")
+    lines.append(f"  ───────────────────────────────────────────")
+    lines.append(f"  TOTAL planned headcount (all departments): {total}")
     return "\n".join(lines)

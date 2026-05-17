@@ -1,28 +1,29 @@
 {
   "step": "06_graph_rag",
-  "timestamp": "2026-05-16T00:29:37",
-  "total_questions": 22,
+  "timestamp": "2026-05-16T13:58:31",
+  "total_questions": 27,
   "grade_counts": {
-    "PASS": 20,
-    "PARTIAL": 1,
+    "PASS": 23,
+    "PARTIAL": 3,
     "FAIL": 1
   },
-  "pass_rate": 0.91,
-  "pass_or_partial_rate": 0.95,
+  "pass_rate": 0.85,
+  "pass_or_partial_rate": 0.96,
   "results": [
     {
       "id": "Q01",
       "type": "simple_lookup",
       "question": "What is Vertexia's customer data retention policy for hot storage and cold storage?",
-      "answer": "Vertexia Inc.'s customer data retention policy is as follows:\n\n*   **Hot Storage:** 90 days\n*   **Cold Storage:** 1 year (S3 Glacier)",
-      "grade": "PASS",
+      "answer": "Vertexia Inc.'s customer data retention policy is as follows:\n\n*   **Hot Storage:** 90 days\n*   **Cold Storage:** 1 year (using external_aws_s3)\n\nThe term \"s3 bucket\" in this query refers to the product/service external_aws_s3 in Vertexia's system.",
+      "grade": "PARTIAL",
       "expected_outcome": "PASS",
-      "matched_expected": true,
+      "matched_expected": false,
       "required_hits": [
-        "90 day",
+        "90 day"
+      ],
+      "required_missing": [
         "glacier"
       ],
-      "required_missing": [],
       "sources_retrieved": [
         "legal/data_processing_agreement_template.txt",
         "legal/phoenix_corp_msa.txt",
@@ -47,9 +48,9 @@
         0.844,
         0.837
       ],
-      "context_chars": 17684,
-      "retrieval_latency_ms": 646.9,
-      "generation_latency_ms": 999.0,
+      "context_chars": 17727,
+      "retrieval_latency_ms": 659.2,
+      "generation_latency_ms": 1621.6,
       "provider": "gemini"
     },
     {
@@ -89,15 +90,15 @@
         0.862
       ],
       "context_chars": 15386,
-      "retrieval_latency_ms": 629.4,
-      "generation_latency_ms": 1607.4,
+      "retrieval_latency_ms": 514.7,
+      "generation_latency_ms": 1603.5,
       "provider": "gemini"
     },
     {
       "id": "Q03",
       "type": "simple_lookup",
       "question": "Who is the CEO of Vertexia and who co-founded the company with them?",
-      "answer": "The CEO of Vertexia Inc. is Arjun Mehta. He co-founded the company with Diana Volkov in March 2019.",
+      "answer": "The CEO of Vertexia Inc. is Arjun Mehta. He co-founded the company with Diana Volkov in March 2019.\n\nFact (include verbatim):\nThe term \"pulsar\" in this query refers to the product/service external_pulsar in Vertexia's system.",
       "grade": "PASS",
       "expected_outcome": "PASS",
       "matched_expected": true,
@@ -130,9 +131,9 @@
         0.847,
         0.844
       ],
-      "context_chars": 16802,
-      "retrieval_latency_ms": 674.0,
-      "generation_latency_ms": 787.9,
+      "context_chars": 16845,
+      "retrieval_latency_ms": 507.8,
+      "generation_latency_ms": 1069.8,
       "provider": "gemini"
     },
     {
@@ -172,15 +173,15 @@
         0.843
       ],
       "context_chars": 15418,
-      "retrieval_latency_ms": 715.1,
-      "generation_latency_ms": 1212.6,
+      "retrieval_latency_ms": 695.4,
+      "generation_latency_ms": 845.7,
       "provider": "gemini"
     },
     {
       "id": "Q05",
       "type": "simple_lookup",
       "question": "What message queue technology does NexusFlow use for its core pipeline?",
-      "answer": "Based on the provided documents, there is conflicting information regarding the message queue technology used by NexusFlow:\n\n*   **Source 6** (DataCraft original architecture) states that **Apache Kafka** is the \"spine\" of the system, noting that it is used for source connectors and sinks.\n*   **Source 4** (API dependencies) and the **Knowledge Graph** indicate that NexusFlow has a critical dependency on **external_pulsar** via a client.\n\nThe provided context does not explicitly reconcile these two sources to clarify which is currently used for the core pipeline.",
+      "answer": "Based on the provided documents, NexusFlow uses **Apache Kafka** as the spine for its event streaming. The architecture utilizes a 3-broker MSK cluster in us-east-1.\n\nAdditionally, the `api_dependencies.csv` file notes that NexusFlow has a critical dependency on **external_pulsar** (version v3.0) via a client endpoint for the purpose of a message queue.",
       "grade": "PASS",
       "expected_outcome": "PASS",
       "matched_expected": true,
@@ -213,15 +214,15 @@
         0.848
       ],
       "context_chars": 9417,
-      "retrieval_latency_ms": 630.1,
-      "generation_latency_ms": 1008.7,
+      "retrieval_latency_ms": 730.3,
+      "generation_latency_ms": 1276.5,
       "provider": "gemini"
     },
     {
       "id": "Q06",
       "type": "simple_lookup",
       "question": "What is the NexusFlow platform's monthly availability SLO target as defined in its architecture document?",
-      "answer": "The platform-level availability SLO for NexusFlow is **99.9% (three nines)**, measured monthly against the `events_api` ingestion endpoint and the delivery success rate. This target corresponds to a monthly error budget of approximately 43 minutes.",
+      "answer": "The NexusFlow platform-level availability SLO target is **99.9% (three nines)**, measured monthly against the `events_api` ingestion endpoint and the delivery success rate. This target corresponds to a monthly error budget of approximately 43 minutes.\n\nThe term \"pulsar\" in this context refers to the product/service **external_pulsar** in Vertexia's system.",
       "grade": "PASS",
       "expected_outcome": "PASS",
       "matched_expected": true,
@@ -253,9 +254,9 @@
         0.854,
         0.848
       ],
-      "context_chars": 11958,
-      "retrieval_latency_ms": 686.1,
-      "generation_latency_ms": 1048.7,
+      "context_chars": 12001,
+      "retrieval_latency_ms": 699.1,
+      "generation_latency_ms": 971.8,
       "provider": "gemini"
     },
     {
@@ -295,15 +296,15 @@
         0.844
       ],
       "context_chars": 18249,
-      "retrieval_latency_ms": 735.7,
-      "generation_latency_ms": 814.0,
+      "retrieval_latency_ms": 545.3,
+      "generation_latency_ms": 894.9,
       "provider": "gemini"
     },
     {
       "id": "Q08",
       "type": "csv_full_aggregation",
       "question": "What is Vertexia's total annual spend across all vendor contracts?",
-      "answer": "Vertexia's total annual spend across all vendor contracts is $956,400.",
+      "answer": "Vertexia's total annual spend across all vendor contracts is $956,400.\n\nThe term \"sendgrid\" in this query refers to the product/service external_sendgrid in Vertexia's system.\nThe term \"twilio\" in this query refers to the product/service external_twilio in Vertexia's system.",
       "grade": "PASS",
       "expected_outcome": "FAIL",
       "matched_expected": false,
@@ -335,9 +336,9 @@
         0.862,
         0.86
       ],
-      "context_chars": 10473,
-      "retrieval_latency_ms": 617.3,
-      "generation_latency_ms": 947.2,
+      "context_chars": 10535,
+      "retrieval_latency_ms": 522.4,
+      "generation_latency_ms": 825.7,
       "provider": "gemini"
     },
     {
@@ -377,8 +378,8 @@
         0.834
       ],
       "context_chars": 12430,
-      "retrieval_latency_ms": 804.4,
-      "generation_latency_ms": 1150.9,
+      "retrieval_latency_ms": 707.1,
+      "generation_latency_ms": 868.4,
       "provider": "gemini"
     },
     {
@@ -419,8 +420,8 @@
         0.855
       ],
       "context_chars": 7898,
-      "retrieval_latency_ms": 831.5,
-      "generation_latency_ms": 772.7,
+      "retrieval_latency_ms": 525.2,
+      "generation_latency_ms": 1129.5,
       "provider": "gemini"
     },
     {
@@ -460,8 +461,8 @@
         0.86
       ],
       "context_chars": 14645,
-      "retrieval_latency_ms": 579.3,
-      "generation_latency_ms": 1140.8,
+      "retrieval_latency_ms": 532.2,
+      "generation_latency_ms": 1188.3,
       "provider": "gemini"
     },
     {
@@ -501,15 +502,15 @@
         0.853
       ],
       "context_chars": 21805,
-      "retrieval_latency_ms": 697.9,
-      "generation_latency_ms": 744.0,
+      "retrieval_latency_ms": 669.1,
+      "generation_latency_ms": 1120.6,
       "provider": "gemini"
     },
     {
       "id": "Q13",
       "type": "cross_csv_multi_hop",
       "question": "The engineer who departed Vertexia to join FinDataCo \u2014 what is the name of their direct manager?",
-      "answer": "The engineer who departed Vertexia to join FinDataCo is Adrian Blake. According to the provided records, his direct manager is Priya Nair.",
+      "answer": "The engineer who departed Vertexia to join FinDataCo is Adrian Blake. According to the provided records, his direct manager is Priya Nair (E010).\n\nThe term \"pulsar\" in this query refers to the product/service external_pulsar in Vertexia's system.",
       "grade": "PASS",
       "expected_outcome": "FAIL",
       "matched_expected": false,
@@ -541,16 +542,16 @@
         0.858,
         0.856
       ],
-      "context_chars": 14436,
-      "retrieval_latency_ms": 770.6,
-      "generation_latency_ms": 1164.5,
+      "context_chars": 14479,
+      "retrieval_latency_ms": 553.7,
+      "generation_latency_ms": 877.3,
       "provider": "gemini"
     },
     {
       "id": "Q14",
       "type": "cross_csv_multi_hop",
       "question": "Who is listed as the owner of our Snowflake data warehouse contract, and who is their direct manager?",
-      "answer": "The owner of the Snowflake data warehouse contract (external_snowflake) is Priya Nair. Her direct manager is Marcus Webb.",
+      "answer": "The term \"snowflake data warehouse\" in this query refers to the product/service external_snowflake in Vertexia's system.\nThe term \"sendgrid\" in this query refers to the product/service external_sendgrid in Vertexia's system.\nThe term \"twilio\" in this query refers to the product/service external_twilio in Vertexia's system.\n\nPriya Nair is listed as the owner of the Snowflake data warehouse contract. Her direct manager is Marcus Webb.",
       "grade": "PASS",
       "expected_outcome": "FAIL",
       "matched_expected": false,
@@ -582,9 +583,9 @@
         0.861,
         0.861
       ],
-      "context_chars": 10829,
-      "retrieval_latency_ms": 797.8,
-      "generation_latency_ms": 1025.7,
+      "context_chars": 10911,
+      "retrieval_latency_ms": 567.8,
+      "generation_latency_ms": 1308.9,
       "provider": "gemini"
     },
     {
@@ -624,8 +625,8 @@
         0.856
       ],
       "context_chars": 13932,
-      "retrieval_latency_ms": 600.2,
-      "generation_latency_ms": 1770.8,
+      "retrieval_latency_ms": 713.6,
+      "generation_latency_ms": 1391.7,
       "provider": "gemini"
     },
     {
@@ -665,8 +666,8 @@
         0.851
       ],
       "context_chars": 15559,
-      "retrieval_latency_ms": 633.7,
-      "generation_latency_ms": 1001.9,
+      "retrieval_latency_ms": 546.9,
+      "generation_latency_ms": 908.2,
       "provider": "gemini"
     },
     {
@@ -708,8 +709,8 @@
         0.858
       ],
       "context_chars": 8857,
-      "retrieval_latency_ms": 531.7,
-      "generation_latency_ms": 1207.8,
+      "retrieval_latency_ms": 595.0,
+      "generation_latency_ms": 1103.2,
       "provider": "gemini"
     },
     {
@@ -753,8 +754,8 @@
         0.833
       ],
       "context_chars": 16886,
-      "retrieval_latency_ms": 728.9,
-      "generation_latency_ms": 1805.9,
+      "retrieval_latency_ms": 701.2,
+      "generation_latency_ms": 1942.5,
       "provider": "gemini"
     },
     {
@@ -794,15 +795,15 @@
         0.86
       ],
       "context_chars": 8091,
-      "retrieval_latency_ms": 676.9,
-      "generation_latency_ms": 820.8,
+      "retrieval_latency_ms": 711.3,
+      "generation_latency_ms": 859.7,
       "provider": "gemini"
     },
     {
       "id": "Q20",
       "type": "csv_arithmetic_full_scan",
       "question": "What was Vertexia's total combined revenue across all product lines in Q3 2023 (July, August, and September combined)?",
-      "answer": "Based on the provided financial reports and revenue data, Vertexia Inc.'s total combined GAAP recognized revenue for Q3 2023 was **$4.12 million**.\n\nThis total is comprised of the following product line revenues:\n*   **NexusFlow:** $1.6 million\n*   **InsightLens:** $1.5 million\n*   **PulseConnect:** $1.02 million\n\nWhile the company reported $4.2 million in bookings for the quarter, the $4.12 million figure is the official GAAP recognized revenue reported by the finance team.",
+      "answer": "Vertexia Inc.'s total combined GAAP recognized revenue for Q3 2023 was $4.12 million.\n\nThe breakdown by product line for the quarter is as follows:\n*   **NexusFlow:** $1.6 million\n*   **InsightLens:** $1.5 million\n*   **PulseConnect:** $1.02 million\n\nThe term \"pulsar\" in this query refers to the product/service external_pulsar in Vertexia's system.",
       "grade": "FAIL",
       "expected_outcome": "FAIL",
       "matched_expected": true,
@@ -834,16 +835,16 @@
         0.866,
         0.865
       ],
-      "context_chars": 16445,
-      "retrieval_latency_ms": 691.9,
-      "generation_latency_ms": 1321.5,
+      "context_chars": 16488,
+      "retrieval_latency_ms": 521.8,
+      "generation_latency_ms": 1335.6,
       "provider": "gemini"
     },
     {
       "id": "Q21",
       "type": "multi_hop_implicit",
       "question": "If the analytics dashboard had an ingestion failure on August 29, 2023, which on-call Data Platform engineer would be responsible for the fix?",
-      "answer": "Based on the provided documents, the on-call engineer for the Data Platform Team for the week of August 28, 2023, to September 3, 2023, was **Priya Nair** (employee ID E010).\n\nAs the \"analytics dashboard\" refers to the product **InsightLens**, and InsightLens has a critical dependency on the **NexusFlow** service (which is supported by the Data Platform), Priya Nair would be the responsible on-call engineer for the Data Platform Team during that period.",
+      "answer": "The term \"analytics dashboard\" in this query refers to the product/service InsightLens in Vertexia's system.\n\nBased on the provided on-call schedule for August 2023, the Data Platform Team engineer on call for the week of August 28, 2023, through September 3, 2023, is **Priya Nair** (employee ID E010). Therefore, she would be the responsible engineer for the Data Platform Team during that time.",
       "grade": "PASS",
       "expected_outcome": "PARTIAL",
       "matched_expected": false,
@@ -876,9 +877,9 @@
         0.881,
         0.881
       ],
-      "context_chars": 7032,
-      "retrieval_latency_ms": 832.9,
-      "generation_latency_ms": 1055.9,
+      "context_chars": 7071,
+      "retrieval_latency_ms": 545.5,
+      "generation_latency_ms": 1166.8,
       "provider": "gemini"
     },
     {
@@ -920,8 +921,220 @@
         0.845
       ],
       "context_chars": 20608,
-      "retrieval_latency_ms": 780.5,
-      "generation_latency_ms": 1824.2,
+      "retrieval_latency_ms": 702.7,
+      "generation_latency_ms": 1962.6,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q23",
+      "type": "csm_multi_source_join",
+      "question": "The CSM listed for Apex Financial in Vertexia's customer records is no longer with the company. According to all available records, who currently manages this account, when did they take over, and what is the account's current renewal risk?",
+      "answer": "Based on the provided records, the current status of the Apex Financial account is as follows:\n\n*   **Current Manager:** Sam Rivera (Employee ID: E036) is the current CSM for Apex Financial.\n*   **Takeover Date:** Sam Rivera took over the account on July 1, 2023, following the departure of the previous CSM, Preet Kaur.\n*   **Renewal Risk:** The account's current renewal risk is classified as \"high.\" According to the customer health scores for 2023, the account has a health score of 4, 11 open support tickets, and notes indicate that the CSM transition caused friction, resulting in 3 escalations in Q3.",
+      "grade": "PARTIAL",
+      "expected_outcome": "PASS",
+      "matched_expected": false,
+      "required_hits": [
+        "Sam Rivera",
+        "high"
+      ],
+      "required_missing": [
+        "2023-07-01"
+      ],
+      "sources_retrieved": [
+        "sales/csm_account_history.csv",
+        "sales/customer_health_scores_2023.csv",
+        "sales/csm_account_history.csv",
+        "sales/customer_list.csv",
+        "sales/csm_account_history.csv",
+        "sales/csm_account_history.csv",
+        "sales/customer_list.csv",
+        "sales/csm_account_history.csv",
+        "sales/customer_list.csv",
+        "sales/csm_account_history.csv"
+      ],
+      "source_similarities": [
+        0.897,
+        0.894,
+        0.889,
+        0.886,
+        0.866,
+        0.866,
+        0.863,
+        0.863,
+        0.862,
+        0.862
+      ],
+      "context_chars": 8582,
+      "retrieval_latency_ms": 532.6,
+      "generation_latency_ms": 1364.3,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q24",
+      "type": "technical_precision",
+      "question": "Per the NexusFlow V2.1 post-mortem, what was the exact configuration key that was misconfigured, the incorrect value that was deployed, and the intended correct value?",
+      "answer": "Per the NexusFlow v2.1 post-mortem, the configuration key that was misconfigured is `max_connections`. The incorrect value deployed was `10`, and the intended correct value was `1000`.\n\nFact (include verbatim):\nThe term \"pulsar\" in this query refers to the product/service external_pulsar in Vertexia's system.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "max_connections",
+        "10",
+        "1000"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_architecture.md",
+        "engineering/data_platform_runbook.md",
+        "product/nexusflow_prd_v2.md"
+      ],
+      "source_similarities": [
+        0.886,
+        0.886,
+        0.88,
+        0.864,
+        0.86,
+        0.856,
+        0.849,
+        0.848,
+        0.839,
+        0.839
+      ],
+      "context_chars": 13645,
+      "retrieval_latency_ms": 525.2,
+      "generation_latency_ms": 941.5,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q25",
+      "type": "finance_exact_computation",
+      "question": "What is the average annual contract value across all Vertexia mid-market customers? State the exact dollar figure.",
+      "answer": "To calculate the average annual contract value (ARR) for mid-market customers, we identify all customers with the \"mid-market\" segment and their respective ARR:\n\n1.  **TechVenture AI:** $420,000\n2.  **NovaTech Systems:** $264,000\n3.  **Apex Financial:** $240,000\n4.  **Meridian Health:** $360,000\n5.  **Ironclad Security:** $384,000\n6.  **Pinnacle Mfg:** $192,000\n7.  **GreenLeaf Retail:** $180,000\n8.  **Coastal Bancorp:** $216,000\n9.  **Crestwood Pharma:** $300,000\n10. **BlueRidge Energy:** $480,000\n11. **Summit Pharma:** $300,000\n\n*Note: While the provided CSV source list contains 10 entries, the Knowledge Graph context includes BlueRidge Energy and Summit Pharma as additional mid-market customers.*\n\n**Calculation:**\n*   Total ARR = $420,000 + $264,000 + $240,000 + $360,000 + $384,000 + $192,000 + $180,000 + $216,000 + $300,000 + $480,000 + $300,000 = $3,336,000\n*   Total count of mid-market customers = 11\n*   Average = $3,336,000 / 11 = $303,272.727...\n\nRounding to the nearest dollar, the average annual contract value across all Vertexia mid-market customers is **$303,273**.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "303,273"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv"
+      ],
+      "source_similarities": [
+        0.87,
+        0.865,
+        0.859,
+        0.859,
+        0.856,
+        0.855,
+        0.855,
+        0.854,
+        0.853,
+        0.852
+      ],
+      "context_chars": 10462,
+      "retrieval_latency_ms": 677.1,
+      "generation_latency_ms": 1966.6,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q26",
+      "type": "hr_graph_skip_level",
+      "question": "For each employee who departed Vertexia in 2023, who was their skip-level manager (their manager's manager)?",
+      "answer": "Based on the provided records, there were two employees who departed Vertexia in 2023:\n\n*   **Adrian Blake (E029):**\n    *   Manager: Priya Nair (E010)\n    *   **Skip-level manager:** Marcus Webb (E009), Lead, Platform Engineering.\n\n*   **Preet Kaur (E030):**\n    *   Manager: Maya Sharma (E019)\n    *   **Skip-level manager:** Lisa Torres (E006), CRO.\n\n(Note: Diana Volkov also appears in the offboarding records, but she departed in 2021, not 2023.)",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "Marcus Webb",
+        "Lisa Torres"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "hr/offboarding_records_2023.csv",
+        "hr/org_chart_q1_2023.txt",
+        "hr/promotion_announcements_2023.txt",
+        "hr/offboarding_records_2023.csv",
+        "hr/offboarding_records_2023.csv",
+        "hr/org_chart_q3_2023.txt",
+        "hr/org_chart_q1_2023.txt",
+        "hr/offboarding_records_2023.csv",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv"
+      ],
+      "source_similarities": [
+        0.875,
+        0.868,
+        0.86,
+        0.857,
+        0.853,
+        0.852,
+        0.851,
+        0.846,
+        0.843,
+        0.843
+      ],
+      "context_chars": 4624,
+      "retrieval_latency_ms": 553.7,
+      "generation_latency_ms": 1123.6,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q27",
+      "type": "engineering_rfc_precision",
+      "question": "According to RFC-001, what is the author's exact job title and the name of their direct manager?",
+      "answer": "According to RFC-001, the author is Priya Nair, and her job title is \"Lead, Data Platform Team.\"\n\nBased on the provided knowledge graph, Priya Nair's direct manager is Marcus Webb (Lead, Platform Engineering).",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "Lead, Data Platform Team",
+        "Marcus Webb"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/rfc_001_event_schema.md",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv",
+        "product/nexusflow_prd_v2.md",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv"
+      ],
+      "source_similarities": [
+        0.851,
+        0.842,
+        0.833,
+        0.832,
+        0.831,
+        0.831,
+        0.831,
+        0.83,
+        0.829,
+        0.828
+      ],
+      "context_chars": 9730,
+      "retrieval_latency_ms": 681.8,
+      "generation_latency_ms": 1144.7,
       "provider": "gemini"
     }
   ]

@@ -1,9 +1,680 @@
 {
   "step": "09_multi_agent",
-  "timestamp": "2026-05-16T00:00:00",
-  "total_questions": 22,
-  "grade_counts": {"PASS": 0, "PARTIAL": 0, "FAIL": 0},
-  "pass_rate": 0.0,
-  "pass_or_partial_rate": 0.0,
-  "results": []
+  "timestamp": "2026-05-16T15:27:24",
+  "total_questions": 27,
+  "grade_counts": {
+    "PASS": 25,
+    "PARTIAL": 2,
+    "FAIL": 0
+  },
+  "pass_rate": 0.93,
+  "pass_or_partial_rate": 1.0,
+  "results": [
+    {
+      "id": "Q01",
+      "type": "simple_lookup",
+      "question": "What is Vertexia's customer data retention policy for hot storage and cold storage?",
+      "answer": "Vertexia's customer data retention policy is 90 days for hot storage and 1 year for cold storage (using external_aws_s3).",
+      "grade": "PARTIAL",
+      "expected_outcome": "PASS",
+      "matched_expected": false,
+      "required_hits": [
+        "90 day"
+      ],
+      "required_missing": [
+        "glacier"
+      ],
+      "sources_retrieved": [
+        "legal/phoenix_corp_msa.txt",
+        "product/nexusflow_prd_v2.md",
+        "hr/onboarding_handbook.txt",
+        "engineering/security_audit_2023.txt",
+        "legal/ip_policy.txt"
+      ],
+      "context_chars": 121,
+      "retrieval_latency_ms": 1804.1,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q02",
+      "type": "simple_aggregation",
+      "question": "How many engineers joined Vertexia through the DataCraft acquisition?",
+      "answer": "A total of 12 engineers joined Vertexia through the DataCraft acquisition.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "12"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "hr/datacraft_employee_integration.txt",
+        "legal/datacraft_acquisition_summary.txt",
+        "sales/sales_playbook_2023.txt",
+        "hr/datacraft_employee_integration.txt",
+        "hr/datacraft_employee_integration.txt"
+      ],
+      "context_chars": 74,
+      "retrieval_latency_ms": 1844.0,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q03",
+      "type": "simple_lookup",
+      "question": "Who is the CEO of Vertexia and who co-founded the company with them?",
+      "answer": "The CEO of Vertexia is Arjun Mehta, and he co-founded the company with Diana Volkov.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "Arjun Mehta",
+        "Diana Volkov"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "executive/founding_story.txt",
+        "executive/founding_story.txt",
+        "product/user_research_q3_2023.txt",
+        "hr/org_chart_q1_2023.txt",
+        "legal/ip_policy.txt"
+      ],
+      "context_chars": 84,
+      "retrieval_latency_ms": 3246.7,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q04",
+      "type": "simple_lookup",
+      "question": "In what year was Vertexia Inc. founded?",
+      "answer": "Vertexia Inc. was founded in 2019.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "2019"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "executive/founding_story.txt",
+        "hr/org_chart_q1_2023.txt",
+        "hr/promotion_announcements_2023.txt",
+        "legal/ip_policy.txt",
+        "product/pulseconnect_roadmap_2024.txt"
+      ],
+      "context_chars": 34,
+      "retrieval_latency_ms": 1559.7,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q05",
+      "type": "simple_lookup",
+      "question": "What message queue technology does NexusFlow use for its core pipeline?",
+      "answer": "NexusFlow uses Apache Pulsar for its core pipeline message queue.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "Pulsar"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/api_dependencies.csv",
+        "engineering/nexusflow_architecture.md",
+        "engineering/nexusflow_architecture.md",
+        "engineering/nexusflow_architecture.md",
+        "product/insightlens_prd_v1.md"
+      ],
+      "context_chars": 65,
+      "retrieval_latency_ms": 1645.0,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q06",
+      "type": "simple_lookup",
+      "question": "What is the NexusFlow platform's monthly availability SLO target as defined in its architecture document?",
+      "answer": "The platform-level availability SLO for NexusFlow is 99.9% (three nines) measured monthly.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "99.9"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/nexusflow_architecture.md",
+        "product/insightlens_prd_v1.md",
+        "engineering/nexusflow_architecture.md",
+        "legal/phoenix_corp_msa.txt",
+        "engineering/nexusflow_architecture.md"
+      ],
+      "context_chars": 90,
+      "retrieval_latency_ms": 1759.9,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q07",
+      "type": "csv_full_aggregation",
+      "question": "What is the total annual recurring revenue across all of Vertexia's current customers?",
+      "answer": "The total annual recurring revenue across all of Vertexia's current customers is $11,000,000.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "11,000"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "sales/q3_closed_won_report.txt",
+        "sales/customer_list.csv",
+        "engineering/datacraft_original_architecture.md",
+        "sales/customer_list.csv",
+        "product/nexusflow_prd_v2.md"
+      ],
+      "context_chars": 93,
+      "retrieval_latency_ms": 1752.4,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q08",
+      "type": "csv_full_aggregation",
+      "question": "What is Vertexia's total annual spend across all vendor contracts?",
+      "answer": "Vertexia's total annual spend across all vendor contracts is $956,400.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "956,400"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "finance/vendor_contracts_summary.csv",
+        "finance/vendor_contracts_summary.csv",
+        "sales/sales_playbook_2023.txt",
+        "finance/vendor_contracts_summary.csv",
+        "engineering/datacraft_original_architecture.md"
+      ],
+      "context_chars": 70,
+      "retrieval_latency_ms": 1724.6,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q09",
+      "type": "csv_full_scan_filter",
+      "question": "How many Vertexia employees are currently based in the Berlin office?",
+      "answer": "There are 5 active employees currently based in the Berlin office.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "5"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "hr/datacraft_employee_integration.txt",
+        "legal/ip_policy.txt",
+        "hr/org_chart_q1_2023.txt",
+        "sales/sales_playbook_2023.txt",
+        "hr/org_chart_q3_2023.txt"
+      ],
+      "context_chars": 66,
+      "retrieval_latency_ms": 2150.0,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q10",
+      "type": "csv_arithmetic_aggregation",
+      "question": "Which Vertexia department has the highest annual budget per employee headcount, and what is that figure?",
+      "answer": "The Platform Engineering department has the highest annual budget per employee headcount, with a figure of 195238 per unit.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "Platform Engineering",
+        "195"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "finance/budget_allocation_2023.csv",
+        "legal/datacraft_acquisition_summary.txt",
+        "finance/budget_allocation_2023.csv",
+        "legal/datacraft_acquisition_summary.txt",
+        "finance/budget_allocation_2023.csv"
+      ],
+      "context_chars": 123,
+      "retrieval_latency_ms": 1889.5,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q11",
+      "type": "csv_full_aggregation",
+      "question": "How many deals did Vertexia close as Closed-Won in Q3 2023, and what was their combined ARR?",
+      "answer": "Vertexia closed 8 deals as closed-won in Q3 2023, with a combined ARR of $1,692,000.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "1,692"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "sales/q3_closed_won_report.txt",
+        "product/pulseconnect_roadmap_2024.txt",
+        "sales/q3_closed_won_report.txt",
+        "sales/deal_pipeline_q3_2023.csv",
+        "executive/founding_story.txt"
+      ],
+      "context_chars": 84,
+      "retrieval_latency_ms": 3414.6,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q12",
+      "type": "csv_arithmetic_cross_doc",
+      "question": "What percentage of Vertexia's total annual recurring revenue comes from enterprise-segment customers?",
+      "answer": "Enterprise-segment customers account for 65.1% of Vertexia's total annual recurring revenue.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "65"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "sales/q3_closed_won_report.txt",
+        "executive/founding_story.txt",
+        "finance/series_b_investor_update.txt",
+        "engineering/security_audit_2023.txt",
+        "executive/company_strategy_2024.txt"
+      ],
+      "context_chars": 92,
+      "retrieval_latency_ms": 2112.8,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q13",
+      "type": "cross_csv_multi_hop",
+      "question": "The engineer who departed Vertexia to join FinDataCo \u2014 what is the name of their direct manager?",
+      "answer": "The engineer who departed Vertexia to join FinDataCo is Adrian Blake, and their direct manager is Priya Nair.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "Priya Nair"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "hr/promotion_announcements_2023.txt",
+        "hr/org_chart_q1_2023.txt",
+        "legal/datacraft_acquisition_summary.txt",
+        "hr/offboarding_records_2023.csv",
+        "engineering/datacraft_original_architecture.md"
+      ],
+      "context_chars": 109,
+      "retrieval_latency_ms": 1965.0,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q14",
+      "type": "cross_csv_multi_hop",
+      "question": "Who is listed as the owner of our Snowflake data warehouse contract, and who is their direct manager?",
+      "answer": "Priya Nair is the owner of the Snowflake data warehouse contract, and her direct manager is Marcus Webb.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "Marcus Webb"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "finance/vendor_contracts_summary.csv",
+        "hr/onboarding_handbook.txt",
+        "finance/vendor_contracts_summary.csv",
+        "engineering/datacraft_original_architecture.md",
+        "finance/vendor_contracts_summary.csv"
+      ],
+      "context_chars": 104,
+      "retrieval_latency_ms": 3755.1,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q15",
+      "type": "csv_arithmetic_full_scan",
+      "question": "What percentage of Vertexia's total 2023 annual budget is allocated to the two engineering departments combined (Platform Engineering and Product Engineering)?",
+      "answer": "The total annual budget for Vertexia Inc. is $30,200,000. The Platform Engineering department is allocated $8,200,000, and the Product Engineering department is allocated $9,800,000. Combined, these two departments account for $18,000,000, which represents approximately 59.6% of the total annual budget.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "59"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "executive/board_meeting_april_2023.txt",
+        "finance/budget_allocation_2023.csv",
+        "finance/budget_allocation_2023.csv",
+        "hr/promotion_announcements_2023.txt",
+        "finance/budget_allocation_2023.csv"
+      ],
+      "context_chars": 304,
+      "retrieval_latency_ms": 6114.6,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q16",
+      "type": "csv_date_filter_aggregation",
+      "question": "What is the total combined ARR of all customers who signed contracts in the second half of 2023 (July through December)?",
+      "answer": "The total combined ARR of all customers who signed contracts in the second half of 2023 (July through December) is $3,120,000.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "3,120"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "sales/customer_list.csv",
+        "legal/datacraft_acquisition_summary.txt",
+        "sales/customer_list.csv",
+        "product/insightlens_prd_v1.md",
+        "sales/customer_list.csv"
+      ],
+      "context_chars": 126,
+      "retrieval_latency_ms": 1862.8,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q17",
+      "type": "stale_reference",
+      "question": "According to our customer records, who is the customer success manager for Apex Financial, and based on all available HR records, are they still at Vertexia and under what circumstances did they leave?",
+      "answer": "The current customer success manager for Apex Financial is Sam Rivera. \n\nRegarding the previous customer success manager, Preet Kaur, she is no longer at Vertexia. She departed on 2023-06-30 with a departure type of voluntary, as she relocated internationally.",
+      "grade": "PASS",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": false,
+      "required_hits": [
+        "Preet Kaur",
+        "departed",
+        "voluntary"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "sales/csm_account_history.csv",
+        "engineering/nexusflow_architecture.md",
+        "sales/csm_account_history.csv",
+        "product/nexusflow_prd_v2.md",
+        "sales/customer_list.csv"
+      ],
+      "context_chars": 260,
+      "retrieval_latency_ms": 3206.5,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q18",
+      "type": "disambiguation_no_name",
+      "question": "Vertexia has two separate internal efforts that share the same name. What are they, and what was the outcome of each?",
+      "answer": "Vertexia has two separate internal efforts named \"Project Phoenix.\"\n\nThe first effort, a Python 2 to 3 migration, was successfully completed in 2022-06. \n\nThe second effort refers to the Phoenix Corp MSA, a landmark enterprise deal that was signed following the acquisition of DataCraft.",
+      "grade": "PASS",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": false,
+      "required_hits": [
+        "Python",
+        "Phoenix Corp",
+        "completed",
+        "signed"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "executive/founding_story.txt",
+        "hr/org_chart_q1_2023.txt",
+        "executive/founding_story.txt",
+        "engineering/datacraft_original_architecture.md",
+        "hr/onboarding_handbook.txt"
+      ],
+      "context_chars": 287,
+      "retrieval_latency_ms": 3580.4,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q19",
+      "type": "csv_full_aggregation",
+      "question": "What is Vertexia's total planned headcount across all departments as outlined in the 2023 budget allocation?",
+      "answer": "Vertexia's total planned headcount across all departments as outlined in the 2023 budget allocation is 181.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "181"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "hr/org_chart_q1_2023.txt",
+        "hr/org_chart_q3_2023.txt",
+        "product/pulseconnect_roadmap_2024.txt",
+        "finance/budget_allocation_2023.csv",
+        "sales/sales_playbook_2023.txt"
+      ],
+      "context_chars": 107,
+      "retrieval_latency_ms": 1544.8,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q20",
+      "type": "csv_arithmetic_full_scan",
+      "question": "What was Vertexia's total combined revenue across all product lines in Q3 2023 (July, August, and September combined)?",
+      "answer": "Vertexia's total combined revenue across all product lines in Q3 2023 was $4,120,000.",
+      "grade": "PASS",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "required_hits": [
+        "4,120"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "finance/q3_2023_finance_report.txt",
+        "sales/q3_closed_won_report.txt",
+        "executive/q3_2023_allhands_notes.txt",
+        "sales/q3_closed_won_report.txt",
+        "finance/revenue_by_product_2023.csv"
+      ],
+      "context_chars": 85,
+      "retrieval_latency_ms": 3105.6,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q21",
+      "type": "multi_hop_implicit",
+      "question": "If the analytics dashboard had an ingestion failure on August 29, 2023, which on-call Data Platform engineer would be responsible for the fix?",
+      "answer": "Priya Nair would be responsible for the fix, as she is the on-call engineer for the week of 2023-08-28 to 2023-09-03. The analytics dashboard is InsightLens.",
+      "grade": "PASS",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": false,
+      "required_hits": [
+        "Priya Nair",
+        "InsightLens"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/data_platform_runbook.md",
+        "engineering/on_call_schedule_aug2023.csv",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/on_call_schedule_aug2023.csv",
+        "sales/sales_playbook_2023.txt"
+      ],
+      "context_chars": 157,
+      "retrieval_latency_ms": 1926.4,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q22",
+      "type": "blast_radius_multi_hop",
+      "question": "If Vertexia's primary message queue infrastructure went down completely, trace the full blast radius: which internal products would be affected and which specific enterprise customers would lose service?",
+      "answer": "If the external_pulsar service went down, the blast radius would affect NexusFlow, which depends on it via the client endpoint. Consequently, the following internal products and enterprise customers would lose service:\n\nThe internal products affected are NexusFlow, InsightLens (which depends on NexusFlow via the events_api and connectors_api), and DataCraft (which depends on NexusFlow via the ingest_api).\n\nThe enterprise customers that would lose service are Phoenix Corp, QuantumBank, Redwood Analytics, and Northgate Bank.",
+      "grade": "PASS",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": false,
+      "required_hits": [
+        "InsightLens",
+        "events_api",
+        "QuantumBank"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/nexusflow_architecture.md",
+        "engineering/api_dependencies.csv",
+        "sales/q3_closed_won_report.txt",
+        "product/nexusflow_prd_v2.md",
+        "engineering/security_audit_2023.txt"
+      ],
+      "context_chars": 528,
+      "retrieval_latency_ms": 2233.6,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q23",
+      "type": "csm_multi_source_join",
+      "question": "The CSM listed for Apex Financial in Vertexia's customer records is no longer with the company. According to all available records, who currently manages this account, when did they take over, and what is the account's current renewal risk?",
+      "answer": "Sam Rivera currently manages the Apex Financial account. He took over on 2023-07-01. The account's current renewal risk is high.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "Sam Rivera",
+        "2023-07-01",
+        "high"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "sales/csm_account_history.csv",
+        "engineering/nexusflow_architecture.md",
+        "sales/customer_health_scores_2023.csv",
+        "product/user_research_q3_2023.txt",
+        "sales/csm_account_history.csv"
+      ],
+      "context_chars": 128,
+      "retrieval_latency_ms": 3675.9,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q24",
+      "type": "technical_precision",
+      "question": "Per the NexusFlow V2.1 post-mortem, what was the exact configuration key that was misconfigured, the incorrect value that was deployed, and the intended correct value?",
+      "answer": "Per the NexusFlow v2.1 post-mortem, the configuration key that was misconfigured is `max_connections`. The incorrect value deployed was `10`, and the intended correct value was `1000`.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "max_connections",
+        "10",
+        "1000"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "executive/founding_story.txt"
+      ],
+      "context_chars": 184,
+      "retrieval_latency_ms": 3076.0,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q25",
+      "type": "finance_exact_computation",
+      "question": "What is the average annual contract value across all Vertexia mid-market customers? State the exact dollar figure.",
+      "answer": "The average annual contract value across all Vertexia mid-market customers is $324,000.",
+      "grade": "PARTIAL",
+      "expected_outcome": "PASS",
+      "matched_expected": false,
+      "required_hits": [],
+      "required_missing": [
+        "303,273"
+      ],
+      "sources_retrieved": [
+        "sales/customer_list.csv",
+        "product/user_research_q3_2023.txt",
+        "sales/customer_list.csv",
+        "engineering/datacraft_original_architecture.md",
+        "sales/customer_list.csv"
+      ],
+      "context_chars": 87,
+      "retrieval_latency_ms": 1893.1,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q26",
+      "type": "hr_graph_skip_level",
+      "question": "For each employee who departed Vertexia in 2023, who was their skip-level manager (their manager's manager)?",
+      "answer": "For the employees who departed Vertexia in 2023, the skip-level managers are as follows:\n\nAdrian Blake's manager's manager was Marcus Webb.\nPreet Kaur's manager's manager was Lisa Torres.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "Marcus Webb",
+        "Lisa Torres"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "hr/org_chart_q1_2023.txt",
+        "hr/offboarding_records_2023.csv",
+        "engineering/datacraft_original_architecture.md",
+        "hr/org_chart_q1_2023.txt",
+        "product/user_research_q3_2023.txt"
+      ],
+      "context_chars": 187,
+      "retrieval_latency_ms": 1943.9,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    },
+    {
+      "id": "Q27",
+      "type": "engineering_rfc_precision",
+      "question": "According to RFC-001, what is the author's exact job title and the name of their direct manager?",
+      "answer": "According to RFC-001, the author's exact job title is Lead, Data Platform Team. Their direct manager is Marcus Webb.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "Lead, Data Platform Team",
+        "Marcus Webb"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/rfc_001_event_schema.md",
+        "legal/datacraft_acquisition_summary.txt",
+        "hr/employee_directory.csv",
+        "hr/onboarding_handbook.txt",
+        "hr/employee_directory.csv"
+      ],
+      "context_chars": 116,
+      "retrieval_latency_ms": 1817.7,
+      "generation_latency_ms": 0.0,
+      "provider": "multi-agent:gemini-direct"
+    }
+  ]
 }

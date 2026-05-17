@@ -7,20 +7,22 @@ A 12-step learning project that builds a production-grade RAG system from scratc
 | Step | Name | Pass Rate | What it adds |
 |------|------|-----------|-------------|
 | [00](step_00_dataset/README.md) | Dataset | — | 48 synthetic files across 7 departments (CSV, Markdown, TXT, JSON) |
-| [01](step_01_baseline_rag/README.md) | Baseline Vector RAG | 22% (6/27) | ChromaDB + Gemini embeddings, top-5 cosine retrieval |
+| [01](step_01_baseline_rag/README.md) | Baseline Vector RAG | 26% (7/27) | ChromaDB + Gemini embeddings, top-5 cosine retrieval |
 | [02](step_02_observability/README.md) | Observability | — | JSONL trace store + Arize Phoenix integration |
 | [03](step_03_evaluation/README.md) | Evaluation Framework | — | 5 RAGAS-style LLM-as-judge metrics |
-| [04](step_04_chunking/README.md) | Format-aware Chunking | 48% (13/27) | CSV aggregate chunks, Markdown section splits, text structure detection |
-| [05](step_05_knowledge_graph/README.md) | Knowledge Graph | 67% (18/27) | Entity nodes + relationship edges from CSVs (reports_to, depends_on, uses) |
-| [06](step_06_graph_rag/README.md) | Graph RAG | 74% (20/27) | Alias resolution + full dependency chain traversal |
-| [07](step_07_rag_fusion/README.md) | RAG Fusion + BM25 | 78% (21/27) | BM25 + dense RRF merge + Pandas structured CSV query tool |
-| [08](step_08_agentic_rag/README.md) | Agentic RAG | 81% (22/27) | Tool-calling loop via LLM Gateway V2 (Gemini/NVIDIA/Groq/Cerebras) |
-| [09](step_09_multi_agent/README.md) | Multi-Agent System | 85% (23/27) | 6 specialised agents + orchestrator + Critic with typed contracts |
-| [10](step_10_context_engineering/README.md) | Context Engineering | 89% (24/27) | CrossEncoder rerank → Jaccard dedup → extractive compress → XML budget |
-| [11](step_11_vsa/README.md) | Vertical Slice Architecture | 100% (27/27) | Keyword router dispatches to Finance/HR/Engineering/General domain slices |
-| [12](step_12_production/README.md) | Production Hardening | 100% + reliability | Semantic cache + retry/backoff + confidence scoring + health monitor |
+| [04](step_04_chunking/README.md) | Format-aware Chunking | 52% (14/27) | CSV aggregate chunks, Markdown section splits, text structure detection |
+| [05](step_05_knowledge_graph/README.md) | Knowledge Graph | 78% (21/27) | Entity nodes + relationship edges from CSVs (reports_to, depends_on, uses) |
+| [06](step_06_graph_rag/README.md) | Graph RAG | 85% (23/27) | Alias resolution + full dependency chain traversal |
+| [07](step_07_rag_fusion/README.md) | RAG Fusion + BM25 | 89% (24/27) | BM25 + dense RRF merge + Pandas structured CSV query tool |
+| [08](step_08_agentic_rag/README.md) | Agentic RAG | 85% (23/27) | Tool-calling loop via LLM Gateway V2 (Gemini/NVIDIA/Groq/Cerebras) |
+| [09](step_09_multi_agent/README.md) | Multi-Agent System | 93% (25/27) | 6 specialised agents + orchestrator + Critic + synthesis precision rules |
+| [10](step_10_context_engineering/README.md) | Context Engineering | 85% (23/27) † | CrossEncoder rerank → Jaccard dedup → extractive compress → XML budget |
+| [11](step_11_vsa/README.md) | Vertical Slice Architecture | 89% (24/27) | Keyword router dispatches to Finance/HR/Engineering/General domain slices |
+| [12](step_12_production/README.md) | Production Hardening | 89% (24/27) + reliability | Semantic cache + retry/backoff + confidence scoring + health monitor |
 
-> Q23–Q27 are the new test cases targeting steps 09–11. Run eval scripts to populate results for steps 09–12.
+> † Step 10's extractive compression introduces a tradeoff: Q18 (cross-reference disambiguation) and Q22 (blast-radius completeness) regress as aggressive sentence filtering removes context that multi-agent reasoning preserved. The Finance/HR slices in Step 11 recover these losses through domain-specific prompts and routing.
+>
+> Q23–Q27 target the agent-tier steps (09–11). Run eval scripts to populate results.
 
 ## Architecture at Step 12
 

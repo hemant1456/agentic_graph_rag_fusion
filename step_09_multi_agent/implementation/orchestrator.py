@@ -88,18 +88,18 @@ def run(
         status="ok" if graph_res.success else "skipped",
     ))
 
-    if analysis.needs_csv:
-        t0 = time.perf_counter()
-        csv_res = structured_data.query(question)
-        if csv_res.success:
-            contexts["CSV"] = csv_res.data
-        traces.append(AgentTrace(
-            agent_id="structured_data",
-            input_summary=question[:80],
-            output_summary=f"intent={csv_res.intent_matched} success={csv_res.success}",
-            latency_ms=(time.perf_counter() - t0) * 1000,
-            status="ok" if csv_res.success else "error",
-        ))
+    # Always run structured CSV query — mirrors step 07's unconditional detect_intent() → run_query().
+    t0 = time.perf_counter()
+    csv_res = structured_data.query(question)
+    if csv_res.success:
+        contexts["CSV"] = csv_res.data
+    traces.append(AgentTrace(
+        agent_id="structured_data",
+        input_summary=question[:80],
+        output_summary=f"intent={csv_res.intent_matched} success={csv_res.success}",
+        latency_ms=(time.perf_counter() - t0) * 1000,
+        status="ok" if csv_res.success else "error",
+    ))
 
     t0 = time.perf_counter()
     synth = synthesis.synthesize(question, contexts, analysis.query_type)

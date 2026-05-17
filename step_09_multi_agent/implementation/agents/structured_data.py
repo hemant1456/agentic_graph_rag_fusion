@@ -25,6 +25,8 @@ def _fallback_intent(question: str) -> str | None:
         return "q3_closed_deals"
     if any(w in q for w in ("berlin", "bangalore", "austin", "tokyo", "singapore", "dublin")):
         return "employees_by_location"
+    if ("headcount" in q or "head count" in q) and ("budget" in q or "department" in q or "planned" in q):
+        return "total_headcount"
     return None
 
 

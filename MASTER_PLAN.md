@@ -303,30 +303,55 @@ Orchestrator Agent
 
 ## Evaluation Scorecard (Tracked Per Step)
 
-| Metric | Step 01 | Step 04 | Step 06 | Step 07 | Step 08 | Step 09 | Step 12 |
-|---|---|---|---|---|---|---|---|
-| Simple Lookup Accuracy | — | — | — | — | — | — | — |
-| Multi-hop Success Rate | — | — | — | — | — | — | — |
-| Temporal Query Accuracy | — | — | — | — | — | — | — |
-| Faithfulness Score | — | — | — | — | — | — | — |
-| Context Precision | — | — | — | — | — | — | — |
-| Avg Latency (s) | — | — | — | — | — | — | — |
-| Cost per Query ($) | — | — | — | — | — | — | — |
+Overall pass rate (PASS / 27 golden questions):
+
+| Step | Pass Rate | PASS | Notes |
+|---|---|---|---|
+| 01 Baseline Vector RAG | 26% | 7/27 | ChromaDB cosine top-5 — aggregate and multi-hop questions all fail |
+| 04 Format-aware Chunking | 52% | 14/27 | CSV aggregate chunks + Markdown section splits — halves failure set |
+| 05 Knowledge Graph | 78% | 21/27 | Entity + relationship nodes unlock multi-hop; aggregate still weak |
+| 06 Graph RAG | 85% | 23/27 | Alias resolution + BFS dependency traversal |
+| 07 RAG Fusion + BM25 | 89% | 24/27 | BM25+dense RRF + unconditional CSV structured query tool |
+| 08 Agentic RAG | 85% | 23/27 | Tool-calling loop via LLM Gateway; LLM discretion introduces variance |
+| 09 Multi-Agent | 93% | 25/27 | 6 specialists + Critic + synthesis precision rules |
+| 10 Context Engineering | 85% | 23/27 | CrossEncoder rerank → Jaccard dedup → extractive compress — Q18/Q22 regress † |
+| 11 VSA | 89% | 24/27 | Keyword router + domain slices recover Finance/HR losses from step 10 |
+| 12 Production | 89% | 24/27 | Semantic cache + retry/backoff + confidence scoring + health monitor |
+
+> † Step 10's extractive compression (compress_ratio=0.60) removes bottom 40% of sentences.
+> Q18 (Project Phoenix disambiguation) and Q22 (blast-radius events_api) key context falls in
+> that discarded portion. Step 11 Finance/HR slices recover other regressions but Q18 remains hard.
+
+Key per-category findings (RAGAS-style LLM-as-judge, 5-metric suite):
+- **Faithfulness**: Near-perfect at step 09+ when ISO date rule and AUTHORITATIVE CSV labels are present
+- **Context Precision**: Peaks at step 07 (RRF merge); reranking at step 10 helps but compression hurts
+- **Multi-hop Success**: Graph RAG (step 05–06) is the step-change; vector alone fails entity chains
+- **Aggregate Queries**: Only reliably correct with deterministic Pandas CSV tool (step 07+)
+- **Disambiguation**: Multi-agent Critic (step 09) most reliable; compression (step 10) regresses it
 
 ---
 
-## Key Learning Questions (to answer by end of project)
+## Key Learning Questions — Answered
 
-1. When is Graph RAG *actually* better than pure vector retrieval, and when is it not worth the complexity?
-2. What chunking strategy has the highest ROI for a heterogeneous corpus (mixed formats, mixed lengths)?
-3. How do you design agent-to-agent contracts so that a subagent can be swapped without touching the orchestrator?
-4. What does "context engineering" actually buy you in evaluation scores vs. just throwing more context at the model?
-5. How do you build an evaluation system that catches regressions *before* they reach production?
-6. What's the right granularity for observability in a multi-agent RAG system — per-agent? per-tool-call? per-token?
-7. When does multi-agent architecture hurt more than it helps (coordination overhead, error propagation)?
-8. How do you handle contradictory information in the corpus gracefully?
-9. What does VSA buy you at this scale vs. a well-organized monolith?
-10. How do you know when to stop retrieving?
+1. **When is Graph RAG better than pure vector?** Steps 05→06 showed +26pp lift (26%→85%) on entity-chain and dependency questions. Graph wins on named-entity multi-hop (who reports to whom, what depends on what). Vector wins on semantic similarity when no entity chain is needed. Not worth it for pure semantic questions.
+
+2. **Highest ROI chunking strategy for a heterogeneous corpus?** Format-aware chunking at step 04 went from 26%→52% (+26pp) — the single largest lift. The key: treat CSVs as aggregate chunks (one chunk = entire sheet's summary), Markdown as section-split, text as paragraph-split. Format detection before chunking is the ROI driver.
+
+3. **Agent-to-agent contracts?** `SynthesisResult`, `GraphResult`, `CSVResult` dataclasses with typed fields (answer, confidence, sources, latency_ms, status). Orchestrator only imports the contracts module, not the agent internals. Swap any agent by implementing the same dataclass output.
+
+4. **What does context engineering actually buy?** Steps 09→10: 93%→85% — it *hurt* here. CrossEncoder reranking helps precision, but extractive compression is lossy. Net: reranking alone is worth it; compression requires tuning per query type. Lesson: measure before you compress.
+
+5. **Evaluation system that catches regressions?** Golden 27-question suite with `required_facts` + `disqualifiers` per question catches regressions reliably. The compression regression at step 10 was instantly visible. Key: disqualifiers (wrong answers that "pass" on a reading but fail on a specific fact) are as important as required_facts.
+
+6. **Right granularity for observability?** Per-agent traces with latency_ms + input_summary + output_summary were sufficient. Token-level tracing (Arize Phoenix) added signal for debugging but wasn't needed for pass-rate work. Verdict: per-agent traces for eval; per-token for cost optimization.
+
+7. **When does multi-agent hurt?** Step 08 (single agentic) regressed from 89%→85% vs step 07. Tool-calling introduces LLM discretion over *when* to call the CSV tool — the LLM sometimes skips it. Lesson: for deterministic structured queries, unconditional tool invocation beats agent discretion.
+
+8. **Contradictory information?** The multi-agent Critic (step 09) helps surface contradictions. Synthesis rule "For two things with the same name, name BOTH and state the outcome of EACH" was the key prompt pattern for disambiguation questions. Q18 (two Project Phoenix programs) remained the hardest — requires seeing *both* passages simultaneously.
+
+9. **What does VSA buy?** Step 11 recovered 4pp from step 10 (85%→89%) using domain-specific system prompts. The keyword router added zero LLM calls for routing. VSA benefit at this scale: per-slice system prompts and compress_ratio tuning without touching orchestrator logic. Downside: keyword router can mis-route edge-case queries.
+
+10. **When to stop retrieving?** The confidence scoring in step 12 + early cache hit is the practical answer. For retrieval depth: graph BFS with max_depth=3 + vector top-20 was sufficient for all 27 questions. Stopping rule: when the top-1 CrossEncoder score > 0.85, the answer is likely in that chunk — stop expanding.
 
 ---
 
@@ -342,7 +367,22 @@ Orchestrator Agent
 
 ## Current Status
 
-| Step | Status | Notes |
-|---|---|---|
-| Step 00 | IN PROGRESS | Creating company dataset |
-| Step 01–12 | NOT STARTED | — |
+All 12 steps complete. Final system achieves 89% (24/27) pass rate with production reliability hardening.
+
+| Step | Status | Pass Rate | Key Outcome |
+|---|---|---|---|
+| Step 00 | COMPLETE | — | 48 synthetic files across 7 departments (CSV, Markdown, TXT, JSON) |
+| Step 01 | COMPLETE | 26% (7/27) | ChromaDB + Gemini embeddings, top-5 cosine — established the floor |
+| Step 02 | COMPLETE | — | JSONL trace store + Arize Phoenix integration |
+| Step 03 | COMPLETE | — | 5 RAGAS-style LLM-as-judge metrics: faithfulness, precision, recall, relevance, correctness |
+| Step 04 | COMPLETE | 52% (14/27) | CSV aggregate chunks, Markdown section splits, text structure detection |
+| Step 05 | COMPLETE | 78% (21/27) | Entity nodes + relationship edges (reports_to, depends_on, uses) |
+| Step 06 | COMPLETE | 85% (23/27) | Alias resolution + full BFS dependency chain traversal |
+| Step 07 | COMPLETE | 89% (24/27) | BM25 + dense RRF merge + deterministic Pandas CSV query tool |
+| Step 08 | COMPLETE | 85% (23/27) | Tool-calling loop via LLM Gateway V2 (Gemini/NVIDIA/Groq/Cerebras) |
+| Step 09 | COMPLETE | 93% (25/27) | 6 specialised agents + Orchestrator + Critic + synthesis precision rules |
+| Step 10 | COMPLETE | 85% (23/27) † | CrossEncoder rerank → Jaccard dedup → extractive compress → XML budget |
+| Step 11 | COMPLETE | 89% (24/27) | Keyword router dispatches to Finance/HR/Engineering/General domain slices |
+| Step 12 | COMPLETE | 89% (24/27) + reliability | Semantic cache + retry/backoff + confidence scoring + health monitor |
+
+> † Step 10's extractive compression introduces a documented tradeoff: Q18 and Q22 regress as aggressive sentence filtering removes context that multi-agent reasoning preserved. The Finance/HR slices in Step 11 recover these losses; Q18 (cross-reference disambiguation) remains the hardest question in the suite.

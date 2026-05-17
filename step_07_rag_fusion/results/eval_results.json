@@ -1,13 +1,13 @@
 {
   "step": "07_rag_fusion",
-  "timestamp": "2026-05-16T01:40:37",
-  "total_questions": 22,
+  "timestamp": "2026-05-16T13:59:25",
+  "total_questions": 27,
   "grade_counts": {
-    "PASS": 21,
-    "PARTIAL": 1,
+    "PASS": 24,
+    "PARTIAL": 3,
     "FAIL": 0
   },
-  "pass_rate": 0.95,
+  "pass_rate": 0.89,
   "pass_or_partial_rate": 1.0,
   "results": [
     {
@@ -36,8 +36,8 @@
         "engineering/nexusflow_architecture.md"
       ],
       "context_chars": 16453,
-      "retrieval_latency_ms": 606.8,
-      "generation_latency_ms": 1410.6,
+      "retrieval_latency_ms": 706.5,
+      "generation_latency_ms": 1164.1,
       "provider": "gemini"
     },
     {
@@ -65,8 +65,8 @@
         "product/nexusflow_prd_v2.md"
       ],
       "context_chars": 20869,
-      "retrieval_latency_ms": 631.3,
-      "generation_latency_ms": 874.2,
+      "retrieval_latency_ms": 766.9,
+      "generation_latency_ms": 883.9,
       "provider": "gemini"
     },
     {
@@ -95,8 +95,8 @@
         "hr/org_chart_q1_2023.txt"
       ],
       "context_chars": 18906,
-      "retrieval_latency_ms": 555.2,
-      "generation_latency_ms": 801.5,
+      "retrieval_latency_ms": 2002.0,
+      "generation_latency_ms": 1115.4,
       "provider": "gemini"
     },
     {
@@ -124,8 +124,8 @@
         "product/pulseconnect_roadmap_2024.txt"
       ],
       "context_chars": 19269,
-      "retrieval_latency_ms": 684.2,
-      "generation_latency_ms": 927.7,
+      "retrieval_latency_ms": 501.2,
+      "generation_latency_ms": 932.9,
       "provider": "gemini"
     },
     {
@@ -153,8 +153,8 @@
         "engineering/datacraft_original_architecture.md"
       ],
       "context_chars": 12268,
-      "retrieval_latency_ms": 558.4,
-      "generation_latency_ms": 1194.6,
+      "retrieval_latency_ms": 537.5,
+      "generation_latency_ms": 1028.0,
       "provider": "gemini"
     },
     {
@@ -182,8 +182,8 @@
         "engineering/data_platform_runbook.md"
       ],
       "context_chars": 15387,
-      "retrieval_latency_ms": 574.5,
-      "generation_latency_ms": 1278.4,
+      "retrieval_latency_ms": 681.5,
+      "generation_latency_ms": 877.5,
       "provider": "gemini"
     },
     {
@@ -211,8 +211,8 @@
         "sales/customer_list.csv"
       ],
       "context_chars": 21940,
-      "retrieval_latency_ms": 590.2,
-      "generation_latency_ms": 1342.5,
+      "retrieval_latency_ms": 689.2,
+      "generation_latency_ms": 942.8,
       "provider": "gemini"
     },
     {
@@ -240,8 +240,8 @@
         "hr/onboarding_handbook.txt"
       ],
       "context_chars": 17956,
-      "retrieval_latency_ms": 735.1,
-      "generation_latency_ms": 1301.5,
+      "retrieval_latency_ms": 498.6,
+      "generation_latency_ms": 1257.7,
       "provider": "gemini"
     },
     {
@@ -269,8 +269,8 @@
         "hr/onboarding_handbook.txt"
       ],
       "context_chars": 16627,
-      "retrieval_latency_ms": 537.2,
-      "generation_latency_ms": 1304.3,
+      "retrieval_latency_ms": 502.7,
+      "generation_latency_ms": 962.5,
       "provider": "gemini"
     },
     {
@@ -299,8 +299,8 @@
         "finance/budget_allocation_2023.csv"
       ],
       "context_chars": 16156,
-      "retrieval_latency_ms": 905.1,
-      "generation_latency_ms": 1121.3,
+      "retrieval_latency_ms": 517.9,
+      "generation_latency_ms": 933.3,
       "provider": "gemini"
     },
     {
@@ -328,8 +328,8 @@
         "sales/q3_closed_won_report.txt"
       ],
       "context_chars": 18706,
-      "retrieval_latency_ms": 650.0,
-      "generation_latency_ms": 1223.4,
+      "retrieval_latency_ms": 538.4,
+      "generation_latency_ms": 1045.1,
       "provider": "gemini"
     },
     {
@@ -357,8 +357,8 @@
         "legal/phoenix_corp_msa.txt"
       ],
       "context_chars": 23799,
-      "retrieval_latency_ms": 588.3,
-      "generation_latency_ms": 1126.9,
+      "retrieval_latency_ms": 601.2,
+      "generation_latency_ms": 1136.2,
       "provider": "gemini"
     },
     {
@@ -386,8 +386,8 @@
         "legal/ip_policy.txt"
       ],
       "context_chars": 16271,
-      "retrieval_latency_ms": 736.7,
-      "generation_latency_ms": 800.8,
+      "retrieval_latency_ms": 560.1,
+      "generation_latency_ms": 977.9,
       "provider": "gemini"
     },
     {
@@ -415,8 +415,8 @@
         "legal/datacraft_acquisition_summary.txt"
       ],
       "context_chars": 14549,
-      "retrieval_latency_ms": 839.7,
-      "generation_latency_ms": 1105.8,
+      "retrieval_latency_ms": 541.1,
+      "generation_latency_ms": 1011.8,
       "provider": "gemini"
     },
     {
@@ -444,8 +444,8 @@
         "finance/budget_allocation_2023.csv"
       ],
       "context_chars": 21474,
-      "retrieval_latency_ms": 620.3,
-      "generation_latency_ms": 1319.6,
+      "retrieval_latency_ms": 545.3,
+      "generation_latency_ms": 1335.2,
       "provider": "gemini"
     },
     {
@@ -473,8 +473,8 @@
         "product/user_research_q3_2023.txt"
       ],
       "context_chars": 18366,
-      "retrieval_latency_ms": 538.1,
-      "generation_latency_ms": 790.0,
+      "retrieval_latency_ms": 536.2,
+      "generation_latency_ms": 923.1,
       "provider": "gemini"
     },
     {
@@ -504,8 +504,8 @@
         "product/nexusflow_prd_v2.md"
       ],
       "context_chars": 11554,
-      "retrieval_latency_ms": 481.6,
-      "generation_latency_ms": 1360.7,
+      "retrieval_latency_ms": 697.6,
+      "generation_latency_ms": 1017.8,
       "provider": "gemini"
     },
     {
@@ -536,8 +536,8 @@
         "legal/datacraft_acquisition_summary.txt"
       ],
       "context_chars": 19199,
-      "retrieval_latency_ms": 832.1,
-      "generation_latency_ms": 1318.5,
+      "retrieval_latency_ms": 557.7,
+      "generation_latency_ms": 1492.1,
       "provider": "gemini"
     },
     {
@@ -565,8 +565,8 @@
         "engineering/datacraft_original_architecture.md"
       ],
       "context_chars": 15656,
-      "retrieval_latency_ms": 715.7,
-      "generation_latency_ms": 994.0,
+      "retrieval_latency_ms": 693.6,
+      "generation_latency_ms": 1012.8,
       "provider": "gemini"
     },
     {
@@ -594,8 +594,8 @@
         "finance/revenue_by_product_2023.csv"
       ],
       "context_chars": 17821,
-      "retrieval_latency_ms": 560.1,
-      "generation_latency_ms": 917.0,
+      "retrieval_latency_ms": 701.1,
+      "generation_latency_ms": 1348.0,
       "provider": "gemini"
     },
     {
@@ -625,8 +625,8 @@
         "engineering/project_phoenix_migration.md"
       ],
       "context_chars": 11651,
-      "retrieval_latency_ms": 916.7,
-      "generation_latency_ms": 1051.6,
+      "retrieval_latency_ms": 687.6,
+      "generation_latency_ms": 1336.6,
       "provider": "gemini"
     },
     {
@@ -656,8 +656,160 @@
         "executive/q3_2023_allhands_notes.txt"
       ],
       "context_chars": 16927,
-      "retrieval_latency_ms": 789.5,
-      "generation_latency_ms": 1827.7,
+      "retrieval_latency_ms": 543.6,
+      "generation_latency_ms": 1721.2,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q23",
+      "type": "csm_multi_source_join",
+      "question": "The CSM listed for Apex Financial in Vertexia's customer records is no longer with the company. According to all available records, who currently manages this account, when did they take over, and what is the account's current renewal risk?",
+      "answer": "Based on the provided records, the current manager for the Apex Financial account is **Sam Rivera**.\n\n*   **Transition Details:** Sam Rivera took over the account on **July 1, 2023**, following the departure of the previous CSM, Preet Kaur, who left the company in June 2023 due to an international relocation.\n*   **Renewal Risk:** The account's current renewal risk is **high**. According to the 2023 customer health scores, this is attributed to friction caused by the CSM transition and three escalations reported in Q3.",
+      "grade": "PARTIAL",
+      "expected_outcome": "PASS",
+      "matched_expected": false,
+      "required_hits": [
+        "Sam Rivera",
+        "high"
+      ],
+      "required_missing": [
+        "2023-07-01"
+      ],
+      "sources_retrieved": [
+        "sales/csm_account_history.csv",
+        "engineering/nexusflow_architecture.md",
+        "sales/customer_health_scores_2023.csv",
+        "product/user_research_q3_2023.txt",
+        "sales/csm_account_history.csv",
+        "legal/ip_policy.txt",
+        "sales/customer_list.csv",
+        "product/nexusflow_prd_v2.md",
+        "sales/csm_account_history.csv",
+        "engineering/nexusflow_architecture.md"
+      ],
+      "context_chars": 13006,
+      "retrieval_latency_ms": 550.7,
+      "generation_latency_ms": 1359.9,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q24",
+      "type": "technical_precision",
+      "question": "Per the NexusFlow V2.1 post-mortem, what was the exact configuration key that was misconfigured, the incorrect value that was deployed, and the intended correct value?",
+      "answer": "The term \"pulsar\" in this query refers to the product/service external_pulsar in Vertexia's system.\n\nPer the NexusFlow v2.1 post-mortem, the configuration key that was misconfigured is `max_connections`. The incorrect value that was deployed was `10`, and the intended correct value was `1000`.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "max_connections",
+        "10",
+        "1000"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "executive/founding_story.txt",
+        "executive/founding_story.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "product/user_research_q3_2023.txt"
+      ],
+      "context_chars": 15669,
+      "retrieval_latency_ms": 624.3,
+      "generation_latency_ms": 1069.8,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q25",
+      "type": "finance_exact_computation",
+      "question": "What is the average annual contract value across all Vertexia mid-market customers? State the exact dollar figure.",
+      "answer": "To calculate the average annual contract value (ARR) for Vertexia's mid-market customers, we identify all customers categorized as \"mid-market\" in the provided context:\n\n1.  **TechVenture AI**: $420,000\n2.  **GreenLeaf Retail**: $180,000\n3.  **Meridian Health**: $360,000\n4.  **Pinnacle Mfg**: $192,000\n5.  **Apex Financial**: $240,000\n6.  **Coastal Bancorp**: $216,000\n7.  **NovaTech Systems**: $264,000\n8.  **BlueRidge Energy**: $480,000\n9.  **Crestwood Pharma**: $300,000\n10. **Summit Pharma**: $300,000\n11. **Ironclad Security**: $384,000\n\nSum of ARR: $420,000 + $180,000 + $360,000 + $192,000 + $240,000 + $216,000 + $264,000 + $480,000 + $300,000 + $300,000 + $384,000 = **$3,336,000**\n\nNumber of mid-market customers: **11**\n\nAverage ARR: $3,336,000 / 11 = **$303,272.73** (rounded to the nearest cent).\n\nThe average annual contract value across all Vertexia mid-market customers is $303,272.73.",
+      "grade": "PARTIAL",
+      "expected_outcome": "PASS",
+      "matched_expected": false,
+      "required_hits": [],
+      "required_missing": [
+        "303,273"
+      ],
+      "sources_retrieved": [
+        "sales/sales_playbook_2023.txt",
+        "sales/customer_list.csv",
+        "product/user_research_q3_2023.txt",
+        "sales/customer_list.csv",
+        "engineering/datacraft_original_architecture.md",
+        "sales/customer_list.csv",
+        "executive/company_strategy_2024.txt",
+        "sales/customer_list.csv",
+        "legal/phoenix_corp_msa.txt",
+        "sales/customer_list.csv"
+      ],
+      "context_chars": 15075,
+      "retrieval_latency_ms": 690.6,
+      "generation_latency_ms": 2038.7,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q26",
+      "type": "hr_graph_skip_level",
+      "question": "For each employee who departed Vertexia in 2023, who was their skip-level manager (their manager's manager)?",
+      "answer": "Based on the provided documents, there were two employees who departed Vertexia in 2023:\n\n*   **Adrian Blake (E029):** His manager was Priya Nair (E010). According to the knowledge graph, Priya Nair's manager is Marcus Webb (E009). Therefore, Adrian Blake's skip-level manager was **Marcus Webb**.\n*   **Preet Kaur (E030):** Her manager was Maya Sharma (E019). According to the knowledge graph, Maya Sharma's manager is Lisa Torres (E006). Therefore, Preet Kaur's skip-level manager was **Lisa Torres**.\n\n(Note: Diana Volkov also appears in the offboarding records, but she departed in 2021, not 2023.)",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "Marcus Webb",
+        "Lisa Torres"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "hr/org_chart_q1_2023.txt",
+        "executive/founding_story.txt",
+        "hr/offboarding_records_2023.csv",
+        "engineering/datacraft_original_architecture.md",
+        "hr/org_chart_q1_2023.txt",
+        "product/user_research_q3_2023.txt",
+        "hr/promotion_announcements_2023.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "hr/offboarding_records_2023.csv",
+        "hr/promotion_announcements_2023.txt"
+      ],
+      "context_chars": 11657,
+      "retrieval_latency_ms": 513.0,
+      "generation_latency_ms": 1528.2,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q27",
+      "type": "engineering_rfc_precision",
+      "question": "According to RFC-001, what is the author's exact job title and the name of their direct manager?",
+      "answer": "According to RFC-001, the author is Priya Nair. Her job title is **Lead, Data Platform Team**.\n\nBased on the provided knowledge graph, her direct manager is **Marcus Webb** (Lead, Platform Engineering).",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "Lead, Data Platform Team",
+        "Marcus Webb"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/rfc_001_event_schema.md",
+        "legal/datacraft_acquisition_summary.txt",
+        "hr/employee_directory.csv",
+        "hr/onboarding_handbook.txt",
+        "hr/employee_directory.csv",
+        "sales/q3_closed_won_report.txt",
+        "hr/employee_directory.csv",
+        "engineering/datacraft_original_architecture.md",
+        "product/nexusflow_prd_v2.md",
+        "product/pulseconnect_roadmap_2024.txt"
+      ],
+      "context_chars": 15099,
+      "retrieval_latency_ms": 526.0,
+      "generation_latency_ms": 1050.1,
       "provider": "gemini"
     }
   ]

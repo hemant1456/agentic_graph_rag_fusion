@@ -84,10 +84,10 @@ class Step10RAG:
         graph_seeds = [c.text for c in raw_chunks] if raw_chunks else analysis.primary_entities
         graph_res = graph_navigator.navigate(question, graph_seeds, self._graph)
         graph_ctx = graph_res.context if graph_res.success else ""
-        if analysis.needs_csv:
-            csv_res = structured_data.query(question)
-            if csv_res.success:
-                csv_data = csv_res.data
+        # Always run structured CSV query — mirrors step 07's unconditional detect_intent() → run_query().
+        csv_res = structured_data.query(question)
+        if csv_res.success:
+            csv_data = csv_res.data
 
         context_xml, ce_metrics = engineer_context(
             question=question,

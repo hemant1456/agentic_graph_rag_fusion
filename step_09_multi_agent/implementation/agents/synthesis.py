@@ -22,6 +22,7 @@ using ONLY information present in the context. Be concise and directly responsiv
 ## Rules:
 - Use EXACT field values from source data. Departure type: "voluntary" (never "voluntarily").
   Other exact values: "completed", "signed", "closed-won", "active", "departed".
+- Dates from CSV source records must be reproduced in ISO format (e.g., 2023-07-01, not "July 1, 2023").
 - When a product is referenced by alias ("analytics dashboard"), name the actual product
   (InsightLens, NexusFlow, PulseConnect) explicitly in your answer.
 - For "two efforts with the same name" questions: identify BOTH named things and state

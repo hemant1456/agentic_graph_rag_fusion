@@ -1,14 +1,14 @@
 {
   "step": "04_chunking",
-  "timestamp": "2026-05-15T19:02:57",
-  "total_questions": 22,
+  "timestamp": "2026-05-16T13:56:36",
+  "total_questions": 27,
   "grade_counts": {
-    "PASS": 13,
-    "PARTIAL": 4,
+    "PASS": 14,
+    "PARTIAL": 8,
     "FAIL": 5
   },
-  "pass_rate": 0.59,
-  "pass_or_partial_rate": 0.77,
+  "pass_rate": 0.52,
+  "pass_or_partial_rate": 0.81,
   "results": [
     {
       "id": "Q01",
@@ -48,8 +48,8 @@
         0.837
       ],
       "context_chars": 11505,
-      "retrieval_latency_ms": 539.1,
-      "generation_latency_ms": 800.6,
+      "retrieval_latency_ms": 757.8,
+      "generation_latency_ms": 849.0,
       "provider": "gemini"
     },
     {
@@ -89,8 +89,8 @@
         0.862
       ],
       "context_chars": 8747,
-      "retrieval_latency_ms": 633.5,
-      "generation_latency_ms": 1516.7,
+      "retrieval_latency_ms": 527.8,
+      "generation_latency_ms": 1343.5,
       "provider": "gemini"
     },
     {
@@ -131,8 +131,8 @@
         0.844
       ],
       "context_chars": 9801,
-      "retrieval_latency_ms": 467.3,
-      "generation_latency_ms": 646.8,
+      "retrieval_latency_ms": 537.6,
+      "generation_latency_ms": 1407.9,
       "provider": "gemini"
     },
     {
@@ -172,8 +172,8 @@
         0.843
       ],
       "context_chars": 9419,
-      "retrieval_latency_ms": 745.8,
-      "generation_latency_ms": 799.5,
+      "retrieval_latency_ms": 525.7,
+      "generation_latency_ms": 964.3,
       "provider": "gemini"
     },
     {
@@ -213,8 +213,8 @@
         0.848
       ],
       "context_chars": 5710,
-      "retrieval_latency_ms": 527.5,
-      "generation_latency_ms": 848.1,
+      "retrieval_latency_ms": 747.5,
+      "generation_latency_ms": 922.9,
       "provider": "gemini"
     },
     {
@@ -254,8 +254,8 @@
         0.848
       ],
       "context_chars": 6604,
-      "retrieval_latency_ms": 791.0,
-      "generation_latency_ms": 1623.2,
+      "retrieval_latency_ms": 515.5,
+      "generation_latency_ms": 871.0,
       "provider": "gemini"
     },
     {
@@ -295,8 +295,8 @@
         0.844
       ],
       "context_chars": 7097,
-      "retrieval_latency_ms": 440.7,
-      "generation_latency_ms": 786.8,
+      "retrieval_latency_ms": 532.2,
+      "generation_latency_ms": 916.7,
       "provider": "gemini"
     },
     {
@@ -336,8 +336,8 @@
         0.86
       ],
       "context_chars": 6178,
-      "retrieval_latency_ms": 529.5,
-      "generation_latency_ms": 800.6,
+      "retrieval_latency_ms": 556.4,
+      "generation_latency_ms": 896.4,
       "provider": "gemini"
     },
     {
@@ -377,8 +377,8 @@
         0.834
       ],
       "context_chars": 6835,
-      "retrieval_latency_ms": 781.6,
-      "generation_latency_ms": 752.9,
+      "retrieval_latency_ms": 502.4,
+      "generation_latency_ms": 853.1,
       "provider": "gemini"
     },
     {
@@ -419,8 +419,8 @@
         0.855
       ],
       "context_chars": 4853,
-      "retrieval_latency_ms": 734.0,
-      "generation_latency_ms": 1141.2,
+      "retrieval_latency_ms": 576.2,
+      "generation_latency_ms": 891.8,
       "provider": "gemini"
     },
     {
@@ -460,8 +460,8 @@
         0.86
       ],
       "context_chars": 6628,
-      "retrieval_latency_ms": 597.4,
-      "generation_latency_ms": 805.1,
+      "retrieval_latency_ms": 527.3,
+      "generation_latency_ms": 1027.8,
       "provider": "gemini"
     },
     {
@@ -501,8 +501,8 @@
         0.853
       ],
       "context_chars": 13224,
-      "retrieval_latency_ms": 637.7,
-      "generation_latency_ms": 1111.9,
+      "retrieval_latency_ms": 514.1,
+      "generation_latency_ms": 1180.6,
       "provider": "gemini"
     },
     {
@@ -542,8 +542,8 @@
         0.856
       ],
       "context_chars": 5593,
-      "retrieval_latency_ms": 531.2,
-      "generation_latency_ms": 995.4,
+      "retrieval_latency_ms": 723.8,
+      "generation_latency_ms": 1271.0,
       "provider": "gemini"
     },
     {
@@ -583,8 +583,8 @@
         0.861
       ],
       "context_chars": 6220,
-      "retrieval_latency_ms": 629.7,
-      "generation_latency_ms": 740.6,
+      "retrieval_latency_ms": 669.4,
+      "generation_latency_ms": 872.3,
       "provider": "gemini"
     },
     {
@@ -624,8 +624,8 @@
         0.856
       ],
       "context_chars": 6941,
-      "retrieval_latency_ms": 558.6,
-      "generation_latency_ms": 1258.1,
+      "retrieval_latency_ms": 684.9,
+      "generation_latency_ms": 1121.5,
       "provider": "gemini"
     },
     {
@@ -665,8 +665,8 @@
         0.851
       ],
       "context_chars": 6226,
-      "retrieval_latency_ms": 617.9,
-      "generation_latency_ms": 1101.7,
+      "retrieval_latency_ms": 478.9,
+      "generation_latency_ms": 949.9,
       "provider": "gemini"
     },
     {
@@ -709,8 +709,8 @@
         0.858
       ],
       "context_chars": 2907,
-      "retrieval_latency_ms": 638.4,
-      "generation_latency_ms": 1110.1,
+      "retrieval_latency_ms": 486.0,
+      "generation_latency_ms": 1290.1,
       "provider": "gemini"
     },
     {
@@ -753,8 +753,8 @@
         0.833
       ],
       "context_chars": 9792,
-      "retrieval_latency_ms": 729.7,
-      "generation_latency_ms": 1060.2,
+      "retrieval_latency_ms": 503.2,
+      "generation_latency_ms": 1130.8,
       "provider": "gemini"
     },
     {
@@ -794,8 +794,8 @@
         0.86
       ],
       "context_chars": 4827,
-      "retrieval_latency_ms": 989.6,
-      "generation_latency_ms": 1045.2,
+      "retrieval_latency_ms": 696.7,
+      "generation_latency_ms": 890.0,
       "provider": "gemini"
     },
     {
@@ -835,8 +835,8 @@
         0.865
       ],
       "context_chars": 9182,
-      "retrieval_latency_ms": 1405.1,
-      "generation_latency_ms": 694.8,
+      "retrieval_latency_ms": 739.3,
+      "generation_latency_ms": 816.8,
       "provider": "gemini"
     },
     {
@@ -878,8 +878,8 @@
         0.881
       ],
       "context_chars": 2634,
-      "retrieval_latency_ms": 1259.4,
-      "generation_latency_ms": 904.4,
+      "retrieval_latency_ms": 530.4,
+      "generation_latency_ms": 920.2,
       "provider": "gemini"
     },
     {
@@ -922,8 +922,221 @@
         0.845
       ],
       "context_chars": 12117,
-      "retrieval_latency_ms": 1655.0,
-      "generation_latency_ms": 1826.4,
+      "retrieval_latency_ms": 510.9,
+      "generation_latency_ms": 2161.9,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q23",
+      "type": "csm_multi_source_join",
+      "question": "The CSM listed for Apex Financial in Vertexia's customer records is no longer with the company. According to all available records, who currently manages this account, when did they take over, and what is the account's current renewal risk?",
+      "answer": "According to the provided records, the current CSM for Apex Financial is **Sam Rivera** (employee ID E036). He took over the account on **July 1, 2023**.\n\nThe account's current renewal risk is classified as **high**.",
+      "grade": "PARTIAL",
+      "expected_outcome": "PASS",
+      "matched_expected": false,
+      "required_hits": [
+        "Sam Rivera",
+        "high"
+      ],
+      "required_missing": [
+        "2023-07-01"
+      ],
+      "sources_retrieved": [
+        "sales/csm_account_history.csv",
+        "sales/customer_health_scores_2023.csv",
+        "sales/csm_account_history.csv",
+        "sales/customer_list.csv",
+        "sales/csm_account_history.csv",
+        "sales/csm_account_history.csv",
+        "sales/customer_list.csv",
+        "sales/csm_account_history.csv",
+        "sales/customer_list.csv",
+        "sales/csm_account_history.csv"
+      ],
+      "source_similarities": [
+        0.897,
+        0.894,
+        0.889,
+        0.886,
+        0.866,
+        0.866,
+        0.863,
+        0.863,
+        0.862,
+        0.862
+      ],
+      "context_chars": 2851,
+      "retrieval_latency_ms": 682.7,
+      "generation_latency_ms": 1192.2,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q24",
+      "type": "technical_precision",
+      "question": "Per the NexusFlow V2.1 post-mortem, what was the exact configuration key that was misconfigured, the incorrect value that was deployed, and the intended correct value?",
+      "answer": "Per the NexusFlow v2.1 post-mortem, the configuration key that was misconfigured is `max_connections`. The incorrect value deployed was `10`, and the intended value was `1000`.",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "required_hits": [
+        "max_connections",
+        "10",
+        "1000"
+      ],
+      "required_missing": [],
+      "sources_retrieved": [
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/nexusflow_architecture.md",
+        "engineering/data_platform_runbook.md",
+        "product/nexusflow_prd_v2.md"
+      ],
+      "source_similarities": [
+        0.886,
+        0.886,
+        0.88,
+        0.864,
+        0.86,
+        0.856,
+        0.849,
+        0.848,
+        0.839,
+        0.839
+      ],
+      "context_chars": 7009,
+      "retrieval_latency_ms": 526.0,
+      "generation_latency_ms": 967.7,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q25",
+      "type": "finance_exact_computation",
+      "question": "What is the average annual contract value across all Vertexia mid-market customers? State the exact dollar figure.",
+      "answer": "To calculate the average annual contract value (ARR) for mid-market customers, we first identify the mid-market customers and their respective ARR from the provided list:\n\n1.  **TechVenture AI:** $420,000\n2.  **NovaTech Systems:** $264,000\n3.  **Apex Financial:** $240,000\n4.  **Meridian Health:** $360,000\n5.  **Ironclad Security:** $384,000\n6.  **Pinnacle Mfg:** $192,000\n7.  **GreenLeaf Retail:** $180,000\n8.  **Coastal Bancorp:** $216,000\n9.  **Crestwood Pharma:** $300,000\n\n(Note: Cascade Media is excluded as it is categorized as \"smb\".)\n\n**Calculation:**\n*   Total ARR for mid-market customers: $420,000 + $264,000 + $240,000 + $360,000 + $384,000 + $192,000 + $180,000 + $216,000 + $300,000 = $2,556,000\n*   Number of mid-market customers: 9\n*   Average: $2,556,000 / 9 = $284,000\n\nThe average annual contract value across all Vertexia mid-market customers is $284,000.",
+      "grade": "PARTIAL",
+      "expected_outcome": "PASS",
+      "matched_expected": false,
+      "required_hits": [],
+      "required_missing": [
+        "303,273"
+      ],
+      "sources_retrieved": [
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv",
+        "sales/customer_list.csv"
+      ],
+      "source_similarities": [
+        0.87,
+        0.865,
+        0.859,
+        0.859,
+        0.856,
+        0.855,
+        0.855,
+        0.854,
+        0.853,
+        0.852
+      ],
+      "context_chars": 2669,
+      "retrieval_latency_ms": 491.2,
+      "generation_latency_ms": 1743.1,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q26",
+      "type": "hr_graph_skip_level",
+      "question": "For each employee who departed Vertexia in 2023, who was their skip-level manager (their manager's manager)?",
+      "answer": "Based on the provided documents, there is insufficient information to identify the skip-level managers for the employees who departed in 2023.\n\nThe records identify the direct managers for the departed employees as follows:\n*   **Adrian Blake (E029):** Manager is E010.\n*   **Preet Kaur (E030):** Manager is E019.\n\nThe provided context does not contain an organizational hierarchy or reporting structure that identifies the managers of E010 or E019.",
+      "grade": "PARTIAL",
+      "expected_outcome": "PASS",
+      "matched_expected": false,
+      "required_hits": [],
+      "required_missing": [
+        "Marcus Webb",
+        "Lisa Torres"
+      ],
+      "sources_retrieved": [
+        "hr/offboarding_records_2023.csv",
+        "hr/org_chart_q1_2023.txt",
+        "hr/promotion_announcements_2023.txt",
+        "hr/offboarding_records_2023.csv",
+        "hr/offboarding_records_2023.csv",
+        "hr/org_chart_q3_2023.txt",
+        "hr/org_chart_q1_2023.txt",
+        "hr/offboarding_records_2023.csv",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv"
+      ],
+      "source_similarities": [
+        0.875,
+        0.868,
+        0.86,
+        0.857,
+        0.853,
+        0.852,
+        0.851,
+        0.846,
+        0.843,
+        0.843
+      ],
+      "context_chars": 3226,
+      "retrieval_latency_ms": 787.7,
+      "generation_latency_ms": 1241.3,
+      "provider": "gemini"
+    },
+    {
+      "id": "Q27",
+      "type": "engineering_rfc_precision",
+      "question": "According to RFC-001, what is the author's exact job title and the name of their direct manager?",
+      "answer": "Based on the provided documents, RFC-001 was authored by Priya Nair, who is identified as the \"Lead, Data Platform Team.\"\n\nThe provided context does not contain information regarding Priya Nair's direct manager.",
+      "grade": "PARTIAL",
+      "expected_outcome": "PASS",
+      "matched_expected": false,
+      "required_hits": [
+        "Lead, Data Platform Team"
+      ],
+      "required_missing": [
+        "Marcus Webb"
+      ],
+      "sources_retrieved": [
+        "engineering/rfc_001_event_schema.md",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv",
+        "product/nexusflow_prd_v2.md",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv",
+        "hr/employee_directory.csv"
+      ],
+      "source_similarities": [
+        0.851,
+        0.842,
+        0.833,
+        0.832,
+        0.831,
+        0.831,
+        0.831,
+        0.83,
+        0.829,
+        0.828
+      ],
+      "context_chars": 3017,
+      "retrieval_latency_ms": 620.8,
+      "generation_latency_ms": 954.2,
       "provider": "gemini"
     }
   ]

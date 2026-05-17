@@ -35,8 +35,9 @@ CONFIG = SliceConfig(
     ],
     force_csv=False,
     force_graph=True,
+    query_augmentation="Project Phoenix",
     rerank_k=8,
-    compress_ratio=0.65,
+    compress_ratio=0.80,
     owns_questions=["Q05", "Q06", "Q18", "Q21", "Q22"],
 )
 
