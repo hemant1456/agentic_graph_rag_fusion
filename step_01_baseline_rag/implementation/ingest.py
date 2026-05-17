@@ -1,22 +1,17 @@
 import csv
 import hashlib
 import json
-import os
-import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
 import chromadb
-from dotenv import load_dotenv
-from google import genai
-
-load_dotenv()
+from langchain_huggingface import HuggingFaceEmbeddings
 
 CHUNK_SIZE_CHARS = 2000   # ~512 tokens
 CHUNK_OVERLAP_CHARS = 200
-EMBED_BATCH_SIZE = 50
-GEMINI_EMBED_MODEL = "gemini-embedding-2"
 CHROMA_COLLECTION = "vertexia_baseline"
+
+_embedder = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 
 @dataclass
@@ -113,40 +108,11 @@ def load_and_chunk(corpus_path: Path) -> list[Chunk]:
 
 
 def embed_chunks(chunks: list[Chunk]) -> list[list[float]]:
-    """
-    Embed all chunks using Google gemini-embedding-2.
-
-    Note: embed_content only supports one text per call (returns 1 embedding
-    regardless of how many strings you pass). We call it once per chunk.
-    190 chunks takes ~20s on free tier (1500 req/min limit).
-    """
-    api_key = os.environ.get("GOOGLE_API_KEY")
-    if not api_key:
-        raise EnvironmentError("GOOGLE_API_KEY not set")
-    client = genai.Client(api_key=api_key)
-
-    embeddings: list[list[float]] = []
-    for i, chunk in enumerate(chunks):
-        response = client.models.embed_content(
-            model=GEMINI_EMBED_MODEL,
-            contents=chunk.text,
-        )
-        embeddings.append(response.embeddings[0].values)
-        if (i + 1) % 50 == 0:
-            print(f"    {i + 1}/{len(chunks)} embedded...")
-            time.sleep(0.5)  # brief pause every 50 to avoid rate limits
-
-    return embeddings
+    return _embedder.embed_documents([c.text for c in chunks])
 
 
 def embed_query(query: str) -> list[float]:
-    """Embed a single query string."""
-    api_key = os.environ.get("GOOGLE_API_KEY")
-    if not api_key:
-        raise EnvironmentError("GOOGLE_API_KEY not set")
-    client = genai.Client(api_key=api_key)
-    response = client.models.embed_content(model=GEMINI_EMBED_MODEL, contents=query)
-    return response.embeddings[0].values
+    return _embedder.embed_query(query)
 
 
 def get_chroma_collection(persist_dir: Path, reset: bool = False) -> chromadb.Collection:
@@ -192,7 +158,7 @@ def build_index(corpus_path: Path, persist_dir: Path, reset: bool = False) -> ch
         print("  Pass reset=True to force rebuild.")
         return collection
 
-    print(f"Embedding {len(chunks)} chunks (batch size {EMBED_BATCH_SIZE})...")
+    print(f"Embedding {len(chunks)} chunks...")
     embeddings = embed_chunks(chunks)
     print(f"  Done. Embedding dim: {len(embeddings[0])}")
 

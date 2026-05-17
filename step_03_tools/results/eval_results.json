@@ -72,6 +72,7 @@
       ],
       "required_missing": [],
       "partial_hits": [
+        "migration",
         "DataCraft"
       ],
       "disqualifier_hits": []
@@ -388,14 +389,13 @@
       "grade": "PARTIAL",
       "required_hits": [
         "InsightLens",
-        "events_api",
-        "Yuki Tanaka"
+        "events_api"
       ],
       "required_missing": [
-        "Kenji Ito"
+        "Kenji Ito",
+        "Yuki Tanaka"
       ],
       "partial_hits": [
-        "dependency",
         "outage",
         "on-call"
       ],
@@ -434,5 +434,5 @@
       "disqualifier_hits": []
     }
   ],
-  "timestamp": "2026-05-17T18:49:54"
+  "timestamp": "2026-05-17T19:08:12"
 }

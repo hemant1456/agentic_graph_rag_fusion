@@ -3,7 +3,7 @@ from pathlib import Path
 
 from step_02_chunking.implementation.types import SmartChunk
 
-HEADING_RE = re.compile(r"^(#{1,3})\s+(.+)$")
+HEADING_RE = re.compile(r"^(#{1,2})\s+(.+)$")
 MAX_SECTION_CHARS = 3000
 FALLBACK_CHUNK_SIZE = 2000
 FALLBACK_OVERLAP = 200
