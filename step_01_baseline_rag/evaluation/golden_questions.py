@@ -24,6 +24,7 @@ class GoldenQuestion:
     explanation: str
     expected_outcome: str
     fixed_by_step: str
+    reference_answer: str = ""  # Natural-language gold answer for RAGAS judge
 
 
 GOLDEN_QUESTIONS: list[GoldenQuestion] = [
@@ -40,6 +41,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation="onboarding_handbook.txt + data_processing_agreement_template.txt both state the policy.",
         expected_outcome="PASS",
         fixed_by_step="step_01_baseline_rag",
+        reference_answer="Vertexia stores customer data in hot storage for 90 days, then archives to AWS S3 Glacier for long-term cold storage.",
     ),
 
     GoldenQuestion(
@@ -52,6 +54,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation="founding_story.txt names both founders and the year.",
         expected_outcome="PASS",
         fixed_by_step="step_01_baseline_rag",
+        reference_answer="Vertexia was co-founded by Arjun Mehta and Diana Volkov in 2019.",
     ),
 
     # ── TIER 2: Format-aware Chunking ─────────────────────────────────────────
@@ -70,6 +73,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_02_chunking",
+        reference_answer="For the PulseConnect webhook delivery failure alert, the first action is to check the SendGrid quota dashboard and the Twilio API status page. The escalation owner is Raj Patel.",
     ),
 
     GoldenQuestion(
@@ -85,6 +89,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_02_chunking",
+        reference_answer="Datadog uses AWS sub-processors in us-east-1, eu-west-1, and ap-southeast-1. Its data retention period for traces and logs is 15 months.",
     ),
 
     # ── TIER 3: CSV Computation ───────────────────────────────────────────────
@@ -99,6 +104,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation="customer_list.csv has 20 rows summing to $11,000,000 ARR. Needs a Pandas tool.",
         expected_outcome="FAIL",
         fixed_by_step="step_03_tools",
+        reference_answer="The total ARR across all 20 Vertexia customers combined is $11,000,000.",
     ),
 
     GoldenQuestion(
@@ -111,6 +117,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation="revenue_by_product_2023.csv months 07/08/09 sum to $4,120,000.",
         expected_outcome="FAIL",
         fixed_by_step="step_03_tools",
+        reference_answer="The total revenue across all products combined in Q3 2023 (July, August, and September) was $4,120,000.",
     ),
 
     GoldenQuestion(
@@ -123,6 +130,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation="employee_directory.csv filter status=active and location=Berlin → 5.",
         expected_outcome="FAIL",
         fixed_by_step="step_03_tools",
+        reference_answer="There are 5 active Vertexia employees based in Berlin.",
     ),
 
     # ── TIER 4: BM25 / Keyword-Exact ──────────────────────────────────────────
@@ -140,6 +148,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_04_hybrid_retrieval",
+        reference_answer="The GET /v2/events/batch endpoint was deprecated in NexusFlow API v2.1 and replaced by GET /v2/events/stream.",
     ),
 
     GoldenQuestion(
@@ -155,6 +164,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_04_hybrid_retrieval",
+        reference_answer="The remediation owner for security audit finding M-2 is Daniel Osei, with a target remediation date of October 31, 2023.",
     ),
 
     GoldenQuestion(
@@ -167,6 +177,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation="vendor_contracts_summary.csv: Snowflake row, annual=120000, renewal=2024-06-30.",
         expected_outcome="FAIL",
         fixed_by_step="step_04_hybrid_retrieval",
+        reference_answer="Vertexia's annual spend on Snowflake is $120,000, and the contract expires on June 30, 2024.",
     ),
 
     # ── TIER 5: Graph Multi-hop ───────────────────────────────────────────────
@@ -184,6 +195,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_05_knowledge_graph",
+        reference_answer="Maya Sharma is the CSM managing the Phoenix Corp account, and her direct manager is Lisa Torres, the Chief Revenue Officer.",
     ),
 
     GoldenQuestion(
@@ -196,6 +208,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation="api_dependencies.csv BFS from NexusFlow — direct + indirect downstream services.",
         expected_outcome="FAIL",
         fixed_by_step="step_05_knowledge_graph",
+        reference_answer="If NexusFlow goes down, the directly and indirectly affected services are InsightLens, PulseConnect, and DataCraft, all of which depend on NexusFlow's APIs.",
     ),
 
     GoldenQuestion(
@@ -208,6 +221,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation="employee_directory.csv: Aisha Johnson → Tomás García → Sarah Chen (CTO). Two-hop org traversal.",
         expected_outcome="FAIL",
         fixed_by_step="step_05_knowledge_graph",
+        reference_answer="Aisha Johnson reports to Tomas Garcia, who in turn reports to Sarah Chen, the CTO.",
     ),
 
     # ── TIER 6: Cross-document / Multi-step ───────────────────────────────────
@@ -225,6 +239,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_07_multi_agent",
+        reference_answer="NexusFlow's documented availability target is 99.9% while the Phoenix Corp contract requires 99.99% uptime. There is a 0.09 percentage point gap, so the current target does not meet the SLA requirement.",
     ),
 
     GoldenQuestion(
@@ -240,5 +255,6 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_07_multi_agent",
+        reference_answer="Two employees left Vertexia voluntarily in 2023: Adrian Blake (Platform Engineering, last day 2023-08-31, joined competitor FinDataCo) and Preet Kaur (Revenue, last day 2023-06-30, relocated internationally).",
     ),
 ]

@@ -35,7 +35,13 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from ragas import evaluate
 from ragas.embeddings import LangchainEmbeddingsWrapper
 from ragas.llms import LangchainLLMWrapper
-from ragas.metrics import AnswerCorrectness  # embedding-based, no LLM rate-limit issues
+from ragas.metrics import (
+    AnswerCorrectness,
+    AnswerRelevancy,
+    ContextPrecision,
+    ContextRecall,
+    Faithfulness,
+)
 from ragas.run_config import RunConfig
 
 from evaluation.judge_llm import build_judge_llm
@@ -137,8 +143,14 @@ STEPS: dict[str, Callable[[str], dict]] = {
 
 
 def _reference_from_question(q) -> str:
-    """Derive a reference answer from required_facts. Good enough for RAGAS
-    answer_correctness, which uses an LLM to compare semantically."""
+    """Return the natural-language gold answer for RAGAS to compare against.
+
+    Falls back to a synthetic "must contain X" string for questions without an
+    explicit reference_answer (used only as a safety net — every question in
+    golden_questions.py should have one).
+    """
+    if getattr(q, "reference_answer", "").strip():
+        return q.reference_answer
     facts = ", ".join(q.required_facts) if q.required_facts else "(no specific facts required)"
     return f"The correct answer must contain these facts: {facts}. {q.explanation}"
 
@@ -174,7 +186,7 @@ def evaluate_step(step_name: str) -> dict:
         })
         print(f"  [{q.id}] {q.question[:70]}... ({latency_ms:.0f}ms)")
 
-    print(f"\n=== Scoring with RAGAS (answer_correctness) ===\n")
+    print(f"\n=== Scoring with RAGAS (5 metrics) ===\n")
     llm, embeddings = _build_ragas_objects()
     ragas_inputs = [
         {k: s[k] for k in ("user_input", "response", "retrieved_contexts", "reference")}
@@ -182,14 +194,19 @@ def evaluate_step(step_name: str) -> dict:
     ]
     dataset = Dataset.from_list(ragas_inputs)
 
-    # Judge runs via llm_gatewayV2 with JUDGE_PROVIDERS=groq,gemini (see
-    # evaluation/judge_llm.py). Groq is fast (~200ms/call) so we can batch a
-    # few in parallel; sequential per question to stay under 30 RPM.
+    # Judge runs via llm_gatewayV2 with JUDGE_PROVIDERS=groq,gemini.
+    # Groq is fast (~200ms/call) so max_workers=4 batches without burning 30 RPM.
     run_cfg = RunConfig(timeout=60, max_retries=3, max_workers=4)
-    metric = AnswerCorrectness()
+    metrics = [
+        AnswerCorrectness(),
+        Faithfulness(),
+        AnswerRelevancy(),
+        ContextPrecision(),
+        ContextRecall(),
+    ]
     result = evaluate(
         dataset,
-        metrics=[metric],
+        metrics=metrics,
         llm=llm,
         embeddings=embeddings,
         run_config=run_cfg,
@@ -199,12 +216,23 @@ def evaluate_step(step_name: str) -> dict:
 
     df = result.to_pandas()  # type: ignore[attr-defined]
 
-    # Threshold: answer_correctness >= 0.7 = PASS, >= 0.4 = PARTIAL, else FAIL.
+    def _safe(col: str, i: int) -> float:
+        v = df.iloc[i].get(col, 0) if i < len(df) else 0
+        try:
+            f = float(v)
+        except (TypeError, ValueError):
+            return 0.0
+        return f if f == f else 0.0  # NaN guard
+
+    # Overall grade is based on answer_correctness (the most direct factual check).
     grades: list[str] = []
     rows: list[dict] = []
     for i, s in enumerate(samples):
-        ac_val = df.iloc[i].get("answer_correctness", 0) if i < len(df) else 0
-        ac = float(ac_val) if ac_val == ac_val else 0.0  # NaN check
+        ac = _safe("answer_correctness", i)
+        fa = _safe("faithfulness", i)
+        ar = _safe("answer_relevancy", i)
+        cp = _safe("context_precision", i)
+        cr = _safe("context_recall", i)
         if ac >= 0.7:
             grade = "PASS"
         elif ac >= 0.4:
@@ -216,8 +244,12 @@ def evaluate_step(step_name: str) -> dict:
             "id": s["question_id"],
             "question": s["user_input"],
             "answer": s["response"],
-            "answer_correctness": round(ac, 3),
             "grade": grade,
+            "answer_correctness": round(ac, 3),
+            "faithfulness": round(fa, 3),
+            "answer_relevancy": round(ar, 3),
+            "context_precision": round(cp, 3),
+            "context_recall": round(cr, 3),
             "required_facts": s["_required_facts"],
             "retrieval_latency_ms": s["_latency_ms"],
             "contexts_count": len(s["retrieved_contexts"]),
@@ -227,6 +259,10 @@ def evaluate_step(step_name: str) -> dict:
     n = len(samples)
     pass_rate = grade_counts["PASS"] / n if n else 0
     avg_ac = sum(r["answer_correctness"] for r in rows) / n if n else 0
+    avg_fa = sum(r["faithfulness"] for r in rows) / n if n else 0
+    avg_ar = sum(r["answer_relevancy"] for r in rows) / n if n else 0
+    avg_cp = sum(r["context_precision"] for r in rows) / n if n else 0
+    avg_cr = sum(r["context_recall"] for r in rows) / n if n else 0
 
     summary = {
         "step": step_name,
@@ -234,8 +270,14 @@ def evaluate_step(step_name: str) -> dict:
         "total_questions": n,
         "grade_counts": grade_counts,
         "pass_rate": round(pass_rate, 2),
-        "avg_answer_correctness": round(avg_ac, 3),
-        "thresholds": {"PASS": ">=0.7", "PARTIAL": ">=0.4", "FAIL": "<0.4"},
+        "ragas_averages": {
+            "answer_correctness": round(avg_ac, 3),
+            "faithfulness":       round(avg_fa, 3),
+            "answer_relevancy":   round(avg_ar, 3),
+            "context_precision":  round(avg_cp, 3),
+            "context_recall":     round(avg_cr, 3),
+        },
+        "thresholds": {"PASS": "answer_correctness>=0.7", "PARTIAL": ">=0.4", "FAIL": "<0.4"},
         "results": rows,
     }
 
@@ -246,8 +288,8 @@ def evaluate_step(step_name: str) -> dict:
     print(f"\n{'=' * 55}")
     print(f"{step_name}")
     print(f"  PASS={grade_counts['PASS']}  PARTIAL={grade_counts['PARTIAL']}  FAIL={grade_counts['FAIL']}  ({pass_rate:.0%})")
-    print(f"  avg answer_correctness: {avg_ac:.3f}")
-    # (faithfulness dropped — too expensive on free-tier rate limits)
+    print(f"  answer_correctness: {avg_ac:.3f}  faithfulness: {avg_fa:.3f}  answer_relevancy: {avg_ar:.3f}")
+    print(f"  context_precision:  {avg_cp:.3f}  context_recall: {avg_cr:.3f}")
     print(f"  results → {out_path}")
     print("=" * 55)
     return summary
