@@ -105,7 +105,7 @@ def load_and_chunk(corpus_path: Path) -> list[Chunk]:
             all_chunks.extend(_chunk_csv(file_path, source, department))
         elif suffix == ".json":
             all_chunks.extend(_chunk_json(file_path, source, department))
-        elif suffix in (".txt", ".md", ".py"):
+        elif suffix in (".txt", ".md"):
             text = file_path.read_text(errors="replace")
             all_chunks.extend(_chunk_text(text, source, department, suffix.lstrip(".")))
 

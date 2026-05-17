@@ -1,6 +1,5 @@
 import os
 
-import anthropic
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types as genai_types
@@ -34,6 +33,7 @@ def _generate_gemini(context: str, question: str) -> str:
 
 
 def _generate_anthropic(context: str, question: str) -> str:
+    import anthropic
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     user_message = f"CONTEXT:\n{context}\n\nQUESTION: {question}"
     message = client.messages.create(
@@ -42,7 +42,7 @@ def _generate_anthropic(context: str, question: str) -> str:
         system=SYSTEM_PROMPT,
         messages=[{"role": "user", "content": user_message}],
     )
-    return message.content[0].text
+    return next(block.text for block in message.content if hasattr(block, "text"))
 
 
 def generate_answer(context: str, question: str) -> tuple[str, str]:
@@ -53,4 +53,5 @@ def generate_answer(context: str, question: str) -> tuple[str, str]:
     try:
         return _generate_gemini(context, question), "gemini"
     except Exception as e:
+        print(f"  [Gemini failed: {e}] — falling back to Anthropic")
         return _generate_anthropic(context, question), "anthropic"
