@@ -31,7 +31,7 @@ load_dotenv(ROOT / ".env")
 JUDGE_PROVIDER = os.getenv("JUDGE_PROVIDER", "gateway")  # "gateway" | "openai" | "ollama"
 GATEWAY_URL = os.getenv("LLM_GATEWAY_V2_URL", "http://localhost:8100")
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
-OLLAMA_MODEL = os.getenv("OLLAMA_JUDGE_MODEL", "deepseek-r1:1.5b")
+OLLAMA_MODEL = os.getenv("OLLAMA_JUDGE_MODEL", "llama3.2:latest")
 
 
 def _msg_role(m: BaseMessage) -> str:
