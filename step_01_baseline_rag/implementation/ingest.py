@@ -7,7 +7,7 @@ from pathlib import Path
 import chromadb
 from langchain_huggingface import HuggingFaceEmbeddings
 
-CHUNK_SIZE_CHARS = 2000   # ~512 tokens
+CHUNK_SIZE_CHARS = 1000   # ~256 tokens
 CHUNK_OVERLAP_CHARS = 200
 CHROMA_COLLECTION = "vertexia_baseline"
 

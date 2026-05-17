@@ -126,13 +126,61 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         fixed_by_step="step_01_baseline_rag",
     ),
 
-    # ── TIER 2: CSV Computation (Q08–Q12) ──────────────────────────────────────
-    # These questions require exact arithmetic over structured CSV data.
-    # Vector retrieval fails — it surfaces at most k rows, never the full table.
-    # Should FAIL at Step 01 and PASS at Step 05 (LangChain Tool Calling).
+    # ── TIER 1.5: Format-aware Chunking (Q08–Q09) ─────────────────────────────
+    # These questions live in long structured documents where each section answers
+    # a different specific question. Step 01's naive paragraph chunker merges 4-5
+    # sections per chunk, diluting the embedding signal so the LLM gets mixed info
+    # about multiple vendors/alerts and confuses the per-section fields. Step 02's
+    # section-aware chunker with a contextual header (FILE | DOC | SECTION) returns
+    # the exact section needed.
+    # Should be PARTIAL at Step 01 and PASS at Step 02 (Format-aware chunking).
 
     GoldenQuestion(
         id="Q08",
+        type="chunking_dependent",
+        question="In Vertexia's on-call runbook, what is the first action and the escalation owner for the PulseConnect webhook delivery failure alert?",
+        required_facts=["SendGrid", "Twilio", "Raj Patel"],
+        partial_facts=["webhook", "PulseConnect", "on-call"],
+        disqualifiers=["Felix Wagner", "Aisha Johnson", "Kenji Ito"],
+        explanation=(
+            "oncall_runbook_top_alerts.md '## PulseConnect webhook_delivery_failure_rate > 5%' "
+            "section: first action = check SendGrid quota and Twilio API, owner = Raj Patel. "
+            "Step 01's chunker swallows multiple alert sections into one chunk, so the LLM "
+            "sees a mixed bag of owners and may attach the wrong one to PulseConnect. "
+            "Step 02 chunks each alert as its own section with a contextual header — dense "
+            "retrieval returns exactly the PulseConnect section."
+        ),
+        expected_outcome="FAIL",
+        fixed_by_step="step_02_chunking",
+    ),
+
+    GoldenQuestion(
+        id="Q09",
+        type="chunking_dependent",
+        question="According to Vertexia's vendor data processing matrix, what sub-processors does Datadog use, and what is its data retention period for traces and logs?",
+        required_facts=["us-east-1", "eu-west-1", "ap-southeast-1", "15 months"],
+        partial_facts=["Datadog", "sub-processor", "retention"],
+        disqualifiers=["us-central1", "90 days", "18 months", "24 months"],
+        explanation=(
+            "vendor_data_processing_matrix.md '## Datadog' section: sub-processors = AWS "
+            "us-east-1, eu-west-1, ap-southeast-1; retention = 15 months for traces and logs. "
+            "Step 01's chunker merges multiple vendor sections, so the LLM sees Snowflake's "
+            "regions, SendGrid's 90-day retention, and Stripe's GCP us-central1 in the same "
+            "chunk and frequently swaps fields across vendors. Step 02's per-vendor section "
+            "chunks with prepended 'DOC: Vendor Data Processing Matrix | SECTION: Datadog' "
+            "context give dense retrieval a clean target."
+        ),
+        expected_outcome="FAIL",
+        fixed_by_step="step_02_chunking",
+    ),
+
+    # ── TIER 2: CSV Computation (Q10–Q14) ──────────────────────────────────────
+    # These questions require exact arithmetic over structured CSV data.
+    # Vector retrieval fails — it surfaces at most k rows, never the full table.
+    # Should FAIL at Steps 01–02 and PASS at Step 03 (CSV Tool Calling).
+
+    GoldenQuestion(
+        id="Q10",
         type="csv_aggregate",
         question="What is the total ARR across all Vertexia customers combined?",
         required_facts=["11,000,000"],
@@ -148,7 +196,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q09",
+        id="Q11",
         type="csv_aggregate",
         question="What was the total revenue across all products combined in Q3 2023 (July, August, and September)?",
         required_facts=["4,120,000"],
@@ -164,7 +212,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q10",
+        id="Q12",
         type="csv_aggregate",
         question="How many active Vertexia employees are based in Berlin?",
         required_facts=["5"],
@@ -179,7 +227,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q11",
+        id="Q13",
         type="csv_aggregate",
         question="What is the total planned headcount across all departments in Vertexia's 2023 budget?",
         required_facts=["181"],
@@ -194,7 +242,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q12",
+        id="Q14",
         type="csv_aggregate",
         question="What was the total ARR from all Closed-Won deals in Q3 2023?",
         required_facts=["1,692,000"],
@@ -208,14 +256,14 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         fixed_by_step="step_03_tools",
     ),
 
-    # ── TIER 3: BM25 / Keyword-Exact Retrieval (Q13–Q18) ───────────────────────
+    # ── TIER 3: BM25 / Keyword-Exact Retrieval (Q15–Q20) ───────────────────────
     # These questions contain technical identifiers, version strings, or proper
     # nouns that dense embedding search misses or confuses with similar docs.
     # BM25 keyword search surfaces the right document by exact term matching.
-    # Should FAIL at Steps 01–05 and PASS at Step 06 (Hybrid BM25 + Dense).
+    # Should FAIL at Steps 01–03 and PASS at Step 04 (Hybrid BM25 + Dense).
 
     GoldenQuestion(
-        id="Q13",
+        id="Q15",
         type="keyword_exact",
         question="What specific action items were documented in the NexusFlow v2.1 postmortem and who owns each one?",
         required_facts=["max_connections", "config validation", "canary"],
@@ -233,7 +281,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q14",
+        id="Q16",
         type="keyword_exact",
         question="Who was the on-call engineer for the NexusFlow team during the week of August 14, 2023?",
         required_facts=["Yuki Tanaka"],
@@ -242,8 +290,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation=(
             "on_call_schedule_aug2023.csv: week_start 2023-08-14, team=NexusFlow Team → Yuki Tanaka. "
             "Lin Wei was NexusFlow on-call the previous week; Sophie Laurent the following week. "
-            "Dense retrieval on 'NexusFlow on-call engineer' may surface the postmortem (which "
-            "mentions Yuki Tanaka as the author but not explicitly as on-call that week); "
+            "Dense retrieval on 'NexusFlow on-call engineer' may surface the postmortem; "
             "BM25 finds the schedule CSV directly via exact term matching."
         ),
         expected_outcome="FAIL",
@@ -251,7 +298,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q15",
+        id="Q17",
         type="keyword_exact",
         question="What is Vertexia's annual spend on AWS and when does that contract renew?",
         required_facts=["480,000", "December 31, 2024"],
@@ -267,7 +314,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q16",
+        id="Q18",
         type="keyword_exact",
         question="What is Vertexia's annual spend on Snowflake and when does the contract expire?",
         required_facts=["120,000", "June 30, 2024"],
@@ -275,8 +322,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         disqualifiers=[],
         explanation=(
             "vendor_contracts_summary.csv: Snowflake row — annual_value_usd=120000, "
-            "renewal_date=2024-06-30, usage-based + commitment. "
-            "Dense search for 'data warehouse contract' may return general docs; "
+            "renewal_date=2024-06-30. Dense search may return general docs; "
             "BM25 finds 'Snowflake' in the vendor CSV directly."
         ),
         expected_outcome="FAIL",
@@ -284,7 +330,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q17",
+        id="Q19",
         type="keyword_exact",
         question="Which NexusFlow API endpoint was deprecated in v2.1, and what endpoint replaced it?",
         required_facts=["events/batch", "events/stream"],
@@ -293,16 +339,15 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation=(
             "nexusflow_api_changelog.md: 'GET /v2/events/batch — Deprecated in v2.1, removed in v2.2. "
             "Replaced by GET /v2/events/stream.' Both the version tag 'v2.1' and the endpoint names "
-            "appear in the same chunk (breaking-changes section). Dense search for 'NexusFlow deprecated "
-            "endpoint' returns generic architecture docs; BM25 on 'v2.1' scores the changelog chunk "
-            "directly via exact token match."
+            "appear in the same chunk. Dense search for 'NexusFlow deprecated endpoint' returns "
+            "generic architecture docs; BM25 on 'v2.1' scores the changelog chunk directly."
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_04_hybrid_retrieval",
     ),
 
     GoldenQuestion(
-        id="Q18",
+        id="Q20",
         type="keyword_exact",
         question="Who is the remediation owner for security audit finding M-2, and what was the target remediation date?",
         required_facts=["Daniel Osei", "October 31, 2023"],
@@ -311,23 +356,22 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation=(
             "security_audit_2023.txt: 'FINDING M-2 (Medium): TLS 1.1 fallback. "
             "Remediation owner: Daniel Osei. Target: October 31, 2023.' "
-            "The finding ID 'M-2' and 'remediation' are rare tokens that BM25 scores at rank #1 "
-            "for the exact security-findings chunk. Dense search for 'security audit remediation owner' "
-            "returns the audit header (which names Daniel Osei as Vertexia Sponsor but lacks the date) "
-            "or general security docs — so the required date 2023-10-31 is missing."
+            "The finding ID 'M-2' is a rare token that BM25 scores at rank #1 for the exact "
+            "security-findings chunk. Dense search for 'security audit remediation owner' "
+            "returns the audit header (names Daniel Osei as Sponsor but lacks the date)."
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_04_hybrid_retrieval",
     ),
 
-    # ── TIER 4: Knowledge Graph / Multi-hop (Q19–Q24) ──────────────────────────
+    # ── TIER 4: Knowledge Graph / Multi-hop (Q21–Q26) ──────────────────────────
     # These questions require traversing typed relationships across multiple CSV
     # files — an org hierarchy join, a dependency graph BFS, or a schedule+org
     # chain. No single retrieval or tool call can answer them; a graph is needed.
-    # Should FAIL at Steps 01–06 and PASS at Step 07 (Knowledge Graph RAG).
+    # Should FAIL at Steps 01–04 and PASS at Step 05 (Knowledge Graph RAG).
 
     GoldenQuestion(
-        id="Q19",
+        id="Q21",
         type="multi_hop",
         question="Who is the CSM managing the Phoenix Corp account, and who is that person's direct manager?",
         required_facts=["Maya Sharma", "Lisa Torres"],
@@ -343,7 +387,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q20",
+        id="Q22",
         type="multi_hop",
         question="Which services have a critical dependency on NexusFlow's events_api endpoint?",
         required_facts=["InsightLens", "DataCraft"],
@@ -358,7 +402,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q21",
+        id="Q23",
         type="multi_hop",
         question="Who was the on-call engineer for the Data Platform team during the week of August 14, 2023?",
         required_facts=["Kenji Ito"],
@@ -367,7 +411,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation=(
             "on_call_schedule_aug2023.csv: week_start 2023-08-14, team=Data Platform Team → Kenji Ito. "
             "Disqualifiers are engineers on neighbouring weeks. "
-            "Unlike the NexusFlow on-call (Q14), this requires first reading the postmortem "
+            "Unlike the NexusFlow on-call (Q16), this requires first reading the postmortem "
             "to determine which team was responsible, then matching against the schedule — a two-hop join."
         ),
         expected_outcome="FAIL",
@@ -375,7 +419,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q22",
+        id="Q24",
         type="multi_hop",
         question="If NexusFlow goes down entirely, which services are directly or indirectly affected? List all of them.",
         required_facts=["InsightLens", "PulseConnect", "DataCraft"],
@@ -392,7 +436,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q23",
+        id="Q25",
         type="multi_hop",
         question="Who does Aisha Johnson report to, and who does that person report to? Give the full two-hop reporting chain.",
         required_facts=["Tomás García", "Sarah Chen"],
@@ -408,7 +452,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q24",
+        id="Q26",
         type="multi_hop",
         question="What external and internal services does PulseConnect depend on according to the API dependency data?",
         required_facts=["InsightLens", "NexusFlow", "sendgrid", "twilio"],
@@ -423,13 +467,13 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         fixed_by_step="step_05_knowledge_graph",
     ),
 
-    # ── TIER 5: Complex Multi-step Reasoning (Q25–Q29) ─────────────────────────
+    # ── TIER 5: Complex Multi-step Reasoning (Q27–Q31) ─────────────────────────
     # These questions require disambiguation across documents with the same name,
     # cross-document comparison, multi-source synthesis, or cross-quarter joins.
-    # Should FAIL at Steps 01–07 and PASS at Step 09 (Multi-Agent RAG).
+    # Should FAIL at Steps 01–06 and PASS at Step 07 (Multi-Agent RAG).
 
     GoldenQuestion(
-        id="Q25",
+        id="Q27",
         type="disambiguation",
         question="There are two different things at Vertexia referred to as 'Project Phoenix'. What is each one and what was the outcome of each?",
         required_facts=["migration", "signed", "Phoenix Corp"],
@@ -445,7 +489,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q26",
+        id="Q28",
         type="cross_document",
         question="Does Vertexia's documented NexusFlow availability target meet the uptime requirement in the Phoenix Corp contract? What is the gap if any?",
         required_facts=["99.9", "99.99"],
@@ -462,7 +506,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q27",
+        id="Q29",
         type="cross_document",
         question="Was InsightLens impacted by the August 2023 NexusFlow outage? If so, explain why via the dependency chain, and name the on-call engineer for each affected service.",
         required_facts=["InsightLens", "events_api", "Kenji Ito", "Yuki Tanaka"],
@@ -478,7 +522,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
     ),
 
     GoldenQuestion(
-        id="Q28",
+        id="Q30",
         type="cross_document",
         question="What was the combined ARR from all Closed-Won deals across both Q3 and Q4 2023 (the full second half of the year)?",
         required_facts=["3,456,000"],
@@ -487,15 +531,14 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation=(
             "Q3 Closed-Won: $1,692,000 (deal_pipeline_q3_2023.csv) + "
             "Q4 Closed-Won: $1,764,000 (deal_pipeline_q4_2023.csv) = $3,456,000. "
-            "Requires reading two separate CSV files, summing each with a tool, then adding the totals — "
-            "a multi-step cross-file computation that no single tool call can resolve."
+            "Requires reading two separate CSV files, summing each with a tool, then adding the totals."
         ),
         expected_outcome="FAIL",
         fixed_by_step="step_07_multi_agent",
     ),
 
     GoldenQuestion(
-        id="Q29",
+        id="Q31",
         type="cross_document",
         question="Which employees left Vertexia voluntarily in 2023? For each person, state their department, last day, and the stated reason for departure.",
         required_facts=["Adrian Blake", "FinDataCo", "Preet Kaur", "relocated"],
