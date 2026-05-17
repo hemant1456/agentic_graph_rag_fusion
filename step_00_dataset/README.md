@@ -144,13 +144,12 @@ VP People & Culture: Zara Ahmed
 ### Format Distribution
 | Format | Count | Why Included |
 |---|---|---|
-| `.txt` | 12 | Meeting notes, emails, wikis (unstructured, variable length) |
-| `.md` | 8 | Architecture docs, runbooks, READMEs (semi-structured) |
-| `.csv` | 10 | Employee data, sales pipeline, revenue, bug tracker, API deps |
-| `.json` | 4 | API specs, system config, OKR tracking |
-| `.py` | 2 | Code files with docstrings (engineering context) |
+| `.txt` | 24 | Meeting notes, announcements, strategy docs, legal agreements (unstructured) |
+| `.md` | 8 | Architecture docs, runbooks, PRDs, RFCs (semi-structured with headers) |
+| `.csv` | 14 | Employee data, sales pipelines, revenue, on-call schedules, API deps, CSM history |
+| `.json` | 2 | API spec, OKR tracking |
 
-**Total**: ~36 core documents + generated variations = 50+ artifacts
+**Total**: 48 files across 7 departments
 
 ---
 
@@ -160,14 +159,17 @@ VP People & Culture: Zara Ahmed
 |---|---|---|---|
 | `nexusflow_architecture.md` | MD | System design, components, tech stack (Pulsar, not Kafka) | Trap 5, Trap 6 |
 | `nexusflow_v21_postmortem.txt` | TXT | Aug 14 2023 outage root cause analysis, timeline, action items | Trap 3, core document |
+| `nexusflow_api_changelog.md` | MD | NexusFlow API version history, breaking changes, deprecations | Background |
+| `nexusflow_api_spec.json` | JSON | NexusFlow Events API v2.0 spec: endpoints, auth, schema | Trap 10 (dependency detail) |
 | `data_platform_runbook.md` | MD | On-call procedures, service ownership, escalation | Trap 3 (ownership info) |
 | `project_phoenix_migration.md` | MD | Python 2→3 migration plan, timeline, completion note | Trap 2 |
-| `api_dependencies.csv` | CSV | Service → dependency mapping, including InsightLens→NexusFlow | Trap 10 |
+| `api_dependencies.csv` | CSV | Service → dependency mapping, including InsightLens→NexusFlow events_api | Trap 10 |
 | `on_call_schedule_aug2023.csv` | CSV | Week-by-week on-call rotation Aug 2023 | Trap 3 |
+| `on_call_schedule_q4_2023.csv` | CSV | Week-by-week on-call rotation Q4 2023 (Oct–Dec) | Background |
 | `datacraft_original_architecture.md` | MD | DataCraft's Kafka-based architecture (pre-acquisition) | Trap 5 |
 | `datacraft_migration_complete.txt` | TXT | Migration completion notice, Pulsar cutover June 2023 | Trap 5 |
 | `security_audit_2023.txt` | TXT | Annual security review findings, recommendations | Background |
-| `engineering_rfcs/rfc_001_event_schema.md` | MD | Event schema standardization RFC | Background, cross-product |
+| `rfc_001_event_schema.md` | MD | Event schema standardization RFC | Background, cross-product |
 
 ### Product Documents (`product/`)
 
@@ -196,6 +198,7 @@ VP People & Culture: Zara Ahmed
 | File | Format | Content | Traps |
 |---|---|---|---|
 | `revenue_by_product_2023.csv` | CSV | Monthly revenue per product, exact GAAP figures | Trap 4, Trap 7 |
+| `revenue_by_product_2022.csv` | CSV | Monthly revenue per product for 2022 (prior year baseline) | Background, YoY comparison |
 | `q3_2023_finance_report.txt` | TXT | Quarterly finance narrative: $4.12M revenue | Trap 4 |
 | `budget_allocation_2023.csv` | CSV | Budget per department, headcount costs | Background |
 | `vendor_contracts_summary.csv` | CSV | Vendor, contract value, renewal date, owner | Background |
@@ -206,9 +209,12 @@ VP People & Culture: Zara Ahmed
 
 | File | Format | Content | Traps |
 |---|---|---|---|
-| `deal_pipeline_q3_2023.csv` | CSV | Open and closed deals, ARR, stage | Trap 4 |
+| `deal_pipeline_q3_2023.csv` | CSV | Open and closed deals, ARR, stage — Q3 2023 | Trap 4 |
+| `deal_pipeline_q4_2023.csv` | CSV | Open and closed deals, ARR, stage — Q4 2023 | Background, H2 aggregation |
 | `phoenix_corp_deal_summary.txt` | TXT | Phoenix Corp enterprise deal memo, $2.4M ARR | Trap 2, Trap 6 |
-| `customer_list.csv` | CSV | Customer name, industry, ARR, product, CSM | Background |
+| `customer_list.csv` | CSV | Customer name, industry, ARR, product, CSM employee ID | Background |
+| `csm_account_history.csv` | CSV | CSM-to-account assignment history: who managed which account and when | Multi-hop (customer → CSM → manager) |
+| `customer_health_scores_2023.csv` | CSV | Health score, NPS, open tickets, renewal risk, next renewal date per customer | Background |
 | `sales_playbook_2023.txt` | TXT | Sales methodology, ICP, objection handling | Background |
 | `q3_closed_won_report.txt` | TXT | "Q3 closed-won: $4.2M" (booking-date accounting) | Trap 4 |
 
@@ -246,57 +252,34 @@ Documents are generated with a Python script (`implementation/generate_dataset.p
 
 ---
 
-## The 10 Golden Questions (Baseline Test Set)
+## The Evaluation Question Set
 
-These are the questions we will use to measure every system we build. The correct answer for each is documented below.
+The initial design targeted 10 representative questions. During the project the suite was expanded to
+**27 golden questions** to give finer-grained signal across all retrieval failure modes. The full suite
+lives in `step_01_baseline_rag/evaluation/questions.py` and is shared across all steps.
 
-```
-Q1 [Simple Lookup]:    "What is Vertexia's data retention policy for customer data?"
-    Expected: 90 days hot, 1 year cold storage (from onboarding handbook)
-    
-Q2 [Comparative]:      "How did Q3 2023 NexusFlow revenue compare to Q2 2023?"
-    Expected: NexusFlow Q2 $1.4M, Q3 $1.6M — 14.3% QoQ growth (from revenue CSV)
-    
-Q3 [Multi-hop]:        "Who was the on-call engineer for the data platform during the August 2023 outage?"
-    Expected: Kenji Ito (postmortem → service ownership → on-call schedule)
-    
-Q4 [Temporal]:         "What was Sarah Chen's title in January 2023?"
-    Expected: VP Engineering (became CTO in April 2023)
-    
-Q5 [Entity Disambiguation]: "What is Project Phoenix?"
-    Expected: Two things — (a) internal Python 2→3 migration (eng), (b) Phoenix Corp enterprise deal (sales). Must distinguish.
-    
-Q6 [Implicit Link]:    "Does the Phoenix Corp SLA requirement exceed NexusFlow's documented availability target?"
-    Expected: Yes — Phoenix Corp requires 99.99%, NexusFlow architecture doc targets 99.9%
-    
-Q7 [Contradictory Data]: "What was Q3 2023 total revenue?"
-    Expected: $4.12M per GAAP (finance), $4.2M per bookings (sales). Both correct, different accounting.
-    
-Q8 [Aggregation]:      "How many employees joined Vertexia through the DataCraft acquisition?"
-    Expected: 12 employees (from datacraft_employee_integration.txt + employee_directory.csv)
-    
-Q9 [Stale Reference]:  "Who should I contact about the InsightLens data pipeline integration?"
-    Expected: The doc says Marcus Webb, but Marcus is still at the company (not stale); distinguish from trap where person left
-    
-Q10 [Cross-format]:    "Was InsightLens affected by the August 2023 NexusFlow outage? Explain why."
-    Expected: Yes, because InsightLens depends on NexusFlow's events_api (only in api_dependencies.csv)
-```
+The original 10 design questions and the failure modes they target:
+
+| # | Type | Question | Key Source(s) |
+|---|---|---|---|
+| Q1 | Simple Lookup | "What is Vertexia's data retention policy?" | hr/onboarding_handbook.txt |
+| Q2 | Comparative | "How did Q3 2023 NexusFlow revenue compare to Q2?" | finance/revenue_by_product_2023.csv |
+| Q3 | Multi-hop | "Who was on call for data platform during the Aug 2023 outage?" | postmortem + runbook + on_call_schedule |
+| Q4 | Temporal | "What was Sarah Chen's title in January 2023?" | hr/promotion_announcements_2023.txt |
+| Q5 | Disambiguation | "What is Project Phoenix?" | engineering/project_phoenix_migration.md + sales/phoenix_corp_deal_summary.txt |
+| Q6 | Implicit Link | "Does the Phoenix Corp SLA exceed NexusFlow's availability target?" | legal/phoenix_corp_msa.txt + engineering/nexusflow_architecture.md |
+| Q7 | Contradictory | "What was Q3 2023 total revenue?" | finance/q3_2023_finance_report.txt (GAAP) vs sales/q3_closed_won_report.txt (bookings) |
+| Q8 | Aggregation | "How many employees joined via the DataCraft acquisition?" | hr/datacraft_employee_integration.txt + hr/employee_directory.csv |
+| Q9 | Stale Reference | "Who should I contact about InsightLens data pipeline?" | engineering docs (person still active — valid reference) |
+| Q10 | Cross-format | "Was InsightLens affected by the Aug 2023 NexusFlow outage?" | engineering/api_dependencies.csv (structured link) |
 
 ---
 
-## Done Criteria
+## Status
 
-Step 00 is complete when:
+**COMPLETE.** All 48 documents exist with internally consistent content. Every Trap is verifiable
+against the actual files. The eval suite (27 questions) is live in `step_01_baseline_rag/evaluation/`
+and used as the shared benchmark across all steps 01–12.
 
-- [ ] All documents in the inventory exist with realistic content
-- [ ] Every Trap is verifiable (we can demonstrate each one exists in the data)
-- [ ] The 10 golden questions have documented correct answers
-- [ ] A human can browse the `company_data/` folder and understand the company well enough to answer the questions manually
-- [ ] Document metadata catalog (`results/document_catalog.csv`) lists: filename, format, department, date_range, word_count, traps_encoded
-- [ ] Generation script is committed and reproducible
-
----
-
-## Next Step
-
-Once Step 00 is complete: → Step 01 (Baseline Vector RAG) uses this exact corpus. The first real test: how many of the 10 golden questions can naive RAG answer correctly?
+Step 01 baseline result against this corpus: **26% (7/27)** — establishing the floor that
+all subsequent techniques are measured against.
