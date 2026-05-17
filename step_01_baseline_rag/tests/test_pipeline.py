@@ -20,14 +20,14 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 def test_load_and_chunk_produces_chunks():
     from step_01_baseline_rag.implementation.ingest import load_and_chunk
-    corpus = Path(__file__).parent.parent.parent / "step_00_dataset" / "company_data"
+    corpus = Path(__file__).parent.parent.parent / "dataset" / "company_data"
     chunks = load_and_chunk(corpus)
     assert len(chunks) > 50, f"Expected 50+ chunks, got {len(chunks)}"
 
 
 def test_chunks_have_required_fields():
     from step_01_baseline_rag.implementation.ingest import load_and_chunk
-    corpus = Path(__file__).parent.parent.parent / "step_00_dataset" / "company_data"
+    corpus = Path(__file__).parent.parent.parent / "dataset" / "company_data"
     chunks = load_and_chunk(corpus)
     for c in chunks[:5]:
         assert c.text.strip(), "Chunk text must not be empty"
@@ -38,7 +38,7 @@ def test_chunks_have_required_fields():
 
 def test_csv_chunking_creates_row_chunks():
     from step_01_baseline_rag.implementation.ingest import load_and_chunk
-    corpus = Path(__file__).parent.parent.parent / "step_00_dataset" / "company_data"
+    corpus = Path(__file__).parent.parent.parent / "dataset" / "company_data"
     chunks = load_and_chunk(corpus)
     csv_chunks = [c for c in chunks if c.format == "csv"]
     assert len(csv_chunks) > 20, "Expected many CSV row chunks"
@@ -49,7 +49,7 @@ def test_csv_chunking_creates_row_chunks():
 
 def test_chunk_ids_are_unique():
     from step_01_baseline_rag.implementation.ingest import load_and_chunk
-    corpus = Path(__file__).parent.parent.parent / "step_00_dataset" / "company_data"
+    corpus = Path(__file__).parent.parent.parent / "dataset" / "company_data"
     chunks = load_and_chunk(corpus)
     ids = [c.chunk_id for c in chunks]
     assert len(ids) == len(set(ids)), "Chunk IDs must be unique"
@@ -57,7 +57,7 @@ def test_chunk_ids_are_unique():
 
 def test_chunk_sizes_within_bound():
     from step_01_baseline_rag.implementation.ingest import CHUNK_SIZE_CHARS, load_and_chunk
-    corpus = Path(__file__).parent.parent.parent / "step_00_dataset" / "company_data"
+    corpus = Path(__file__).parent.parent.parent / "dataset" / "company_data"
     chunks = load_and_chunk(corpus)
     # Allow 10% overshoot for edge cases (large single paragraphs)
     oversized = [c for c in chunks if len(c.text) > CHUNK_SIZE_CHARS * 1.1]

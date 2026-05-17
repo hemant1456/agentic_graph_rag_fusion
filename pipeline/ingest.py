@@ -8,7 +8,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from dotenv import load_dotenv
 load_dotenv()
 
-DOCS_DIR = Path(__file__).parent.parent/"step_00_dataset"/"company_data"
+DOCS_DIR = Path(__file__).parent.parent/"dataset"/"company_data"
 
 def load_and_chunk(docs_dir):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size= 1000, chunk_overlap= 100)

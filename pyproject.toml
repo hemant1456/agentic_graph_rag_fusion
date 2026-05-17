@@ -13,6 +13,11 @@ dependencies = [
     "pydantic>=2.7.0",
     "tqdm>=4.66.0",
     "rank-bm25>=0.2.2",
+    "langchain>=1.3.1",
+    "langchain-text-splitters>=1.1.2",
+    "langchain-chroma>=1.1.0",
+    "langchain-huggingface>=1.2.2",
+    "langchain-google-genai>=3.2.0",
 ]
 
 [project.optional-dependencies]
@@ -52,7 +57,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["step_00_dataset/tests", "step_01_baseline_rag/tests", "step_02_observability/tests", "step_03_evaluation/tests", "step_04_chunking/tests"]
+testpaths = ["dataset/tests", "step_01_baseline_rag/tests", "observability/tests", "evaluation/tests", "step_02_chunking/tests"]
 python_files = ["test_*.py"]
 markers = ["integration: requires live API keys and built index"]
 

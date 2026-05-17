@@ -45,7 +45,7 @@ Level 12: Production Grade    → Reliability, cost control, latency budgets, al
 ### STEP 00 — Foundation Dataset
 **Goal**: Create a rich, realistic synthetic company corpus that will stress-test every retrieval strategy we build.
 
-**Output**: `step_00_dataset/company_data/` — 50+ documents across 7+ formats, engineered with deliberate "traps" (temporal ambiguity, entity collision, multi-hop chains, contradictory facts, implicit relationships).
+**Output**: `dataset/company_data/` — 50+ documents across 7+ formats, engineered with deliberate "traps" (temporal ambiguity, entity collision, multi-hop chains, contradictory facts, implicit relationships).
 
 **Why it matters**: Garbage data → garbage learning. The dataset is the experiment. Every later step will either pass or fail against these documents. If the data is too clean, we learn nothing.
 

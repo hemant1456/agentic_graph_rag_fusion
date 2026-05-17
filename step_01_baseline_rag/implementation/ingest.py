@@ -204,6 +204,6 @@ def build_index(corpus_path: Path, persist_dir: Path, reset: bool = False) -> ch
 
 
 if __name__ == "__main__":
-    corpus = Path(__file__).parent.parent.parent / "step_00_dataset" / "company_data"
+    corpus = Path(__file__).parent.parent.parent / "dataset" / "company_data"
     db_dir = Path(__file__).parent.parent / "results" / "chroma_db"
     build_index(corpus, db_dir, reset=True)

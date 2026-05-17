@@ -8,7 +8,7 @@ from .generate import generate_answer
 from .ingest import build_index, get_chroma_collection
 from .retrieve import RetrievedChunk, format_context, retrieve
 
-CORPUS_PATH = Path(__file__).parent.parent.parent / "step_00_dataset" / "company_data"
+CORPUS_PATH = Path(__file__).parent.parent.parent / "dataset" / "company_data"
 DB_PATH = Path(__file__).parent.parent / "results" / "chroma_db"
 
 

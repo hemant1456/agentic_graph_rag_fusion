@@ -144,7 +144,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Requires a Pandas tool that reads all 20 rows."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_05_tools",
+        fixed_by_step="step_03_tools",
     ),
 
     GoldenQuestion(
@@ -160,7 +160,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Requires a tool that filters by month and sums."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_05_tools",
+        fixed_by_step="step_03_tools",
     ),
 
     GoldenQuestion(
@@ -175,7 +175,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Vector retrieval might surface a few CSV rows but cannot reliably group and count all of them."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_05_tools",
+        fixed_by_step="step_03_tools",
     ),
 
     GoldenQuestion(
@@ -190,7 +190,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "No single retrieved chunk contains the cross-department total."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_05_tools",
+        fixed_by_step="step_03_tools",
     ),
 
     GoldenQuestion(
@@ -205,7 +205,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Vector retrieval returns a few rows — partial sum gives wrong total."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_05_tools",
+        fixed_by_step="step_03_tools",
     ),
 
     # ── TIER 3: BM25 / Keyword-Exact Retrieval (Q13–Q18) ───────────────────────
@@ -229,7 +229,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "BM25 on 'v2.1 postmortem action items' finds it directly."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_06_hybrid_retrieval",
+        fixed_by_step="step_04_hybrid_retrieval",
     ),
 
     GoldenQuestion(
@@ -247,7 +247,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "BM25 finds the schedule CSV directly via exact term matching."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_06_hybrid_retrieval",
+        fixed_by_step="step_04_hybrid_retrieval",
     ),
 
     GoldenQuestion(
@@ -263,7 +263,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "BM25 on 'AWS' finds the exact vendor row in the contracts CSV."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_06_hybrid_retrieval",
+        fixed_by_step="step_04_hybrid_retrieval",
     ),
 
     GoldenQuestion(
@@ -280,7 +280,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "BM25 finds 'Snowflake' in the vendor CSV directly."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_06_hybrid_retrieval",
+        fixed_by_step="step_04_hybrid_retrieval",
     ),
 
     GoldenQuestion(
@@ -298,7 +298,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "directly via exact token match."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_06_hybrid_retrieval",
+        fixed_by_step="step_04_hybrid_retrieval",
     ),
 
     GoldenQuestion(
@@ -317,7 +317,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "or general security docs — so the required date 2023-10-31 is missing."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_06_hybrid_retrieval",
+        fixed_by_step="step_04_hybrid_retrieval",
     ),
 
     # ── TIER 4: Knowledge Graph / Multi-hop (Q19–Q24) ──────────────────────────
@@ -339,7 +339,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Two-hop chain across two CSV files — requires graph traversal."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07_knowledge_graph",
+        fixed_by_step="step_05_knowledge_graph",
     ),
 
     GoldenQuestion(
@@ -354,7 +354,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "as a critical dependency. Requires filtering the dependency graph by endpoint and criticality."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07_knowledge_graph",
+        fixed_by_step="step_05_knowledge_graph",
     ),
 
     GoldenQuestion(
@@ -371,7 +371,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "to determine which team was responsible, then matching against the schedule — a two-hop join."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07_knowledge_graph",
+        fixed_by_step="step_05_knowledge_graph",
     ),
 
     GoldenQuestion(
@@ -388,7 +388,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Requires full graph traversal — no single chunk answers this."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07_knowledge_graph",
+        fixed_by_step="step_05_knowledge_graph",
     ),
 
     GoldenQuestion(
@@ -404,7 +404,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Two-hop chain through the org hierarchy — requires graph traversal."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07_knowledge_graph",
+        fixed_by_step="step_05_knowledge_graph",
     ),
 
     GoldenQuestion(
@@ -420,7 +420,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Requires reading all rows where consuming_service=PulseConnect."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07_knowledge_graph",
+        fixed_by_step="step_05_knowledge_graph",
     ),
 
     # ── TIER 5: Complex Multi-step Reasoning (Q25–Q29) ─────────────────────────
@@ -441,7 +441,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Both happen to share the name. Requires reading both documents and distinguishing them."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_09_multi_agent",
+        fixed_by_step="step_07_multi_agent",
     ),
 
     GoldenQuestion(
@@ -458,7 +458,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Requires reading two separate documents and comparing numbers."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_09_multi_agent",
+        fixed_by_step="step_07_multi_agent",
     ),
 
     GoldenQuestion(
@@ -474,7 +474,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Requires: dependency graph + on-call schedule + postmortem date — three separate sources."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_09_multi_agent",
+        fixed_by_step="step_07_multi_agent",
     ),
 
     GoldenQuestion(
@@ -491,7 +491,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "a multi-step cross-file computation that no single tool call can resolve."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_09_multi_agent",
+        fixed_by_step="step_07_multi_agent",
     ),
 
     GoldenQuestion(
@@ -508,6 +508,6 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Requires surfacing a low-traffic HR CSV that generic retrieval rarely ranks highly."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_09_multi_agent",
+        fixed_by_step="step_07_multi_agent",
     ),
 ]

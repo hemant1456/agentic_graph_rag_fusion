@@ -1,0 +1,438 @@
+{
+  "step": "step_03_tools",
+  "pass": 17,
+  "partial": 12,
+  "fail": 0,
+  "total": 29,
+  "pass_rate": 0.5862068965517241,
+  "results": [
+    {
+      "question_id": "Q01",
+      "grade": "PASS",
+      "required_hits": [
+        "90 day",
+        "glacier"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "retention",
+        "cold",
+        "storage"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q02",
+      "grade": "PASS",
+      "required_hits": [
+        "Arjun Mehta",
+        "Diana Volkov",
+        "2019"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "founder",
+        "co-founder"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q03",
+      "grade": "PASS",
+      "required_hits": [
+        "VP Engineering"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "Sarah Chen",
+        "engineering",
+        "promoted"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q04",
+      "grade": "PASS",
+      "required_hits": [
+        "NexusFlow",
+        "InsightLens",
+        "PulseConnect"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "product"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q05",
+      "grade": "PASS",
+      "required_hits": [
+        "Pulsar"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "DataCraft"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q06",
+      "grade": "PASS",
+      "required_hits": [
+        "99.99"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "uptime",
+        "Phoenix"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q07",
+      "grade": "PASS",
+      "required_hits": [
+        "12"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "DataCraft",
+        "acquisition",
+        "engineer"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q08",
+      "grade": "PASS",
+      "required_hits": [
+        "11,000,000"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "ARR",
+        "customer"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q09",
+      "grade": "PASS",
+      "required_hits": [
+        "4,120,000"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "Q3",
+        "revenue",
+        "2023"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q10",
+      "grade": "PASS",
+      "required_hits": [
+        "5"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "Berlin",
+        "employee"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q11",
+      "grade": "PASS",
+      "required_hits": [
+        "181"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "headcount",
+        "budget",
+        "department"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q12",
+      "grade": "PASS",
+      "required_hits": [
+        "1,692,000"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "closed-won",
+        "Q3",
+        "ARR",
+        "deal"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q13",
+      "grade": "PARTIAL",
+      "required_hits": [
+        "config validation",
+        "canary"
+      ],
+      "required_missing": [
+        "max_connections"
+      ],
+      "partial_hits": [
+        "postmortem",
+        "action",
+        "v2.1",
+        "NexusFlow"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q14",
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
+        "Yuki Tanaka"
+      ],
+      "partial_hits": [
+        "on-call",
+        "NexusFlow",
+        "August"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q15",
+      "grade": "PASS",
+      "required_hits": [
+        "480,000",
+        "December 31, 2024"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "AWS"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q16",
+      "grade": "PASS",
+      "required_hits": [
+        "120,000",
+        "June 30, 2024"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "Snowflake",
+        "contract"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q17",
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
+        "events/batch",
+        "events/stream"
+      ],
+      "partial_hits": [
+        "v2.1",
+        "deprecated",
+        "NexusFlow"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q18",
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
+        "Daniel Osei",
+        "October 31, 2023"
+      ],
+      "partial_hits": [
+        "M-2",
+        "security audit"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q19",
+      "grade": "PASS",
+      "required_hits": [
+        "Maya Sharma",
+        "Lisa Torres"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "CSM",
+        "Phoenix Corp",
+        "account"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q20",
+      "grade": "PARTIAL",
+      "required_hits": [
+        "InsightLens"
+      ],
+      "required_missing": [
+        "DataCraft"
+      ],
+      "partial_hits": [
+        "events_api",
+        "dependency",
+        "NexusFlow"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q21",
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
+        "Kenji Ito"
+      ],
+      "partial_hits": [
+        "on-call",
+        "Data Platform",
+        "August"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q22",
+      "grade": "PARTIAL",
+      "required_hits": [
+        "InsightLens",
+        "PulseConnect"
+      ],
+      "required_missing": [
+        "DataCraft"
+      ],
+      "partial_hits": [
+        "downstream"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q23",
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
+        "Tom\u00e1s Garc\u00eda",
+        "Sarah Chen"
+      ],
+      "partial_hits": [
+        "Aisha Johnson",
+        "reports to"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q24",
+      "grade": "PASS",
+      "required_hits": [
+        "InsightLens",
+        "NexusFlow",
+        "sendgrid",
+        "twilio"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "PulseConnect",
+        "depends",
+        "dependency"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q25",
+      "grade": "PARTIAL",
+      "required_hits": [
+        "Phoenix Corp"
+      ],
+      "required_missing": [
+        "migration",
+        "signed"
+      ],
+      "partial_hits": [
+        "Project Phoenix",
+        "two"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q26",
+      "grade": "PASS",
+      "required_hits": [
+        "99.9",
+        "99.99"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "availability",
+        "SLA",
+        "gap",
+        "NexusFlow"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q27",
+      "grade": "PARTIAL",
+      "required_hits": [
+        "InsightLens",
+        "events_api",
+        "Yuki Tanaka"
+      ],
+      "required_missing": [
+        "Kenji Ito"
+      ],
+      "partial_hits": [
+        "dependency",
+        "outage",
+        "on-call"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q28",
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
+        "3,456,000"
+      ],
+      "partial_hits": [
+        "closed-won",
+        "ARR",
+        "Q3",
+        "Q4"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q29",
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
+        "Adrian Blake",
+        "FinDataCo",
+        "Preet Kaur",
+        "relocated"
+      ],
+      "partial_hits": [
+        "voluntary",
+        "departure",
+        "2023"
+      ],
+      "disqualifier_hits": []
+    }
+  ],
+  "timestamp": "2026-05-17T18:49:54"
+}

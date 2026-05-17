@@ -1,0 +1,635 @@
+{
+  "step": "02_observability",
+  "timestamp": "2026-05-15T16:50:00",
+  "total_questions": 22,
+  "grade_counts": {
+    "PASS": 8,
+    "PARTIAL": 13,
+    "FAIL": 1
+  },
+  "pass_rate": 0.36,
+  "total_tokens": 34875,
+  "avg_tokens_per_query": 1585,
+  "total_cost_usd": 0.003176,
+  "avg_cost_per_query_usd": 0.0001444,
+  "avg_latency_ms": 1865.7,
+  "trace_file": "/Users/hemantbhambhu/Documents/projects/agentic_graph_rag_fusion/observability/results/traces.jsonl",
+  "results": [
+    {
+      "id": "Q01",
+      "type": "simple_lookup",
+      "question": "What is Vertexia's customer data retention policy for hot storage and cold storage?",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "trace_id": "8877b098",
+      "total_latency_ms": 1723.4,
+      "retrieval_ms": 707.2,
+      "generation_ms": 1000.0,
+      "prompt_tokens": 2039,
+      "completion_tokens": 38,
+      "total_tokens": 2077,
+      "estimated_cost_usd": 0.000164,
+      "provider": "gemini",
+      "top_source": "legal/phoenix_corp_msa.txt",
+      "unique_sources": [
+        "legal/phoenix_corp_msa.txt",
+        "legal/data_processing_agreement_template.txt",
+        "hr/onboarding_handbook.txt",
+        "legal/ip_policy.txt"
+      ],
+      "required_hits": [
+        "90 day",
+        "glacier"
+      ],
+      "required_missing": []
+    },
+    {
+      "id": "Q02",
+      "type": "simple_aggregation",
+      "question": "How many engineers joined Vertexia through the DataCraft acquisition?",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "trace_id": "684e0203",
+      "total_latency_ms": 1732.5,
+      "retrieval_ms": 604.5,
+      "generation_ms": 1119.8,
+      "prompt_tokens": 2222,
+      "completion_tokens": 71,
+      "total_tokens": 2293,
+      "estimated_cost_usd": 0.000188,
+      "provider": "gemini",
+      "top_source": "hr/datacraft_employee_integration.txt",
+      "unique_sources": [
+        "hr/datacraft_employee_integration.txt",
+        "legal/datacraft_acquisition_summary.txt",
+        "executive/founding_story.txt",
+        "executive/board_meeting_april_2023.txt"
+      ],
+      "required_hits": [
+        "12"
+      ],
+      "required_missing": []
+    },
+    {
+      "id": "Q03",
+      "type": "simple_lookup",
+      "question": "Who is the CEO of Vertexia and who co-founded the company with them?",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "trace_id": "bb0fa1dc",
+      "total_latency_ms": 1459.2,
+      "retrieval_ms": 557.2,
+      "generation_ms": 892.1,
+      "prompt_tokens": 2035,
+      "completion_tokens": 22,
+      "total_tokens": 2057,
+      "estimated_cost_usd": 0.000159,
+      "provider": "gemini",
+      "top_source": "executive/founding_story.txt",
+      "unique_sources": [
+        "executive/founding_story.txt",
+        "hr/org_chart_q1_2023.txt",
+        "finance/series_b_investor_update.txt",
+        "hr/org_chart_q3_2023.txt"
+      ],
+      "required_hits": [
+        "Arjun Mehta",
+        "Diana Volkov"
+      ],
+      "required_missing": []
+    },
+    {
+      "id": "Q04",
+      "type": "simple_lookup",
+      "question": "In what year was Vertexia Inc. founded?",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "trace_id": "33e80d32",
+      "total_latency_ms": 1428.3,
+      "retrieval_ms": 572.5,
+      "generation_ms": 843.1,
+      "prompt_tokens": 2194,
+      "completion_tokens": 14,
+      "total_tokens": 2208,
+      "estimated_cost_usd": 0.000169,
+      "provider": "gemini",
+      "top_source": "executive/founding_story.txt",
+      "unique_sources": [
+        "executive/founding_story.txt",
+        "hr/org_chart_q1_2023.txt",
+        "legal/ip_policy.txt",
+        "hr/onboarding_handbook.txt",
+        "hr/org_chart_q3_2023.txt"
+      ],
+      "required_hits": [
+        "2019"
+      ],
+      "required_missing": []
+    },
+    {
+      "id": "Q05",
+      "type": "simple_lookup",
+      "question": "What message queue technology does NexusFlow use for its core pipeline?",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "trace_id": "c90802aa",
+      "total_latency_ms": 1765.9,
+      "retrieval_ms": 790.4,
+      "generation_ms": 968.2,
+      "prompt_tokens": 1884,
+      "completion_tokens": 28,
+      "total_tokens": 1912,
+      "estimated_cost_usd": 0.00015,
+      "provider": "gemini",
+      "top_source": "engineering/nexusflow_architecture.md",
+      "unique_sources": [
+        "engineering/nexusflow_architecture.md",
+        "engineering/api_dependencies.csv",
+        "engineering/project_phoenix_migration.md",
+        "product/nexusflow_prd_v2.md"
+      ],
+      "required_hits": [
+        "Pulsar"
+      ],
+      "required_missing": []
+    },
+    {
+      "id": "Q06",
+      "type": "simple_lookup",
+      "question": "What is the NexusFlow platform's monthly availability SLO target as defined in its architecture document?",
+      "grade": "PASS",
+      "expected_outcome": "PASS",
+      "matched_expected": true,
+      "trace_id": "6ff0edf3",
+      "total_latency_ms": 1780.5,
+      "retrieval_ms": 666.6,
+      "generation_ms": 1102.2,
+      "prompt_tokens": 2519,
+      "completion_tokens": 39,
+      "total_tokens": 2558,
+      "estimated_cost_usd": 0.000201,
+      "provider": "gemini",
+      "top_source": "engineering/nexusflow_architecture.md",
+      "unique_sources": [
+        "engineering/nexusflow_architecture.md",
+        "product/nexusflow_prd_v2.md",
+        "engineering/nexusflow_api_spec.json"
+      ],
+      "required_hits": [
+        "99.9"
+      ],
+      "required_missing": []
+    },
+    {
+      "id": "Q07",
+      "type": "csv_full_aggregation",
+      "question": "What is the total annual recurring revenue across all of Vertexia's current customers?",
+      "grade": "PARTIAL",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "trace_id": "5c940185",
+      "total_latency_ms": 1733.8,
+      "retrieval_ms": 582.4,
+      "generation_ms": 1141.0,
+      "prompt_tokens": 562,
+      "completion_tokens": 125,
+      "total_tokens": 687,
+      "estimated_cost_usd": 8e-05,
+      "provider": "gemini",
+      "top_source": "sales/customer_list.csv",
+      "unique_sources": [
+        "sales/customer_list.csv"
+      ],
+      "required_hits": [],
+      "required_missing": [
+        "11"
+      ]
+    },
+    {
+      "id": "Q08",
+      "type": "csv_full_aggregation",
+      "question": "What is Vertexia's total annual spend across all vendor contracts?",
+      "grade": "PARTIAL",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "trace_id": "6e60c8fe",
+      "total_latency_ms": 1846.8,
+      "retrieval_ms": 546.6,
+      "generation_ms": 1287.3,
+      "prompt_tokens": 543,
+      "completion_tokens": 107,
+      "total_tokens": 650,
+      "estimated_cost_usd": 7.3e-05,
+      "provider": "gemini",
+      "top_source": "finance/vendor_contracts_summary.csv",
+      "unique_sources": [
+        "finance/vendor_contracts_summary.csv"
+      ],
+      "required_hits": [],
+      "required_missing": [
+        "956"
+      ]
+    },
+    {
+      "id": "Q09",
+      "type": "csv_full_scan_filter",
+      "question": "Which Vertexia employees are based in Berlin? List all of them.",
+      "grade": "PARTIAL",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "trace_id": "e815a71f",
+      "total_latency_ms": 1805.5,
+      "retrieval_ms": 611.0,
+      "generation_ms": 1181.4,
+      "prompt_tokens": 1427,
+      "completion_tokens": 47,
+      "total_tokens": 1474,
+      "estimated_cost_usd": 0.000121,
+      "provider": "gemini",
+      "top_source": "hr/org_chart_q1_2023.txt",
+      "unique_sources": [
+        "hr/org_chart_q1_2023.txt",
+        "hr/org_chart_q3_2023.txt",
+        "hr/employee_directory.csv"
+      ],
+      "required_hits": [
+        "Noah Zimmermann"
+      ],
+      "required_missing": [
+        "Emma Fischer",
+        "Aleksander Nowak"
+      ]
+    },
+    {
+      "id": "Q10",
+      "type": "csv_arithmetic_aggregation",
+      "question": "Which Vertexia department has the highest annual budget per employee headcount, and what is that figure?",
+      "grade": "FAIL",
+      "expected_outcome": "FAIL",
+      "matched_expected": true,
+      "trace_id": "159a9a74",
+      "total_latency_ms": 1995.4,
+      "retrieval_ms": 545.7,
+      "generation_ms": 1440.2,
+      "prompt_tokens": 500,
+      "completion_tokens": 217,
+      "total_tokens": 717,
+      "estimated_cost_usd": 0.000103,
+      "provider": "gemini",
+      "top_source": "finance/budget_allocation_2023.csv",
+      "unique_sources": [
+        "finance/budget_allocation_2023.csv"
+      ],
+      "required_hits": [],
+      "required_missing": [
+        "Platform Engineering",
+        "195"
+      ]
+    },
+    {
+      "id": "Q11",
+      "type": "csv_full_aggregation",
+      "question": "How many deals did Vertexia close as Closed-Won in Q3 2023, and what was their combined ARR?",
+      "grade": "PARTIAL",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "trace_id": "7862043a",
+      "total_latency_ms": 2123.1,
+      "retrieval_ms": 657.2,
+      "generation_ms": 1455.2,
+      "prompt_tokens": 1143,
+      "completion_tokens": 231,
+      "total_tokens": 1374,
+      "estimated_cost_usd": 0.000155,
+      "provider": "gemini",
+      "top_source": "sales/q3_closed_won_report.txt",
+      "unique_sources": [
+        "sales/q3_closed_won_report.txt",
+        "sales/deal_pipeline_q3_2023.csv"
+      ],
+      "required_hits": [],
+      "required_missing": [
+        "1.69"
+      ]
+    },
+    {
+      "id": "Q12",
+      "type": "csv_arithmetic_cross_doc",
+      "question": "What percentage of Vertexia's total annual recurring revenue comes from enterprise-segment customers?",
+      "grade": "PARTIAL",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "trace_id": "ba3f693d",
+      "total_latency_ms": 2113.3,
+      "retrieval_ms": 538.6,
+      "generation_ms": 1563.7,
+      "prompt_tokens": 2315,
+      "completion_tokens": 98,
+      "total_tokens": 2413,
+      "estimated_cost_usd": 0.000203,
+      "provider": "gemini",
+      "top_source": "finance/series_b_investor_update.txt",
+      "unique_sources": [
+        "finance/series_b_investor_update.txt",
+        "executive/company_strategy_2024.txt",
+        "sales/q3_closed_won_report.txt",
+        "executive/q3_2023_allhands_notes.txt",
+        "sales/sales_playbook_2023.txt"
+      ],
+      "required_hits": [],
+      "required_missing": [
+        "65"
+      ]
+    },
+    {
+      "id": "Q13",
+      "type": "cross_csv_multi_hop",
+      "question": "The engineer who departed Vertexia to join FinDataCo \u2014 what is the name of their direct manager?",
+      "grade": "PARTIAL",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "trace_id": "34fa29e1",
+      "total_latency_ms": 1663.1,
+      "retrieval_ms": 547.9,
+      "generation_ms": 1103.6,
+      "prompt_tokens": 1723,
+      "completion_tokens": 88,
+      "total_tokens": 1811,
+      "estimated_cost_usd": 0.000156,
+      "provider": "gemini",
+      "top_source": "hr/org_chart_q1_2023.txt",
+      "unique_sources": [
+        "hr/org_chart_q1_2023.txt",
+        "hr/offboarding_records_2023.csv",
+        "executive/founding_story.txt",
+        "hr/org_chart_q3_2023.txt"
+      ],
+      "required_hits": [],
+      "required_missing": [
+        "Priya Nair"
+      ]
+    },
+    {
+      "id": "Q14",
+      "type": "cross_csv_multi_hop",
+      "question": "Who is listed as the owner of our Snowflake data warehouse contract, and who is their direct manager?",
+      "grade": "PARTIAL",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "trace_id": "603d3e5c",
+      "total_latency_ms": 1526.6,
+      "retrieval_ms": 540.9,
+      "generation_ms": 976.8,
+      "prompt_tokens": 547,
+      "completion_tokens": 26,
+      "total_tokens": 573,
+      "estimated_cost_usd": 4.9e-05,
+      "provider": "gemini",
+      "top_source": "finance/vendor_contracts_summary.csv",
+      "unique_sources": [
+        "finance/vendor_contracts_summary.csv"
+      ],
+      "required_hits": [
+        "Priya Nair"
+      ],
+      "required_missing": [
+        "Marcus Webb"
+      ]
+    },
+    {
+      "id": "Q15",
+      "type": "csv_arithmetic_full_scan",
+      "question": "What percentage of Vertexia's total 2023 annual budget is allocated to the two engineering departments combined (Platform Engineering and Product Engineering)?",
+      "grade": "PARTIAL",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "trace_id": "aca42215",
+      "total_latency_ms": 2148.2,
+      "retrieval_ms": 563.3,
+      "generation_ms": 1573.3,
+      "prompt_tokens": 1268,
+      "completion_tokens": 226,
+      "total_tokens": 1494,
+      "estimated_cost_usd": 0.000163,
+      "provider": "gemini",
+      "top_source": "finance/budget_allocation_2023.csv",
+      "unique_sources": [
+        "finance/budget_allocation_2023.csv",
+        "hr/org_chart_q1_2023.txt",
+        "hr/org_chart_q3_2023.txt"
+      ],
+      "required_hits": [],
+      "required_missing": [
+        "59"
+      ]
+    },
+    {
+      "id": "Q16",
+      "type": "csv_date_filter_aggregation",
+      "question": "What is the total combined ARR of all customers who signed contracts in the second half of 2023 (July through December)?",
+      "grade": "PARTIAL",
+      "expected_outcome": "FAIL",
+      "matched_expected": false,
+      "trace_id": "cf6e8fdf",
+      "total_latency_ms": 1736.7,
+      "retrieval_ms": 545.7,
+      "generation_ms": 1180.2,
+      "prompt_tokens": 567,
+      "completion_tokens": 116,
+      "total_tokens": 683,
+      "estimated_cost_usd": 7.7e-05,
+      "provider": "gemini",
+      "top_source": "sales/customer_list.csv",
+      "unique_sources": [
+        "sales/customer_list.csv"
+      ],
+      "required_hits": [],
+      "required_missing": [
+        "3.12"
+      ]
+    },
+    {
+      "id": "Q17",
+      "type": "stale_reference",
+      "question": "According to our customer records, who is the customer success manager for Apex Financial, and based on all available HR records, are they still at Vertexia and under what circumstances did they leave?",
+      "grade": "PARTIAL",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": true,
+      "trace_id": "a5362a0f",
+      "total_latency_ms": 1904.6,
+      "retrieval_ms": 616.3,
+      "generation_ms": 1277.0,
+      "prompt_tokens": 618,
+      "completion_tokens": 107,
+      "total_tokens": 725,
+      "estimated_cost_usd": 7.8e-05,
+      "provider": "gemini",
+      "top_source": "sales/csm_account_history.csv",
+      "unique_sources": [
+        "sales/csm_account_history.csv",
+        "sales/customer_list.csv",
+        "hr/employee_directory.csv"
+      ],
+      "required_hits": [
+        "Preet Kaur",
+        "departed"
+      ],
+      "required_missing": [
+        "voluntary"
+      ]
+    },
+    {
+      "id": "Q18",
+      "type": "disambiguation_no_name",
+      "question": "Vertexia has two separate internal efforts that share the same name. What are they, and what was the outcome of each?",
+      "grade": "PARTIAL",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": true,
+      "trace_id": "0b279a6d",
+      "total_latency_ms": 2078.4,
+      "retrieval_ms": 548.4,
+      "generation_ms": 1521.1,
+      "prompt_tokens": 2391,
+      "completion_tokens": 177,
+      "total_tokens": 2568,
+      "estimated_cost_usd": 0.000232,
+      "provider": "gemini",
+      "top_source": "executive/founding_story.txt",
+      "unique_sources": [
+        "executive/founding_story.txt",
+        "hr/org_chart_q1_2023.txt",
+        "executive/q3_2023_allhands_notes.txt",
+        "engineering/project_phoenix_migration.md",
+        "executive/company_strategy_2024.txt"
+      ],
+      "required_hits": [
+        "Python",
+        "Phoenix Corp",
+        "completed"
+      ],
+      "required_missing": [
+        "signed"
+      ]
+    },
+    {
+      "id": "Q19",
+      "type": "sla_breach_inference",
+      "question": "Based on the August 2023 incident report, did Vertexia meet its standard 99.9% uptime commitment to customers that month? Show your calculation.",
+      "grade": "PASS",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": false,
+      "trace_id": "7abeb55f",
+      "total_latency_ms": 2553.4,
+      "retrieval_ms": 592.7,
+      "generation_ms": 1949.8,
+      "prompt_tokens": 2297,
+      "completion_tokens": 305,
+      "total_tokens": 2602,
+      "estimated_cost_usd": 0.000264,
+      "provider": "gemini",
+      "top_source": "executive/q3_2023_allhands_notes.txt",
+      "unique_sources": [
+        "executive/q3_2023_allhands_notes.txt",
+        "finance/q3_2023_finance_report.txt",
+        "engineering/nexusflow_v21_postmortem.txt",
+        "engineering/security_audit_2023.txt",
+        "legal/phoenix_corp_msa.txt"
+      ],
+      "required_hits": [
+        "did not",
+        "99.4",
+        "263"
+      ],
+      "required_missing": []
+    },
+    {
+      "id": "Q20",
+      "type": "multi_format_multi_hop",
+      "question": "Which products were directly or indirectly affected by the August 2023 NexusFlow outage, and what was their combined revenue in the month the outage occurred?",
+      "grade": "PARTIAL",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": true,
+      "trace_id": "17018437",
+      "total_latency_ms": 1409.7,
+      "retrieval_ms": 613.6,
+      "generation_ms": 783.0,
+      "prompt_tokens": 663,
+      "completion_tokens": 33,
+      "total_tokens": 696,
+      "estimated_cost_usd": 6e-05,
+      "provider": "gemini",
+      "top_source": "finance/revenue_by_product_2023.csv",
+      "unique_sources": [
+        "finance/revenue_by_product_2023.csv",
+        "finance/revenue_by_product_2022.csv"
+      ],
+      "required_hits": [],
+      "required_missing": [
+        "InsightLens",
+        "1.02"
+      ]
+    },
+    {
+      "id": "Q21",
+      "type": "multi_hop_implicit",
+      "question": "If the analytics dashboard had an ingestion failure on August 29, 2023, which on-call Data Platform engineer would be responsible for the fix?",
+      "grade": "PASS",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": false,
+      "trace_id": "18015374",
+      "total_latency_ms": 1547.7,
+      "retrieval_ms": 583.2,
+      "generation_ms": 954.9,
+      "prompt_tokens": 643,
+      "completion_tokens": 57,
+      "total_tokens": 700,
+      "estimated_cost_usd": 6.5e-05,
+      "provider": "gemini",
+      "top_source": "engineering/on_call_schedule_aug2023.csv",
+      "unique_sources": [
+        "engineering/on_call_schedule_aug2023.csv"
+      ],
+      "required_hits": [
+        "Priya Nair"
+      ],
+      "required_missing": []
+    },
+    {
+      "id": "Q22",
+      "type": "blast_radius_multi_hop",
+      "question": "If Vertexia's primary message queue infrastructure went down completely, trace the full blast radius: which internal products would be affected and which specific enterprise customers would lose service?",
+      "grade": "PARTIAL",
+      "expected_outcome": "PARTIAL",
+      "matched_expected": true,
+      "trace_id": "a14592ff",
+      "total_latency_ms": 2968.8,
+      "retrieval_ms": 829.1,
+      "generation_ms": 2129.0,
+      "prompt_tokens": 2290,
+      "completion_tokens": 313,
+      "total_tokens": 2603,
+      "estimated_cost_usd": 0.000266,
+      "provider": "gemini",
+      "top_source": "executive/q3_2023_allhands_notes.txt",
+      "unique_sources": [
+        "executive/q3_2023_allhands_notes.txt",
+        "sales/phoenix_corp_deal_summary.txt",
+        "sales/q3_closed_won_report.txt",
+        "executive/company_strategy_2024.txt",
+        "engineering/nexusflow_architecture.md"
+      ],
+      "required_hits": [
+        "InsightLens",
+        "events_api"
+      ],
+      "required_missing": [
+        "QuantumBank"
+      ]
+    }
+  ]
+}
