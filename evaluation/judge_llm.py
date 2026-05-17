@@ -43,14 +43,17 @@ def _msg_role(m: BaseMessage) -> str:
 class GatewayChat(BaseChatModel):
     """LangChain ChatModel backed by llm_gatewayV2.
 
-    Provider selection — empirical findings on this gateway:
-      - groq (llama-3.3-70b):  ~200ms/call, 30 RPM — fastest, reliable
-      - gemini (3.1-flash):    ~900ms/call, 15 RPM — reliable fallback
-      - nvidia (deepseek-v4):  ~30s/call,   40 RPM — too slow for batch eval
-      - cerebras (qwen3-235b): empty responses     — broken, skip
+    Provider selection — empirical findings on this gateway (2026-05-17):
+      - groq (llama-3.3-70b):    ~200 ms/call, 30 RPM, 1k RPD — fast, but RPD
+                                  exhausts after ~70 min of full eval runs
+      - cerebras (qwen3-235b):   ~500 ms-2 s/call, 30 RPM, 9999 RPD — fast,
+                                  high daily cap, occasional empty responses
+      - gemini (3.1-flash-lite): ~900 ms/call, 15 RPM, 1k RPD — reliable
+      - nvidia (deepseek-v4):    ~30 s/call — too slow for batch eval
 
-    Prefer groq, fall back to gemini on RPM exhaustion or transient failure.
-    Override via JUDGE_PROVIDERS env var (comma-separated, in priority order).
+    Default order: cerebras → gemini → groq.  Each provider is tried in
+    sequence; empty text or RPM/RPD errors fall through to the next.
+    Override via JUDGE_PROVIDERS env var (comma-separated).
     """
 
     base_url: str = GATEWAY_URL
@@ -59,7 +62,7 @@ class GatewayChat(BaseChatModel):
     providers: list[str] = []  # set in model_post_init
 
     def model_post_init(self, __context: Any) -> None:
-        env_order = os.getenv("JUDGE_PROVIDERS", "groq,gemini")
+        env_order = os.getenv("JUDGE_PROVIDERS", "cerebras,gemini,groq")
         self.providers = [p.strip() for p in env_order.split(",") if p.strip()]
 
     @property
