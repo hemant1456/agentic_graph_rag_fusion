@@ -41,13 +41,26 @@ def _msg_role(m: BaseMessage) -> str:
 
 
 class GatewayChat(BaseChatModel):
-    """LangChain ChatModel backed by llm_gatewayV2. Lets the gateway's router
-    pick the best free-tier provider for each call."""
+    """LangChain ChatModel backed by llm_gatewayV2.
+
+    Provider selection — empirical findings on this gateway:
+      - groq (llama-3.3-70b):  ~200ms/call, 30 RPM — fastest, reliable
+      - gemini (3.1-flash):    ~900ms/call, 15 RPM — reliable fallback
+      - nvidia (deepseek-v4):  ~30s/call,   40 RPM — too slow for batch eval
+      - cerebras (qwen3-235b): empty responses     — broken, skip
+
+    Prefer groq, fall back to gemini on RPM exhaustion or transient failure.
+    Override via JUDGE_PROVIDERS env var (comma-separated, in priority order).
+    """
 
     base_url: str = GATEWAY_URL
     temperature: float = 0.0
     max_tokens: int = 1024
-    provider: Optional[str] = None  # None = let router choose
+    providers: list[str] = []  # set in model_post_init
+
+    def model_post_init(self, __context: Any) -> None:
+        env_order = os.getenv("JUDGE_PROVIDERS", "groq,gemini")
+        self.providers = [p.strip() for p in env_order.split(",") if p.strip()]
 
     @property
     def _llm_type(self) -> str:
@@ -66,15 +79,25 @@ class GatewayChat(BaseChatModel):
             {"role": _msg_role(m), "content": m.content}
             for m in messages if not isinstance(m, SystemMessage)
         ]
-        result = client.chat(
-            messages=chat_msgs,
-            system=system_msgs if system_msgs else None,
-            provider=self.provider,
-            temperature=kwargs.get("temperature", self.temperature),
-            max_tokens=kwargs.get("max_tokens", self.max_tokens),
-        )
-        text = result.get("text", "") or ""
-        return ChatResult(generations=[ChatGeneration(message=AIMessage(content=text))])
+        last_err: Exception | None = None
+        for provider_name in self.providers:
+            try:
+                result = client.chat(
+                    messages=chat_msgs,
+                    system=system_msgs if system_msgs else None,
+                    provider=provider_name,
+                    temperature=kwargs.get("temperature", self.temperature),
+                    max_tokens=kwargs.get("max_tokens", self.max_tokens),
+                )
+                text = result.get("text", "") or ""
+                if not text:
+                    last_err = RuntimeError(f"{provider_name} returned empty text")
+                    continue
+                return ChatResult(generations=[ChatGeneration(message=AIMessage(content=text))])
+            except Exception as e:
+                last_err = e
+                continue
+        raise RuntimeError(f"All judge providers failed: {last_err}")
 
 
 def build_judge_llm(temperature: float = 0.0, max_tokens: int = 1024):
