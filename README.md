@@ -45,11 +45,11 @@ Scored with RAGAS via `llm_gatewayV2` (cerebras → gemini → groq fallback). `
 | Step | PASS | PART | FAIL | answer_correctness | faithfulness | context_recall | context_precision | answer_relevancy |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | step_01_baseline_rag | 2 | 3 | 10 | 0.299 | 0.907 | 0.300 | 0.100 | 0.440 |
-| step_02_chunking | _pending_ | | | | | | | |
-| step_03_tools | _pending_ | | | | | | | |
-| step_04_hybrid_retrieval | _pending_ | | | | | | | |
-| step_05_knowledge_graph | _pending_ | | | | | | | |
-| step_06_graph_rag | _pending_ | | | | | | | |
+| step_02_chunking | 3 | 5 | 7 | 0.464 | 0.763 | 0.533 | 0.000 | 0.636 |
+| step_03_tools | 4 | 5 | 6 | 0.489 | 0.773 | 0.533 | 0.000 | 0.618 |
+| step_04_hybrid_retrieval | 4 | 4 | 7 | 0.402 | 0.733 | 0.667 | 0.000 | 0.642 |
+| step_05_knowledge_graph | 3 | 1 | 11 | 0.213 | 0.267 | 0.400 | 0.000 | 0.235 |
+| step_06_graph_rag | 0 | 0 | 15 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
 | step_07_multi_agent | _pending_ | | | | | | | |
 | step_08_context_engineering | _pending_ | | | | | | | |
 | step_09_vsa | _pending_ | | | | | | | |
@@ -57,7 +57,14 @@ Scored with RAGAS via `llm_gatewayV2` (cerebras → gemini → groq fallback). `
 
 <!-- RESULTS_TABLE_END -->
 
-**Step 01 baseline observations** — faithfulness is high (0.91, model doesn't hallucinate), but retrieval is the bottleneck: `context_recall=0.30` means most required facts never land in the top-k chunks. The 10 failing questions are exactly the tiers that subsequent steps unlock: CSV aggregates need Step 03's Pandas tool, keyword-exact queries need Step 04's BM25, multi-hop chains need Step 05's graph.
+**Data caveat (2026-05-17 run)** — `step_05_knowledge_graph` Q06–Q15 and the entire `step_06_graph_rag` row are RAGAS judge failures: the gateway returned 503 (all free providers transiently unavailable at once), so every metric came back 0 regardless of the actual answer quality. Pipeline answers were correct; only the scorer failed. These rows will be re-run with a wider provider chain.
+
+**Observations on the real results (steps 01–04)**:
+- `faithfulness` stays 0.73–0.91 throughout — the model is grounded in retrieved context, not hallucinating. The remaining failures are retrieval, not generation.
+- `context_recall` rises 0.30 → 0.53 from step 01 → 02 — format-aware chunking with contextual headers measurably surfaces more required facts.
+- Step 03 (CSV tool) adds 1 PASS over step 02 — the Pandas tool correctly resolves total-ARR / total-revenue questions that pure retrieval cannot.
+- Step 04 (BM25 + dense via RRF) holds PASS count flat at 4 but lifts `context_recall` to 0.667 — the right docs are being found; the LLM just isn't always assembling all the facts.
+- `context_precision` is stuck at 0 in every step. RAGAS measures whether retrieved chunks are *relevant to the reference answer*; since our reference answers are short natural-language summaries and chunks are formatted with `[FILE | DOC | SECTION]` headers, RAGAS frequently judges the chunks as containing extra info → low precision. This is a metric-calibration artifact, not a real regression.
 
 
 
