@@ -9,7 +9,7 @@ from .ingest import build_index, get_chroma_collection
 from .retrieve import RetrievedChunk, format_context, retrieve
 
 CORPUS_PATH = Path(__file__).parent.parent.parent / "dataset" / "company_data"
-DB_PATH = Path(__file__).parent.parent / "results" / "chroma_db"
+DB_PATH = Path(__file__).parent.parent.parent / "chroma_db"
 
 
 @dataclass

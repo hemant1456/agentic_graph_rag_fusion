@@ -1,6 +1,6 @@
 {
   "step": "01_baseline_rag",
-  "timestamp": "2026-05-17T19:28:09",
+  "timestamp": "2026-05-17T19:33:06",
   "total_questions": 31,
   "grade_counts": {
     "PASS": 9,
@@ -38,8 +38,8 @@
         0.805
       ],
       "context_chars": 4914,
-      "retrieval_latency_ms": 94.7,
-      "generation_latency_ms": 954.9,
+      "retrieval_latency_ms": 96.4,
+      "generation_latency_ms": 909.6,
       "provider": "gemini"
     },
     {
@@ -72,8 +72,8 @@
         0.815
       ],
       "context_chars": 3538,
-      "retrieval_latency_ms": 47.8,
-      "generation_latency_ms": 994.3,
+      "retrieval_latency_ms": 48.0,
+      "generation_latency_ms": 1017.4,
       "provider": "gemini"
     },
     {
@@ -103,8 +103,8 @@
         0.713
       ],
       "context_chars": 4433,
-      "retrieval_latency_ms": 44.0,
-      "generation_latency_ms": 870.4,
+      "retrieval_latency_ms": 48.3,
+      "generation_latency_ms": 975.9,
       "provider": "gemini"
     },
     {
@@ -136,8 +136,8 @@
         0.751
       ],
       "context_chars": 3807,
-      "retrieval_latency_ms": 43.7,
-      "generation_latency_ms": 876.9,
+      "retrieval_latency_ms": 53.1,
+      "generation_latency_ms": 1079.2,
       "provider": "gemini"
     },
     {
@@ -167,8 +167,8 @@
         0.805
       ],
       "context_chars": 4273,
-      "retrieval_latency_ms": 16.7,
-      "generation_latency_ms": 1003.0,
+      "retrieval_latency_ms": 47.9,
+      "generation_latency_ms": 1041.4,
       "provider": "gemini"
     },
     {
@@ -198,8 +198,8 @@
         0.851
       ],
       "context_chars": 4432,
-      "retrieval_latency_ms": 40.9,
-      "generation_latency_ms": 935.8,
+      "retrieval_latency_ms": 38.5,
+      "generation_latency_ms": 918.2,
       "provider": "gemini"
     },
     {
@@ -229,8 +229,8 @@
         0.805
       ],
       "context_chars": 4139,
-      "retrieval_latency_ms": 35.8,
-      "generation_latency_ms": 810.5,
+      "retrieval_latency_ms": 39.3,
+      "generation_latency_ms": 945.0,
       "provider": "gemini"
     },
     {
@@ -262,8 +262,8 @@
         0.76
       ],
       "context_chars": 4855,
-      "retrieval_latency_ms": 49.7,
-      "generation_latency_ms": 998.4,
+      "retrieval_latency_ms": 46.7,
+      "generation_latency_ms": 1068.9,
       "provider": "gemini"
     },
     {
@@ -296,8 +296,8 @@
         0.753
       ],
       "context_chars": 4400,
-      "retrieval_latency_ms": 39.9,
-      "generation_latency_ms": 1088.9,
+      "retrieval_latency_ms": 46.3,
+      "generation_latency_ms": 1061.4,
       "provider": "gemini"
     },
     {
@@ -327,8 +327,8 @@
         0.774
       ],
       "context_chars": 4219,
-      "retrieval_latency_ms": 47.5,
-      "generation_latency_ms": 1152.9,
+      "retrieval_latency_ms": 66.6,
+      "generation_latency_ms": 892.3,
       "provider": "gemini"
     },
     {
@@ -358,8 +358,8 @@
         0.761
       ],
       "context_chars": 3057,
-      "retrieval_latency_ms": 57.9,
-      "generation_latency_ms": 1106.0,
+      "retrieval_latency_ms": 42.8,
+      "generation_latency_ms": 908.2,
       "provider": "gemini"
     },
     {
@@ -389,8 +389,8 @@
         0.78
       ],
       "context_chars": 3799,
-      "retrieval_latency_ms": 51.4,
-      "generation_latency_ms": 963.6,
+      "retrieval_latency_ms": 46.6,
+      "generation_latency_ms": 784.9,
       "provider": "gemini"
     },
     {
@@ -420,8 +420,8 @@
         0.775
       ],
       "context_chars": 3340,
-      "retrieval_latency_ms": 17.6,
-      "generation_latency_ms": 2439.1,
+      "retrieval_latency_ms": 23.9,
+      "generation_latency_ms": 881.0,
       "provider": "gemini"
     },
     {
@@ -451,8 +451,8 @@
         0.723
       ],
       "context_chars": 2643,
-      "retrieval_latency_ms": 84.3,
-      "generation_latency_ms": 1118.6,
+      "retrieval_latency_ms": 45.0,
+      "generation_latency_ms": 1298.4,
       "provider": "gemini"
     },
     {
@@ -484,8 +484,8 @@
         0.757
       ],
       "context_chars": 4647,
-      "retrieval_latency_ms": 71.4,
-      "generation_latency_ms": 928.9,
+      "retrieval_latency_ms": 74.0,
+      "generation_latency_ms": 983.9,
       "provider": "gemini"
     },
     {
@@ -515,8 +515,8 @@
         0.791
       ],
       "context_chars": 3031,
-      "retrieval_latency_ms": 18.0,
-      "generation_latency_ms": 962.7,
+      "retrieval_latency_ms": 19.6,
+      "generation_latency_ms": 1044.3,
       "provider": "gemini"
     },
     {
@@ -547,8 +547,8 @@
         0.798
       ],
       "context_chars": 3714,
-      "retrieval_latency_ms": 25.0,
-      "generation_latency_ms": 963.7,
+      "retrieval_latency_ms": 13.9,
+      "generation_latency_ms": 1026.3,
       "provider": "gemini"
     },
     {
@@ -579,8 +579,8 @@
         0.777
       ],
       "context_chars": 4147,
-      "retrieval_latency_ms": 16.3,
-      "generation_latency_ms": 988.1,
+      "retrieval_latency_ms": 15.2,
+      "generation_latency_ms": 859.0,
       "provider": "gemini"
     },
     {
@@ -611,8 +611,8 @@
         0.8
       ],
       "context_chars": 3856,
-      "retrieval_latency_ms": 23.0,
-      "generation_latency_ms": 1001.0,
+      "retrieval_latency_ms": 13.0,
+      "generation_latency_ms": 983.4,
       "provider": "gemini"
     },
     {
@@ -643,8 +643,8 @@
         0.664
       ],
       "context_chars": 3995,
-      "retrieval_latency_ms": 37.8,
-      "generation_latency_ms": 1118.4,
+      "retrieval_latency_ms": 44.3,
+      "generation_latency_ms": 1045.6,
       "provider": "gemini"
     },
     {
@@ -676,8 +676,8 @@
         0.753
       ],
       "context_chars": 3430,
-      "retrieval_latency_ms": 68.3,
-      "generation_latency_ms": 795.9,
+      "retrieval_latency_ms": 34.9,
+      "generation_latency_ms": 1064.3,
       "provider": "gemini"
     },
     {
@@ -709,8 +709,8 @@
         0.829
       ],
       "context_chars": 2092,
-      "retrieval_latency_ms": 25.5,
-      "generation_latency_ms": 846.9,
+      "retrieval_latency_ms": 15.3,
+      "generation_latency_ms": 814.5,
       "provider": "gemini"
     },
     {
@@ -740,8 +740,8 @@
         0.759
       ],
       "context_chars": 3821,
-      "retrieval_latency_ms": 15.0,
-      "generation_latency_ms": 855.2,
+      "retrieval_latency_ms": 17.4,
+      "generation_latency_ms": 936.6,
       "provider": "gemini"
     },
     {
@@ -774,8 +774,8 @@
         0.797
       ],
       "context_chars": 4673,
-      "retrieval_latency_ms": 26.0,
-      "generation_latency_ms": 1061.7,
+      "retrieval_latency_ms": 12.8,
+      "generation_latency_ms": 1108.7,
       "provider": "gemini"
     },
     {
@@ -806,8 +806,8 @@
         0.683
       ],
       "context_chars": 4251,
-      "retrieval_latency_ms": 16.4,
-      "generation_latency_ms": 904.5,
+      "retrieval_latency_ms": 46.3,
+      "generation_latency_ms": 975.6,
       "provider": "gemini"
     },
     {
@@ -840,8 +840,8 @@
         0.734
       ],
       "context_chars": 1426,
-      "retrieval_latency_ms": 39.8,
-      "generation_latency_ms": 830.1,
+      "retrieval_latency_ms": 32.0,
+      "generation_latency_ms": 808.9,
       "provider": "gemini"
     },
     {
@@ -874,8 +874,8 @@
         0.769
       ],
       "context_chars": 4407,
-      "retrieval_latency_ms": 49.2,
-      "generation_latency_ms": 1444.8,
+      "retrieval_latency_ms": 44.8,
+      "generation_latency_ms": 1360.6,
       "provider": "gemini"
     },
     {
@@ -906,8 +906,8 @@
         0.823
       ],
       "context_chars": 4342,
-      "retrieval_latency_ms": 43.7,
-      "generation_latency_ms": 1386.2,
+      "retrieval_latency_ms": 36.7,
+      "generation_latency_ms": 1274.0,
       "provider": "gemini"
     },
     {
@@ -941,8 +941,8 @@
         0.821
       ],
       "context_chars": 4659,
-      "retrieval_latency_ms": 68.0,
-      "generation_latency_ms": 1050.8,
+      "retrieval_latency_ms": 67.6,
+      "generation_latency_ms": 1087.0,
       "provider": "gemini"
     },
     {
@@ -972,8 +972,8 @@
         0.701
       ],
       "context_chars": 3099,
-      "retrieval_latency_ms": 49.0,
-      "generation_latency_ms": 1121.5,
+      "retrieval_latency_ms": 53.7,
+      "generation_latency_ms": 1073.8,
       "provider": "gemini"
     },
     {
@@ -1006,8 +1006,8 @@
         0.787
       ],
       "context_chars": 3799,
-      "retrieval_latency_ms": 48.1,
-      "generation_latency_ms": 828.3,
+      "retrieval_latency_ms": 22.1,
+      "generation_latency_ms": 1101.6,
       "provider": "gemini"
     }
   ]

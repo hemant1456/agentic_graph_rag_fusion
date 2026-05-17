@@ -13,7 +13,7 @@ from step_02_chunking.implementation.ingestor import (
 )
 
 CORPUS_PATH = Path(__file__).parent.parent.parent / "dataset" / "company_data"
-DB_PATH = Path(__file__).parent.parent / "results" / "chroma_db"
+DB_PATH = Path(__file__).parent.parent.parent / "chroma_db"
 
 
 def _retrieve(

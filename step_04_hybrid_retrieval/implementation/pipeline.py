@@ -21,7 +21,7 @@ from step_02_chunking.implementation.ingestor import embed_query, get_chroma_col
 from step_03_tools.implementation.csv_tool import detect_intent, run_query
 from step_04_hybrid_retrieval.implementation.bm25_retriever import BM25Index
 
-STEP02_DB = Path(__file__).parent.parent.parent / "step_02_chunking" / "results" / "chroma_db"
+STEP02_DB = Path(__file__).parent.parent.parent / "chroma_db"
 
 
 def _rrf_fuse(

@@ -1,10 +1,10 @@
 {
   "step": "step_03_tools",
-  "pass": 17,
+  "pass": 19,
   "partial": 12,
   "fail": 0,
-  "total": 29,
-  "pass_rate": 0.5862068965517241,
+  "total": 31,
+  "pass_rate": 0.6129032258064516,
   "results": [
     {
       "question_id": "Q01",
@@ -30,10 +30,7 @@
         "2019"
       ],
       "required_missing": [],
-      "partial_hits": [
-        "founder",
-        "co-founder"
-      ],
+      "partial_hits": [],
       "disqualifier_hits": []
     },
     {
@@ -66,13 +63,13 @@
     },
     {
       "question_id": "Q05",
-      "grade": "PASS",
-      "required_hits": [
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
         "Pulsar"
       ],
-      "required_missing": [],
       "partial_hits": [
-        "migration",
+        "message queue",
         "DataCraft"
       ],
       "disqualifier_hits": []
@@ -108,6 +105,38 @@
       "question_id": "Q08",
       "grade": "PASS",
       "required_hits": [
+        "SendGrid",
+        "Twilio",
+        "Raj Patel"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "webhook",
+        "PulseConnect"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q09",
+      "grade": "PASS",
+      "required_hits": [
+        "us-east-1",
+        "eu-west-1",
+        "ap-southeast-1",
+        "15 months"
+      ],
+      "required_missing": [],
+      "partial_hits": [
+        "Datadog",
+        "sub-processor",
+        "retention"
+      ],
+      "disqualifier_hits": []
+    },
+    {
+      "question_id": "Q10",
+      "grade": "PASS",
+      "required_hits": [
         "11,000,000"
       ],
       "required_missing": [],
@@ -118,12 +147,12 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q09",
-      "grade": "PASS",
-      "required_hits": [
+      "question_id": "Q11",
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
         "4,120,000"
       ],
-      "required_missing": [],
       "partial_hits": [
         "Q3",
         "revenue",
@@ -132,7 +161,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q10",
+      "question_id": "Q12",
       "grade": "PASS",
       "required_hits": [
         "5"
@@ -140,12 +169,13 @@
       "required_missing": [],
       "partial_hits": [
         "Berlin",
-        "employee"
+        "employee",
+        "location"
       ],
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q11",
+      "question_id": "Q13",
       "grade": "PASS",
       "required_hits": [
         "181"
@@ -159,7 +189,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q12",
+      "question_id": "Q14",
       "grade": "PASS",
       "required_hits": [
         "1,692,000"
@@ -174,14 +204,13 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q13",
+      "question_id": "Q15",
       "grade": "PARTIAL",
-      "required_hits": [
+      "required_hits": [],
+      "required_missing": [
+        "max_connections",
         "config validation",
         "canary"
-      ],
-      "required_missing": [
-        "max_connections"
       ],
       "partial_hits": [
         "postmortem",
@@ -192,7 +221,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q14",
+      "question_id": "Q16",
       "grade": "PARTIAL",
       "required_hits": [],
       "required_missing": [
@@ -206,7 +235,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q15",
+      "question_id": "Q17",
       "grade": "PASS",
       "required_hits": [
         "480,000",
@@ -219,13 +248,13 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q16",
-      "grade": "PASS",
-      "required_hits": [
+      "question_id": "Q18",
+      "grade": "PARTIAL",
+      "required_hits": [],
+      "required_missing": [
         "120,000",
         "June 30, 2024"
       ],
-      "required_missing": [],
       "partial_hits": [
         "Snowflake",
         "contract"
@@ -233,7 +262,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q17",
+      "question_id": "Q19",
       "grade": "PARTIAL",
       "required_hits": [],
       "required_missing": [
@@ -241,20 +270,18 @@
         "events/stream"
       ],
       "partial_hits": [
-        "v2.1",
-        "deprecated",
         "NexusFlow"
       ],
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q18",
-      "grade": "PARTIAL",
-      "required_hits": [],
-      "required_missing": [
+      "question_id": "Q20",
+      "grade": "PASS",
+      "required_hits": [
         "Daniel Osei",
         "October 31, 2023"
       ],
+      "required_missing": [],
       "partial_hits": [
         "M-2",
         "security audit"
@@ -262,7 +289,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q19",
+      "question_id": "Q21",
       "grade": "PASS",
       "required_hits": [
         "Maya Sharma",
@@ -270,14 +297,13 @@
       ],
       "required_missing": [],
       "partial_hits": [
-        "CSM",
         "Phoenix Corp",
         "account"
       ],
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q20",
+      "question_id": "Q22",
       "grade": "PARTIAL",
       "required_hits": [
         "InsightLens"
@@ -293,12 +319,12 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q21",
-      "grade": "PARTIAL",
-      "required_hits": [],
-      "required_missing": [
+      "question_id": "Q23",
+      "grade": "PASS",
+      "required_hits": [
         "Kenji Ito"
       ],
+      "required_missing": [],
       "partial_hits": [
         "on-call",
         "Data Platform",
@@ -307,7 +333,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q22",
+      "question_id": "Q24",
       "grade": "PARTIAL",
       "required_hits": [
         "InsightLens",
@@ -316,19 +342,17 @@
       "required_missing": [
         "DataCraft"
       ],
-      "partial_hits": [
-        "downstream"
-      ],
+      "partial_hits": [],
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q23",
-      "grade": "PARTIAL",
-      "required_hits": [],
-      "required_missing": [
+      "question_id": "Q25",
+      "grade": "PASS",
+      "required_hits": [
         "Tom\u00e1s Garc\u00eda",
         "Sarah Chen"
       ],
+      "required_missing": [],
       "partial_hits": [
         "Aisha Johnson",
         "reports to"
@@ -336,7 +360,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q24",
+      "question_id": "Q26",
       "grade": "PASS",
       "required_hits": [
         "InsightLens",
@@ -353,13 +377,13 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q25",
+      "question_id": "Q27",
       "grade": "PARTIAL",
       "required_hits": [
+        "migration",
         "Phoenix Corp"
       ],
       "required_missing": [
-        "migration",
         "signed"
       ],
       "partial_hits": [
@@ -369,7 +393,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q26",
+      "question_id": "Q28",
       "grade": "PASS",
       "required_hits": [
         "99.9",
@@ -378,14 +402,13 @@
       "required_missing": [],
       "partial_hits": [
         "availability",
-        "SLA",
         "gap",
         "NexusFlow"
       ],
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q27",
+      "question_id": "Q29",
       "grade": "PARTIAL",
       "required_hits": [
         "InsightLens",
@@ -402,7 +425,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q28",
+      "question_id": "Q30",
       "grade": "PARTIAL",
       "required_hits": [],
       "required_missing": [
@@ -417,7 +440,7 @@
       "disqualifier_hits": []
     },
     {
-      "question_id": "Q29",
+      "question_id": "Q31",
       "grade": "PARTIAL",
       "required_hits": [],
       "required_missing": [
@@ -427,12 +450,11 @@
         "relocated"
       ],
       "partial_hits": [
-        "voluntary",
         "departure",
         "2023"
       ],
       "disqualifier_hits": []
     }
   ],
-  "timestamp": "2026-05-17T19:08:12"
+  "timestamp": "2026-05-17T19:34:55"
 }

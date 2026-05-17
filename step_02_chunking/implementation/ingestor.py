@@ -5,7 +5,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 
 from step_02_chunking.implementation.types import SmartChunk
 
-CHROMA_COLLECTION = "vertexia_step04"
+CHROMA_COLLECTION = "vertexia_smart"
 
 _embedder = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
@@ -82,5 +82,5 @@ def build_index(
 
 if __name__ == "__main__":
     corpus = Path(__file__).parent.parent.parent / "dataset" / "company_data"
-    db_dir = Path(__file__).parent.parent / "results" / "chroma_db"
+    db_dir = Path(__file__).parent.parent.parent / "chroma_db"
     build_index(corpus, db_dir, reset=True)

@@ -47,8 +47,8 @@ STEP09_EVAL = ROOT / "step_07_multi_agent"      / "results" / "eval_results.json
 STEP10_EVAL = ROOT / "step_08_context_engineering" / "results" / "eval_results.json"
 STEP11_EVAL = ROOT / "step_09_vsa"                 / "results" / "eval_results.json"
 STEP12_EVAL = ROOT / "step_10_production"          / "results" / "eval_results.json"
-STEP01_DB   = ROOT / "step_01_baseline_rag" / "results" / "chroma_db"
-STEP02_DB   = ROOT / "step_02_chunking" / "results" / "chroma_db"
+STEP01_DB   = ROOT / "chroma_db"
+STEP02_DB   = ROOT / "chroma_db"
 CORPUS      = ROOT / "dataset" / "company_data"
 EXP_DB_ROOT = ROOT / "step_02_chunking" / "results" / "chroma_experiments"
 

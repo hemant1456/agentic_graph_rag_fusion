@@ -18,7 +18,7 @@ from step_01_baseline_rag.implementation.retrieve import RetrievedChunk, format_
 from step_02_chunking.implementation.ingestor import embed_query, get_chroma_collection
 from step_03_tools.implementation.csv_tool import detect_intent, run_query
 
-STEP02_DB = Path(__file__).parent.parent.parent / "step_02_chunking" / "results" / "chroma_db"
+STEP02_DB = Path(__file__).parent.parent.parent / "chroma_db"
 
 
 class Step03ToolsRAG:
