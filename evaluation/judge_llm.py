@@ -62,7 +62,10 @@ class GatewayChat(BaseChatModel):
     providers: list[str] = []  # set in model_post_init
 
     def model_post_init(self, __context: Any) -> None:
-        env_order = os.getenv("JUDGE_PROVIDERS", "cerebras,gemini,groq")
+        # gemini RPD typically exhausts mid-way through a full --all run, so
+        # keep it but list cerebras + groq first; nvidia is slow but reliable
+        # as a last resort.
+        env_order = os.getenv("JUDGE_PROVIDERS", "cerebras,groq,gemini,nvidia")
         self.providers = [p.strip() for p in env_order.split(",") if p.strip()]
 
     @property
