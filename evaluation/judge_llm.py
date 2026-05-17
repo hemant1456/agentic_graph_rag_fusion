@@ -28,8 +28,10 @@ from llm_gatewayV2.client import LLM as GatewayClient
 
 load_dotenv(ROOT / ".env")
 
-JUDGE_PROVIDER = os.getenv("JUDGE_PROVIDER", "gateway")  # "gateway" | "openai"
+JUDGE_PROVIDER = os.getenv("JUDGE_PROVIDER", "gateway")  # "gateway" | "openai" | "ollama"
 GATEWAY_URL = os.getenv("LLM_GATEWAY_V2_URL", "http://localhost:8100")
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_JUDGE_MODEL", "deepseek-r1:1.5b")
 
 
 def _msg_role(m: BaseMessage) -> str:
@@ -107,7 +109,25 @@ class GatewayChat(BaseChatModel):
 
 
 def build_judge_llm(temperature: float = 0.0, max_tokens: int = 1024):
-    """Return a LangChain chat model for RAGAS. Defaults to the free-tier gateway."""
+    """Return a LangChain chat model for RAGAS.
+
+    JUDGE_PROVIDER env var picks the backend:
+      - "ollama"  → local Ollama via its OpenAI-compatible endpoint (no rate limits).
+                    Model defaults to deepseek-r1:1.5b; override via OLLAMA_JUDGE_MODEL.
+      - "openai"  → real OpenAI API (paid, very fast).
+      - "gateway" → llm_gatewayV2 free-tier rotation (default, rate-limit prone).
+    """
+    if JUDGE_PROVIDER == "ollama":
+        return ChatOpenAI(
+            base_url=f"{OLLAMA_URL}/v1",
+            api_key="ollama",  # any non-empty string works
+            model=OLLAMA_MODEL,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            timeout=120,
+            max_retries=2,
+        )
+
     if JUDGE_PROVIDER == "openai":
         api_key = os.getenv("OPENAI_API_KEY", "").strip()
         if not api_key:
