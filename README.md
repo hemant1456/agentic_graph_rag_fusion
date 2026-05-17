@@ -38,12 +38,14 @@ Reduced from 31 to 15 for faster iteration on the free-tier LLM judge.
 
 ## Latest eval results
 
-Scored with RAGAS via `llm_gatewayV2` (groq → gemini fallback). `answer_correctness ≥ 0.7` = PASS, `≥ 0.4` = PARTIAL, else FAIL. The four diagnostic metrics localize *where* a failure happens (low recall = retrieval missed; low precision = retrieval noisy; low faithfulness = hallucination; low relevancy = off-topic).
+Scored with RAGAS via `llm_gatewayV2` (cerebras → gemini → groq fallback). `answer_correctness ≥ 0.7` = PASS, `≥ 0.4` = PARTIAL, else FAIL. The four diagnostic metrics localize *where* a failure happens (low recall = retrieval missed; low precision = retrieval noisy; low faithfulness = hallucination; low relevancy = off-topic).
+
+<!-- RESULTS_TABLE_START -->
 
 | Step | PASS | PART | FAIL | answer_correctness | faithfulness | context_recall | context_precision | answer_relevancy |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | step_01_baseline_rag | 2 | 3 | 10 | 0.299 | 0.907 | 0.300 | 0.100 | 0.440 |
-| step_02_chunking | _running_ | | | | | | | |
+| step_02_chunking | _pending_ | | | | | | | |
 | step_03_tools | _pending_ | | | | | | | |
 | step_04_hybrid_retrieval | _pending_ | | | | | | | |
 | step_05_knowledge_graph | _pending_ | | | | | | | |
@@ -52,6 +54,8 @@ Scored with RAGAS via `llm_gatewayV2` (groq → gemini fallback). `answer_correc
 | step_08_context_engineering | _pending_ | | | | | | | |
 | step_09_vsa | _pending_ | | | | | | | |
 | step_10_production | _pending_ | | | | | | | |
+
+<!-- RESULTS_TABLE_END -->
 
 **Step 01 baseline observations** — faithfulness is high (0.91, model doesn't hallucinate), but retrieval is the bottleneck: `context_recall=0.30` means most required facts never land in the top-k chunks. The 10 failing questions are exactly the tiers that subsequent steps unlock: CSV aggregates need Step 03's Pandas tool, keyword-exact queries need Step 04's BM25, multi-hop chains need Step 05's graph.
 
