@@ -1,85 +1,30 @@
-# Step 09 — Multi-Agent System
+# Step 07 — Multi-Agent Orchestration
 
-> **Problem**: The Step 08 agent is a single LLM deciding everything — query classification, retrieval strategy, graph traversal, synthesis, and verification all in one prompt. It's hard to debug and improve.  
-> **Fix**: Split responsibilities across 6 specialised agents, each with a typed input/output contract. An orchestrator routes between them based on query classification.
+## What it adds
+Replaces the single-prompt pipeline with five specialised agents coordinated by an orchestrator: a QueryAnalyst classifies the question and emits sub-questions, three specialists (RetrievalSpecialist, GraphNavigator, StructuredData) gather evidence in parallel, a Synthesis agent writes the answer, and a Critic agent reviews and rewrites it. Newly handles Tier 6 cross-document questions (Q14-Q15) that require comparing facts spread across multiple files.
 
-## How It Works
+## Design
+- **Class:** `Step07RAG` in `step_07_multi_agent/implementation/pipeline.py`
+- **Inherits from:** composes `Step04HybridRAG` for retrieval and reuses the Step 05 knowledge graph
+- **Key components:**
+  - `step_07_multi_agent/implementation/orchestrator.py` — top-level `run(question, retriever, graph)` that sequences the agents
+  - `step_07_multi_agent/implementation/agents/query_analyst.py` — query classification and sub-question generation
+  - `step_07_multi_agent/implementation/agents/retrieval_specialist.py` — wraps hybrid retrieval
+  - `step_07_multi_agent/implementation/agents/graph_navigator.py` — alias-resolved graph traversal
+  - `step_07_multi_agent/implementation/agents/structured_data.py` — pandas CSV tool calls
+  - `step_07_multi_agent/implementation/agents/synthesis.py` and `critic.py` — answer drafting and review
+  - `step_07_multi_agent/implementation/agents/contracts.py` — typed dataclasses for inter-agent messages
 
-```
-Query
-  │
-  ▼
-┌──────────────────┐
-│  QueryAnalyst    │  LLM classifies query type:
-│                  │  simple_lookup | aggregation | multi_hop | graph | comparative
-│  → QueryAnalysis │  + needs_vector, needs_graph, needs_csv, sub_questions[]
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                      Orchestrator                                │
-│                                                                  │
-│   always ──► RetrievalSpecialist   k=10, + sub-question queries  │
-│                                                                  │
-│   if needs_graph ──► GraphNavigator  entity match + BFS expand  │
-│                                                                  │
-│   if needs_csv   ──► StructuredData  Pandas intent + query      │
-└──────────────┬───────────────────────────────────────────────────┘
-               │  (all contexts merged)
-               ▼
-        ┌──────────────┐
-        │  Synthesis   │  builds answer from merged context
-        └──────┬───────┘
-               │
-               ▼
-        ┌──────────────┐
-        │   Critic     │  LLM validates: approved? confidence? issue?
-        │              │  if low-confidence → 1 revision attempt
-        └──────┬───────┘
-               │
-               ▼
-           final answer  +  AgentTrace[] (one per agent, for observability)
-```
+## How it works
+The orchestrator first calls QueryAnalyst, which classifies the query (lookup, aggregate, multi-hop, cross-document) and decomposes compound queries into sub-questions. The specialists then run: RetrievalSpecialist returns hybrid chunks, GraphNavigator walks the graph from extracted entities, and StructuredData runs CSV aggregates when the intent matches. Synthesis takes the three evidence streams and the query type and writes a first-draft answer. Critic reviews the draft against the same evidence and either approves it or rewrites it. The final answer plus per-agent traces are returned.
 
-## Agent Contracts (`contracts.py`)
-
-```python
-@dataclass
-class QueryAnalysis:
-    query_type: str        # "simple_lookup" | "aggregation" | "multi_hop" | ...
-    needs_vector: bool
-    needs_graph:  bool
-    needs_csv:    bool
-    sub_questions: list[str]
-    primary_entities: list[str]
-
-@dataclass
-class AgentTrace:
-    agent_id: str          # "query_analyst" | "retrieval_specialist" | ...
-    input_summary: str
-    output_summary: str
-    latency_ms: float
-    status: str            # "ok" | "error" | "fallback"
-```
-
-## Key Files
-
-| File | What it does |
-|------|-------------|
-| `implementation/agents/contracts.py` | Typed dataclasses shared by all agents |
-| `implementation/agents/query_analyst.py` | LLM JSON classification + heuristic fallback |
-| `implementation/agents/retrieval_specialist.py` | Dense vector retrieval wrapper |
-| `implementation/agents/graph_navigator.py` | Entity match + graph expansion |
-| `implementation/agents/structured_data.py` | Pandas CSV query tool |
-| `implementation/agents/synthesis.py` | Context → answer generation |
-| `implementation/agents/critic.py` | Answer validation + optional revision |
-| `implementation/orchestrator.py` | Routes between agents, merges context |
-| `implementation/pipeline.py` | `Step07RAG` with standard `.query()` interface |
-
-## Run It
-
+## Run
 ```bash
-uv run python step_07_multi_agent/evaluation/run_eval.py
+uv run python evaluation/run_eval.py --step step_07_multi_agent
 ```
 
-> Each question triggers 3–5 LLM calls. Expect ~15–30 s per question.
+## Results
+See `step_07_multi_agent/results/eval_results.json` for the latest RAGAS scores.
+
+## Why this step exists
+Single-prompt RAG conflates classification, retrieval choice, synthesis, and verification into one opaque step. Q14 ("does the NexusFlow availability target meet the Phoenix Corp SLA?") needs the model to pull facts from two distinct documents and compare them; Q15 needs it to filter offboarding records by year and reason and report each row. Splitting the work across agents with typed contracts makes each decision inspectable, enables parallel evidence gathering, and lets the critic catch hallucinations that a single pass would emit.

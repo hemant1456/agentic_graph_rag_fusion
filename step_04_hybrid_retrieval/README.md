@@ -1,62 +1,26 @@
-# Step 07 — RAG Fusion (BM25 + Dense) + Structured CSV Tool
+# Step 04 — Hybrid Retrieval (BM25 + Dense)
 
-> **Problem**: Dense vector retrieval favours semantic similarity — exact keywords like product codes and employee IDs can rank poorly. Q20 (Q3 2023 revenue sum) also requires arithmetic over the full table, not retrieved prose.  
-> **Fix**: Fuse BM25 keyword retrieval with dense retrieval via Reciprocal Rank Fusion. Add a Pandas-backed structured query tool for CSV arithmetic.
+## What it adds
+Adds a BM25 lexical retriever alongside the dense vector retriever and fuses the two ranked lists with Reciprocal Rank Fusion (RRF). Dense retrieval covers semantic paraphrase; BM25 anchors on exact tokens — version strings, finding IDs, vendor names. Newly handles Tier 4 questions (Q08-Q10) where the answer hinges on a rare keyword.
 
-## How It Works
+## Design
+- **Class:** `Step04HybridRAG` in `step_04_hybrid_retrieval/implementation/pipeline.py`
+- **Inherits from:** does not subclass, but reuses Step 02's ChromaDB collection and Step 03's CSV tool
+- **Key components:**
+  - `step_04_hybrid_retrieval/implementation/bm25_retriever.py` — `BM25Index` built over the same chunks stored in ChromaDB
+  - `_rrf_fuse()` in `step_04_hybrid_retrieval/implementation/pipeline.py` — reciprocal rank fusion with `k_rrf=60`
+  - Step 03's CSV tool (`detect_intent` / `run_query`)
 
+## How it works
+On `build()`, the pipeline loads the `vertexia_smart` ChromaDB collection and constructs a BM25 index over the same chunk texts. At query time it runs dense cosine search and BM25 in parallel, each returning roughly `2k` candidates. The two ranked lists are merged with RRF: each chunk earns `1 / (60 + rank)` from each list it appears in, scores are summed, and the top-`k` chunks are kept. The fused chunks plus any CSV tool result are formatted into the LLM context. Step 04 also becomes the retrieval substrate that Steps 05-10 build on.
+
+## Run
+```bash
+uv run python evaluation/run_eval.py --step step_04_hybrid_retrieval
 ```
-Query: "What was the Q3 2023 total revenue?"
-        │
-        ├──► BM25Index.search()      keyword match on all chunk texts  ──┐
-        │    (BM25Okapi, rank list)                                       │
-        ├──► ChromaDB.query()        dense cosine similarity             ─┤ RRF merge
-        │    (gemini-embedding-2)                                         │ score = Σ 1/(k+rank)
-        └──────────────────────────────────────────────────────────────── ►  top-K fused list
-                                                                          │
-        ┌─────────────────────────────────────────────────────────────────┘
-        │
-        ▼
-  detect_intent(query)  ──► "revenue_sum" / "headcount_filter" / "budget_ratio" / None
-        │
-        ├── if intent found ──► csv_tool.run_query()  ──► Pandas operation on raw CSVs
-        │                       returns exact numeric result
-        │
-        └── graph_context from Step 06 (alias + dependency chain)
-                │
-                ▼
-        [graph_context + csv_result + fused_chunks] → LLM → answer
-```
-
-## RRF Explained
-
-Each retriever produces a ranked list. RRF converts ranks to scores and sums them:
-
-```
-score(doc) = 1/(60 + rank_bm25) + 1/(60 + rank_dense)
-```
-
-A doc ranked #3 by BM25 and #8 by dense beats a doc ranked #1 by only one retriever. `k=60` is a standard smoothing constant.
-
-## Key Files
-
-| File | What it does |
-|------|-------------|
-| `implementation/bm25_retriever.py` | `BM25Index` — builds at startup from all chunk texts |
-| `implementation/csv_tool.py` | `detect_intent()` + `run_query()` — 8 intent patterns, Pandas execution |
-| `implementation/pipeline.py` | `Step04HybridRAG` — BM25 + dense + RRF + graph + CSV → LLM |
 
 ## Results
+See `step_04_hybrid_retrieval/results/eval_results.json` for the latest RAGAS scores.
 
-| Step | PASS | PARTIAL | FAIL | Pass Rate |
-|------|------|---------|------|-----------|
-| 06 Graph RAG | 20 | 1 | 1 | 91% |
-| **07 RAG Fusion** | **21** | **1** | **0** | **95%** |
-
-Q20 (Q3 2023 revenue) now passes via the structured CSV tool. Q18 remains partial — the two-Phoenix disambiguation still needs an agent with a multi-query strategy (Step 09).
-
-## Run It
-
-```bash
-uv run python step_04_hybrid_retrieval/evaluation/run_eval.py
-```
+## Why this step exists
+Dense embeddings normalise away the distinctive tokens that some questions depend on. Q08 ("which NexusFlow endpoint was deprecated in v2.1") needs the chunk that literally contains the string `v2.1`; cosine similarity treats `v2.0`, `v2.1`, and `v2.2` as near-equivalent. Q09 ("audit finding M-2") and Q10 ("Snowflake contract") have the same shape. BM25 ranks those rare tokens highly and RRF lets them rise without throwing away the semantic recall that dense retrieval still provides.

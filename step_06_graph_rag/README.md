@@ -1,60 +1,26 @@
-# Step 06 — Graph RAG + Alias Resolution
+# Step 06 — Graph RAG (Aliases + Blast-Radius BFS)
 
-> **Problem**: "InsightLens" and "analytics dashboard" refer to the same product — vector search misses this. Blast-radius questions also require traversing the full dependency chain, not just the seed node.  
-> **Fix**: Add an alias dictionary and recursive dependency expansion on top of Step 05's graph.
+## What it adds
+Strengthens the Step 05 graph layer with two upgrades: an alias dictionary that maps colloquial product names to canonical IDs (e.g. `LENS` → `InsightLens`), and a full blast-radius BFS that expands beyond one-hop neighbours to all transitively reachable nodes. The retrieval and tool stack is unchanged from Step 05.
 
-## How It Works
+## Design
+- **Class:** `Step06RAG` in `step_06_graph_rag/implementation/pipeline.py`
+- **Inherits from:** `Step05RAG` (only `query()` is overridden)
+- **Key components:**
+  - `step_06_graph_rag/implementation/aliases.py` — keyword/alias table for products, teams, and customers
+  - `step_06_graph_rag/implementation/graph_query.py` — `build_graph_context()` performs alias-resolved entity matching and BFS traversal
+  - The graph file written by Step 05 (`step_05_knowledge_graph/results/graph.json`)
 
+## How it works
+`Step06RAG.query()` runs hybrid retrieval and the CSV tool exactly as Step 05 does, but swaps `get_graph_context()` for `build_graph_context()`. The new function first resolves aliases against the question and chunk texts (so `LENS`, `Lens dashboard`, and `InsightLens` all map to the same node), then performs a breadth-first walk over the dependency edges to collect every directly or indirectly affected service. The expanded set is rendered into the prompt as a labelled "blast radius" block. The vector and CSV contexts are concatenated as before.
+
+## Run
+```bash
+uv run python evaluation/run_eval.py --step step_06_graph_rag
 ```
-User question: "Which customers use the analytics dashboard?"
-        │
-        ▼
-  aliases.py  ──────────────► "analytics dashboard" → "InsightLens"
-        │                      (also handles: "data platform" → "DataCraft",
-        │                       "messaging" → "NexusFlow", etc.)
-        ▼
-  graph_query.py
-  ┌────────────────────────────────────────────────────────┐
-  │  1. seed_nodes  = entity_match(question, aliases)      │
-  │  2. neighbours  = expand(seed, depth=2)                │
-  │  3. dependency  = full_chain(seed)  ← NEW in Step 06   │
-  │     • follows depends_on edges recursively             │
-  │     • labels criticality: "critical" / "non-critical"  │
-  │  4. aggregate   = compute inline (e.g. enterprise ARR%)│
-  └──────────────┬─────────────────────────────────────────┘
-                 │  graph_context (str)
-                 ▼
-  Step04 vector chunks + graph_context → LLM
-```
-
-## What's New vs Step 05
-
-| Feature | Step 05 | Step 06 |
-|---------|---------|---------|
-| Alias resolution | ❌ exact name only | ✅ 40+ alias mappings |
-| Dependency traversal | depth-2 BFS | full chain, all paths |
-| Aggregate graph queries | ❌ | ✅ e.g. enterprise ARR % |
-| Disambiguation | ❌ | ✅ "Phoenix" = product + customer |
-
-## Key Files
-
-| File | What it does |
-|------|-------------|
-| `implementation/aliases.py` | Static alias dict + `resolve(term)` function |
-| `implementation/graph_query.py` | `build_graph_context()` — alias → seed → expand → format |
-| `implementation/pipeline.py` | `Step06RAG` — wraps vector retrieval + graph context |
 
 ## Results
+See `step_06_graph_rag/results/eval_results.json` for the latest RAGAS scores.
 
-| Step | PASS | PARTIAL | FAIL | Pass Rate |
-|------|------|---------|------|-----------|
-| 05 Graph | 18 | 2 | 2 | 82% |
-| **06 Graph RAG** | **20** | **1** | **1** | **91%** |
-
-Q18 (two "Phoenix" disambiguation), Q22 (blast-radius full chain) now pass. Q20 remains partial — needs a structured CSV query tool (fixed in Step 07).
-
-## Run It
-
-```bash
-uv run python step_06_graph_rag/evaluation/run_eval.py
-```
+## Why this step exists
+Step 05's one-hop traversal answers direct relations but misses transitive ones. Q12 ("if NexusFlow goes down, which services are affected") requires the full reachable set, not just immediate neighbours. Step 05 also fails when the question uses a colloquial name that does not match the canonical node ID. Aliases fix the entry point into the graph; BFS fixes the depth of traversal. Together they turn fragile graph lookups into robust ones.

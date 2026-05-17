@@ -22,25 +22,58 @@ A production-grade **Agentic Graph RAG Fusion** system over company-level hetero
 
 ## The Progression Model
 
+10 numbered pipeline steps, plus 3 unnumbered utility folders that support them.
+
+**Numbered steps — each adds one capability over the prior step:**
+
 ```
-Level 0: Data Foundation      → What are we operating over? Rich, realistic, trappy data.
-Level 1: Baseline RAG         → The floor. Dumb chunking + cosine similarity. Measure it.
-Level 2: Observability        → Instrument everything before complexity grows.
-Level 3: Evaluation           → Golden dataset + metrics. We can't improve what we can't measure.
-Level 4: Parsing & Chunking   → Document intelligence. Format-aware, metadata-rich.
-Level 5: Knowledge Graph      → Extract entities + relationships. Graph construction pipeline.
-Level 6: Graph RAG            → Traverse the graph. When does it beat vector? When does it lose?
-Level 7: RAG Fusion           → Combine all retrieval strategies. Reciprocal rank fusion.
-Level 8: Single Agentic RAG   → ReAct agent. Tools. Decide what to retrieve and how.
-Level 9: Multi-Agent System   → Orchestrator + specialized subagents. Contracts between them.
-Level 10: Context Engineering → Compression, reranking, context window management.
-Level 11: VSA Refactor        → Restructure the system around vertical slices.
-Level 12: Production Grade    → Reliability, cost control, latency budgets, always-working.
+Step 01: Baseline RAG           → The floor. Paragraph chunks + MiniLM + top-5 cosine.
+Step 02: Format-aware Chunking  → Markdown by section + CSV by row + contextual headers.
+Step 03: CSV Tool Calling       → Pandas tool for exact aggregates (total ARR, headcount).
+Step 04: BM25 Hybrid Retrieval  → BM25 + dense fused via RRF for keyword-exact queries.
+Step 05: Knowledge Graph        → Entity + relationship edges from CSVs; multi-hop traversal.
+Step 06: Graph RAG              → Alias resolution + BFS blast-radius queries.
+Step 07: Multi-Agent System     → QueryAnalyst → specialists → Critic → Synthesis.
+Step 08: Context Engineering    → CrossEncoder rerank → dedup → compress → XML budget.
+Step 09: Vertical Slice Arch    → Domain slice router (Finance / HR / Engineering).
+Step 10: Production Grade       → Cache + retry + confidence + health monitor.
 ```
+
+**Utility folders — supporting infrastructure, not part of the progression:**
+
+```
+dataset/         Synthetic Vertexia corpus (50 files, 7 departments).
+observability/   JSONL trace store + Arize Phoenix integration.
+evaluation/      RAGAS framework + 15-question golden set + LLM judge.
+```
+
+Observability and evaluation were originally steps 02 and 03; they were demoted to utility folders on 2026-05-17 because they don't move pipeline accuracy — they measure it.
 
 ---
 
-## Step Breakdown
+## Step Breakdown (Original 12-step design)
+
+> **Note on numbering**: This section reflects the original plan, where observability and evaluation were numbered steps. They are now utility folders (`observability/`, `evaluation/`). Pipeline steps were renumbered into 10 capability-adding steps on 2026-05-17.
+>
+> Translation table from the original 12 steps to today's 10 steps + 3 utility folders:
+>
+> | Original | Today |
+> |---|---|
+> | Step 00 Foundation Dataset | `dataset/` (utility) |
+> | Step 01 Baseline RAG | Step 01 (unchanged) |
+> | Step 02 Observability | `observability/` (utility) |
+> | Step 03 Evaluation Framework | `evaluation/` (utility, now RAGAS-based) |
+> | Step 04 Parsing & Chunking | Step 02 |
+> | Step 05 Knowledge Graph | Step 05 |
+> | Step 06 Graph RAG | Step 06 |
+> | Step 07 RAG Fusion (BM25 + dense) | Step 04 |
+> | Step 08 Single Agentic RAG | dropped (redundant with multi-agent) |
+> | Step 09 Multi-Agent | Step 07 |
+> | Step 10 Context Engineering | Step 08 |
+> | Step 11 VSA | Step 09 |
+> | Step 12 Production | Step 10 |
+>
+> Step 03 (CSV Tool Calling) is new — it didn't exist in the original plan. The design rationale in each subsection below is preserved as the *why* behind that capability; cross-reference the table above when reading.
 
 ### STEP 00 — Foundation Dataset
 **Goal**: Create a rich, realistic synthetic company corpus that will stress-test every retrieval strategy we build.
@@ -301,33 +334,35 @@ Orchestrator Agent
 
 ---
 
-## Evaluation Scorecard (Tracked Per Step)
+## Evaluation Scorecard
 
-Overall pass rate (PASS / 27 golden questions):
+**Framework**: RAGAS via `llm_gatewayV2` (groq llama-3.3-70b → gemini fallback). Five metrics per question: `answer_correctness`, `faithfulness`, `answer_relevancy`, `context_precision`, `context_recall`. See `evaluation/README.md`.
 
-| Step | Pass Rate | PASS | Notes |
+**Golden set**: 15 questions across 6 tiers, each tier requires the next capability to PASS:
+
+| Tier | IDs | Type | Step that unlocks it |
 |---|---|---|---|
-| 01 Baseline Vector RAG | 26% | 7/27 | ChromaDB cosine top-5 — aggregate and multi-hop questions all fail |
-| 04 Format-aware Chunking | 52% | 14/27 | CSV aggregate chunks + Markdown section splits — halves failure set |
-| 05 Knowledge Graph | 78% | 21/27 | Entity + relationship nodes unlock multi-hop; aggregate still weak |
-| 06 Graph RAG | 85% | 23/27 | Alias resolution + BFS dependency traversal |
-| 07 RAG Fusion + BM25 | 89% | 24/27 | BM25+dense RRF + unconditional CSV structured query tool |
-| 08 Agentic RAG | 85% | 23/27 | Tool-calling loop via LLM Gateway; LLM discretion introduces variance |
-| 09 Multi-Agent | 93% | 25/27 | 6 specialists + Critic + synthesis precision rules |
-| 10 Context Engineering | 85% | 23/27 | CrossEncoder rerank → Jaccard dedup → extractive compress — Q18/Q22 regress † |
-| 11 VSA | 89% | 24/27 | Keyword router + domain slices recover Finance/HR losses from step 10 |
-| 12 Production | 89% | 24/27 | Semantic cache + retry/backoff + confidence scoring + health monitor |
+| 1 | Q01–Q02 | Simple retrieval | Step 01 baseline |
+| 2 | Q03–Q04 | Format-aware chunking | Step 02 |
+| 3 | Q05–Q07 | CSV aggregates | Step 03 |
+| 4 | Q08–Q10 | BM25 keyword-exact | Step 04 |
+| 5 | Q11–Q13 | Knowledge-graph multi-hop | Step 05 |
+| 6 | Q14–Q15 | Cross-document reasoning | Step 07 |
 
-> † Step 10's extractive compression (compress_ratio=0.60) removes bottom 40% of sentences.
-> Q18 (Project Phoenix disambiguation) and Q22 (blast-radius events_api) key context falls in
-> that discarded portion. Step 11 Finance/HR slices recover other regressions but Q18 remains hard.
+**Grading**: `answer_correctness ≥ 0.7` = PASS, `≥ 0.4` = PARTIAL, else FAIL.
 
-Key per-category findings (RAGAS-style LLM-as-judge, 5-metric suite):
-- **Faithfulness**: Near-perfect at step 09+ when ISO date rule and AUTHORITATIVE CSV labels are present
-- **Context Precision**: Peaks at step 07 (RRF merge); reranking at step 10 helps but compression hurts
-- **Multi-hop Success**: Graph RAG (step 05–06) is the step-change; vector alone fails entity chains
-- **Aggregate Queries**: Only reliably correct with deterministic Pandas CSV tool (step 07+)
-- **Disambiguation**: Multi-agent Critic (step 09) most reliable; compression (step 10) regresses it
+**Live results** are written to `<step>/results/eval_results.json` each time the eval runs. See the top of the main `README.md` for the current per-step summary table.
+
+### What the diagnostic metrics tell us
+
+The four non-correctness metrics exist to localize *why* a question fails:
+
+- Low `context_recall` + low `answer_correctness` → retrieval missed the document. Fix by adding the right retrieval strategy in the next step.
+- High `context_recall` + low `answer_correctness` → retrieval found it; generation failed. Fix by tightening the prompt, reranker, or compression budget.
+- Low `context_precision` → retrieval is noisy. Fix by adding reranking (Step 08) or domain slicing (Step 09).
+- Low `faithfulness` → model is hallucinating despite having context. Fix by stricter system prompt or smaller / cleaner context.
+
+This decomposition is what makes the step-by-step progression meaningful — each step targets one of these failure modes.
 
 ---
 
@@ -351,7 +386,7 @@ Key per-category findings (RAGAS-style LLM-as-judge, 5-metric suite):
 
 9. **What does VSA buy?** Step 11 recovered 4pp from step 10 (85%→89%) using domain-specific system prompts. The keyword router added zero LLM calls for routing. VSA benefit at this scale: per-slice system prompts and compress_ratio tuning without touching orchestrator logic. Downside: keyword router can mis-route edge-case queries.
 
-10. **When to stop retrieving?** The confidence scoring in step 12 + early cache hit is the practical answer. For retrieval depth: graph BFS with max_depth=3 + vector top-20 was sufficient for all 27 questions. Stopping rule: when the top-1 CrossEncoder score > 0.85, the answer is likely in that chunk — stop expanding.
+10. **When to stop retrieving?** The confidence scoring in step 10 + early cache hit is the practical answer. For retrieval depth: graph BFS with max_depth=3 + vector top-20 was sufficient for the 15-question golden set. Stopping rule: when the top-1 CrossEncoder score > 0.85, the answer is likely in that chunk — stop expanding.
 
 ---
 
@@ -367,22 +402,25 @@ Key per-category findings (RAGAS-style LLM-as-judge, 5-metric suite):
 
 ## Current Status
 
-All 12 steps complete. Final system achieves 89% (24/27) pass rate with production reliability hardening.
+All 10 numbered steps and 3 utility folders are implemented.
 
-| Step | Status | Pass Rate | Key Outcome |
-|---|---|---|---|
-| Step 00 | COMPLETE | — | 48 synthetic files across 7 departments (CSV, Markdown, TXT, JSON) |
-| Step 01 | COMPLETE | 26% (7/27) | ChromaDB + Gemini embeddings, top-5 cosine — established the floor |
-| Step 02 | COMPLETE | — | JSONL trace store + Arize Phoenix integration |
-| Step 03 | COMPLETE | — | 5 RAGAS-style LLM-as-judge metrics: faithfulness, precision, recall, relevance, correctness |
-| Step 04 | COMPLETE | 52% (14/27) | CSV aggregate chunks, Markdown section splits, text structure detection |
-| Step 05 | COMPLETE | 78% (21/27) | Entity nodes + relationship edges (reports_to, depends_on, uses) |
-| Step 06 | COMPLETE | 85% (23/27) | Alias resolution + full BFS dependency chain traversal |
-| Step 07 | COMPLETE | 89% (24/27) | BM25 + dense RRF merge + deterministic Pandas CSV query tool |
-| Step 08 | COMPLETE | 85% (23/27) | Tool-calling loop via LLM Gateway V2 (Gemini/NVIDIA/Groq/Cerebras) |
-| Step 09 | COMPLETE | 93% (25/27) | 6 specialised agents + Orchestrator + Critic + synthesis precision rules |
-| Step 10 | COMPLETE | 85% (23/27) † | CrossEncoder rerank → Jaccard dedup → extractive compress → XML budget |
-| Step 11 | COMPLETE | 89% (24/27) | Keyword router dispatches to Finance/HR/Engineering/General domain slices |
-| Step 12 | COMPLETE | 89% (24/27) + reliability | Semantic cache + retry/backoff + confidence scoring + health monitor |
+| Step | Adds | Implementation key |
+|---|---|---|
+| Step 01 Baseline RAG | Paragraph chunks + MiniLM + top-5 cosine | `BaselineRAG` |
+| Step 02 Chunking | Section-aware Markdown / per-row CSV / contextual headers | `Step02RAG` |
+| Step 03 Tools | Pandas CSV tool for aggregates | `Step03ToolsRAG` |
+| Step 04 Hybrid Retrieval | BM25 fused with dense via RRF | `Step04HybridRAG` |
+| Step 05 Knowledge Graph | Entity / relationship graph + multi-hop | `Step05RAG` |
+| Step 06 Graph RAG | Alias resolution + BFS blast radius | `Step06RAG` |
+| Step 07 Multi-Agent | QueryAnalyst → specialists → Critic → Synthesis | `Step07RAG` |
+| Step 08 Context Engineering | Rerank → dedup → compress → XML budget | `Step08RAG` |
+| Step 09 VSA | Domain slice router (Finance / HR / Eng) | `Step09RAG` |
+| Step 10 Production | Cache + retry + confidence + health | `Step10RAG` |
 
-> † Step 10's extractive compression introduces a documented tradeoff: Q18 and Q22 regress as aggressive sentence filtering removes context that multi-agent reasoning preserved. The Finance/HR slices in Step 11 recover these losses; Q18 (cross-reference disambiguation) remains the hardest question in the suite.
+| Utility | Purpose |
+|---|---|
+| `dataset/` | 50-file synthetic Vertexia corpus |
+| `observability/` | JSONL trace store + Arize Phoenix integration |
+| `evaluation/` | RAGAS-based eval runner + 15-question golden set + LLM judge |
+
+Current per-step pass rates live in each step's `results/eval_results.json` and in the summary table at the top of the main `README.md`. The eval runner is `evaluation/run_eval.py --all`.

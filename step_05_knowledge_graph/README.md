@@ -1,70 +1,26 @@
 # Step 05 — Knowledge Graph
 
-> **Problem**: Vector similarity can't answer "who does X report to?" or "which products depend on Y?" — there's no semantic signal to bridge cross-row CSV joins.  
-> **Fix**: Build a directed graph from the CSV data. Relationships become first-class edges that can be traversed in one hop.
+## What it adds
+Builds an entity knowledge graph from the structured CSVs (employees, accounts, API dependencies, departures) and uses multi-hop traversal to answer relational questions. Edges include `reports_to`, `manages_account`, `depends_on`, and `uses`. Newly handles Tier 5 questions (Q11-Q13) that require joining facts across multiple CSV rows or files.
 
-## How It Works
+## Design
+- **Class:** `Step05RAG` in `step_05_knowledge_graph/implementation/pipeline.py`
+- **Inherits from:** `Step04HybridRAG` (extends hybrid retrieval with graph context)
+- **Key components:**
+  - `step_05_knowledge_graph/implementation/builder.py` — reads HR, sales, engineering, and finance CSVs and emits `networkx.DiGraph` nodes/edges
+  - `step_05_knowledge_graph/implementation/graph_store.py` — `load_or_build()` caches the graph to `step_05_knowledge_graph/results/graph.json`
+  - `step_05_knowledge_graph/implementation/query.py` — `get_graph_context()` extracts a per-question subgraph and renders it as text
 
+## How it works
+On `build()`, the pipeline calls `Step04HybridRAG.build()` and then loads (or rebuilds) the graph from `dataset/company_data/`. Nodes are people, products, customers, and vendors; edges encode reports-to, manages-account, depends-on, and uses relations. At query time, hybrid retrieval runs first and produces the top-k chunks. The chunk texts are passed to `get_graph_context()` as seeds: it extracts named entities, walks the graph one or two hops out, and emits a textual block like `Aisha Johnson reports_to Tomás García; Tomás García reports_to Sarah Chen`. The CSV-tool result, the graph context, and the vector context are concatenated and sent to the LLM.
+
+## Run
+```bash
+uv run python evaluation/run_eval.py --step step_05_knowledge_graph
 ```
-company_data/
-  hr/employee_directory.csv ──────────────────► Person nodes  ──► reports_to edges
-  engineering/api_dependencies.csv ──────────► Service nodes ──► depends_on edges
-  sales/customer_list.csv + csm_account_history ► Customer nodes ► uses / manages_account edges
-  finance/vendor_contracts_summary.csv ────────► Vendor nodes  ──► owns_contract edges
-                    │
-                    ▼ build_graph()
-            graph.json (NetworkX DiGraph, persisted)
-                    │
-          ┌─────────┴──────────┐
-          │  query.py          │
-          │  1. entity_match() │  exact name → partial alias → keyword fallback
-          │  2. expand()       │  BFS up to depth-2 from seed nodes
-          │  3. format_context │  human-readable "Person X reports to Y..."
-          └─────────┬──────────┘
-                    │
-              graph_context (str) injected into LLM prompt alongside vector chunks
-```
-
-## Node & Edge Types
-
-| Node | Source | Example ID |
-|------|--------|-----------|
-| Person | employee_directory.csv | `E001` |
-| Product | api_dependencies.csv | `NexusFlow` |
-| ExternalService | api_dependencies.csv | `external_pulsar` |
-| Customer | customer_list.csv | `Phoenix Corp` |
-| Vendor | vendor_contracts_summary.csv | `vendor:Snowflake` |
-
-| Edge | Meaning |
-|------|---------|
-| `reports_to` | Person → Person (org hierarchy) |
-| `depends_on` | Service → Service (with criticality attr) |
-| `uses` | Customer → Product |
-| `manages_account` | Person → Customer (CSM) |
-| `owns_contract` | Person → Vendor |
-
-## Key Files
-
-| File | What it does |
-|------|-------------|
-| `implementation/builder.py` | Parses all CSVs, creates nodes/edges, returns `nx.DiGraph` |
-| `implementation/graph_store.py` | `load_or_build()` — caches graph to `results/graph.json` |
-| `implementation/query.py` | Entity matching + BFS expansion + text formatting |
-| `implementation/pipeline.py` | `Step05RAG` — vector chunks + graph context → LLM |
 
 ## Results
+See `step_05_knowledge_graph/results/eval_results.json` for the latest RAGAS scores.
 
-| Step | PASS | PARTIAL | FAIL | Pass Rate |
-|------|------|---------|------|-----------|
-| 01 Baseline | 6 | 4 | 12 | 27% |
-| 04 Chunking | 13 | 5 | 4 | 59% |
-| **05 Graph** | **18** | **2** | **2** | **82%** |
-
-Questions fixed by the graph: Q13, Q14 (cross-CSV ID joins via `reports_to` edges), Q20, Q22 (dependency chain traversal).
-
-## Run It
-
-```bash
-# Build graph + run evaluation (requires GOOGLE_API_KEY)
-uv run python step_05_knowledge_graph/evaluation/run_eval.py
-```
+## Why this step exists
+Hybrid retrieval can find the right CSV rows but it cannot follow a relation across them. Q11 ("CSM for Phoenix Corp, and their manager") needs two joins: `customer → CSM` then `CSM → manager`. Q12 ("if NexusFlow goes down, what is affected") needs a BFS over the dependency graph. Q13 ("two-hop reporting chain for Aisha Johnson") is a pure graph walk. Encoding relations as first-class edges makes these answers deterministic instead of relying on the LLM to chain implicit references.

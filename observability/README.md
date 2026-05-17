@@ -1,7 +1,9 @@
-# Step 02 — Observability Foundation
+# Observability — Traces for RAG Queries
+
+A utility folder (not a numbered step). Originally Step 02 in the 12-step plan; demoted to a utility on 2026-05-17 since it measures the pipeline rather than improving it.
 
 ## Goal
-Before adding any complexity to the RAG system, instrument everything. Every query must produce a structured trace that answers: what was retrieved, what went into the LLM's context, how many tokens were used, what did it cost, and how long did each phase take.
+Before adding complexity to a RAG pipeline, instrument it. Every query produces a structured trace that answers: what was retrieved, what went into the LLM's context, how many tokens were used, what did it cost, and how long did each phase take.
 
 ---
 

@@ -1,87 +1,28 @@
-# Step 12 — Production Hardening
+# Step 10 — Production Hardening
 
-> **Problem**: Steps 09–11 work *usually*. In production a system must work *always* — transient LLM failures, repeated queries, slow responses, and degraded providers all need explicit handling.  
-> **Fix**: Wrap Step 11's VSA pipeline with five independent hardening layers. Each layer is a thin module — no changes to the core retrieval or synthesis logic.
+## What it adds
+Wraps the Step 09 VSA pipeline with five independent production layers: a semantic cache that returns prior answers for paraphrased questions, retry-with-backoff around transient LLM failures, extractive fallback when retries are exhausted, confidence scoring that appends an uncertainty note for low-confidence answers, and a rolling health monitor. No changes to the core retrieval or synthesis path.
 
-## The Five Layers
+## Design
+- **Class:** `Step10RAG` in `step_10_production/implementation/pipeline.py`
+- **Inherits from:** composes `Step09RAG`
+- **Key components:**
+  - `step_10_production/implementation/semantic_cache.py` — `SemanticCache` with a configurable cosine threshold (default `0.92`)
+  - `step_10_production/implementation/retry.py` — `@with_retry(max_attempts=3, base_delay=0.5)` decorator
+  - `step_10_production/implementation/graceful_degradation.py` — `extractive_fallback()` returns a chunk-derived answer when retries fail
+  - `step_10_production/implementation/confidence.py` — `score_answer()` produces a numeric score plus high/medium/low label
+  - `step_10_production/implementation/health_monitor.py` — `HealthMonitor` with a 100-query rolling window for latency, pass rate, cache hits, and slice distribution
 
-```
-Query
-  │
-  ▼
-┌─────────────────────────────────────────────────────────────┐
-│  Layer 1 — SEMANTIC CACHE  (semantic_cache.py)              │
-│  Encode query with all-MiniLM-L6-v2                         │
-│  Cosine similarity > 0.92 → instant cached answer (<10ms)   │
-│  200-entry LRU, thread-safe                                 │
-└──────────────────────┬──────────────────────────────────────┘
-  cache miss            │
-                        ▼
-┌─────────────────────────────────────────────────────────────┐
-│  Layer 2 — RETRY / BACKOFF  (retry.py)                      │
-│  @with_retry(max_attempts=3, base_delay=0.5s, exp backoff)  │
-│  Wraps the entire Step11 VSA dispatch call                  │
-│  Handles transient gateway timeouts and rate-limit errors   │
-└──────────────────────┬──────────────────────────────────────┘
-  all retries failed    │  success path
-                ┌───────┘
-                ▼
-┌─────────────────────────────────────────────────────────────┐
-│  Layer 3 — GRACEFUL DEGRADATION  (graceful_degradation.py)  │
-│  Picks the highest-scored retrieved chunk                   │
-│  Returns its first 3 sentences as an [Extractive] answer   │
-│  Zero LLM calls — always returns something                  │
-└─────────────────────────────────────────────────────────────┘
+## How it works
+On each query, the cache is checked first: a hit returns the stored answer immediately and updates the monitor. On a miss, the Step 09 VSA pipeline runs inside a retry decorator. If all retries fail, `extractive_fallback()` builds an answer directly from the top retrieved chunks. The resulting answer is passed to `score_answer()`; low-confidence answers get a `[Note: low confidence — verify against source documents]` suffix. The query is recorded in the health monitor (latency, pass/fail, slice, cache status) and the answer plus engineering metrics are written into the cache for future paraphrases. The cache and monitor are module-level singletons so state persists across `build()` calls within a session.
 
-On success path:
-┌─────────────────────────────────────────────────────────────┐
-│  Layer 4 — CONFIDENCE SCORING  (confidence.py)              │
-│  key_term_overlap(question, answer) × 0.70                  │
-│  + length_signal × 0.30                                     │
-│  → score 0–1, label: high (≥0.65) / medium / low           │
-│  low-confidence answers get an uncertainty notice appended  │
-└──────────────────────┬──────────────────────────────────────┘
-                        │
-                        ▼
-┌─────────────────────────────────────────────────────────────┐
-│  Layer 5 — HEALTH MONITOR  (health_monitor.py)              │
-│  Ring buffer of last 100 queries                            │
-│  Tracks: p50/p95 latency, error rate, cache hit rate        │
-│  SLO target: 95% of queries < 10 seconds                    │
-│  Status: "healthy" | "degraded"                             │
-└─────────────────────────────────────────────────────────────┘
-  │
-  ▼
-Step10Result {
-  rag_result, slice_name, router_confidence,
-  ce_metrics, confidence_score, confidence_label,
-  from_cache, cache_stats, health_snapshot
-}
-```
-
-## Production Metrics Reported
-
-| Metric | Source |
-|--------|--------|
-| `from_cache` | Semantic cache hit |
-| `confidence_score` / `confidence_label` | Heuristic quality score |
-| `p50_latency_ms` / `p95_latency_ms` | Health monitor ring buffer |
-| `slo_compliance` | % queries under 10 s |
-| `cache_hit_rate` | Hits / total queries |
-
-## Key Files
-
-| File | What it does |
-|------|-------------|
-| `implementation/semantic_cache.py` | Embedding cache with LRU eviction |
-| `implementation/retry.py` | `@with_retry` exponential backoff decorator |
-| `implementation/confidence.py` | `score_answer(question, answer)` → score + label |
-| `implementation/health_monitor.py` | `HealthMonitor.record()` + `snapshot()` |
-| `implementation/graceful_degradation.py` | `extractive_fallback(question, chunks)` |
-| `implementation/pipeline.py` | `Step10RAG` — decorator over `Step09RAG` |
-
-## Run It
-
+## Run
 ```bash
-uv run python step_10_production/evaluation/run_eval.py
+uv run python evaluation/run_eval.py --step step_10_production
 ```
+
+## Results
+See `step_10_production/results/eval_results.json` for the latest RAGAS scores.
+
+## Why this step exists
+The earlier steps optimise for accuracy on a known test set. Production traffic is different: the same question gets asked in slightly different wording dozens of times a day, the LLM provider occasionally rate-limits or times out, and operators need to know when answers are unreliable. The cache cuts latency and cost on repeat queries; retry-with-backoff absorbs transient provider errors; extractive fallback guarantees the user always gets something traceable to the corpus; confidence scoring signals when to verify; the monitor surfaces regressions. Each layer is a thin module that can be enabled or replaced without touching the retrieval stack.

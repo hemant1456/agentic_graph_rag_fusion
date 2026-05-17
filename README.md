@@ -1,82 +1,97 @@
 # Agentic Graph RAG Fusion
 
-A 12-step learning project that builds a production-grade RAG system from scratch, diagnosing and fixing each failure mode one step at a time over synthetic company data (Vertexia Inc.).
+A 10-step learning project that builds a production-grade RAG system from scratch, diagnosing and fixing one failure mode at a time over synthetic company data (Vertexia Inc.).
 
-## Progression
+## Pipeline progression
 
-| Step | Name | Pass Rate | What it adds |
-|------|------|-----------|-------------|
-| [00](dataset/README.md) | Dataset | — | 48 synthetic files across 7 departments (CSV, Markdown, TXT, JSON) |
-| [01](step_01_baseline_rag/README.md) | Baseline Vector RAG | 26% (7/27) | ChromaDB + Gemini embeddings, top-5 cosine retrieval |
-| [02](observability/README.md) | Observability | — | JSONL trace store + Arize Phoenix integration |
-| [03](evaluation/README.md) | Evaluation Framework | — | 5 RAGAS-style LLM-as-judge metrics |
-| [04](step_02_chunking/README.md) | Format-aware Chunking | — | Markdown section splits, text structure detection (row-by-row CSV) |
-| [05](step_03_tools/README.md) | CSV Tool Calling | — | Pandas query tools for exact aggregate computation (total ARR, Q3 revenue, headcount) |
-| [06](step_04_hybrid_retrieval/README.md) | Hybrid BM25 + Dense | — | BM25 + dense RRF merge for keyword-exact retrieval (version strings, vendor names) |
-| [07](step_05_knowledge_graph/README.md) | Knowledge Graph | — | Entity nodes + relationship edges from CSVs (reports_to, depends_on, uses) |
-| [08](step_06_graph_rag/README.md) | Graph RAG | — | Alias resolution + full dependency chain traversal |
-| [09](step_07_multi_agent/README.md) | Multi-Agent System | 93% (25/27) | 6 specialised agents + orchestrator + Critic + synthesis precision rules |
-| [10](step_08_context_engineering/README.md) | Context Engineering | 85% (23/27) † | CrossEncoder rerank → Jaccard dedup → extractive compress → XML budget |
-| [11](step_09_vsa/README.md) | Vertical Slice Architecture | 89% (24/27) | Keyword router dispatches to Finance/HR/Engineering/General domain slices |
-| [12](step_10_production/README.md) | Production Hardening | 89% (24/27) + reliability | Semantic cache + retry/backoff + confidence scoring + health monitor |
+10 numbered steps, each cumulatively builds on the previous. Three utility folders (`dataset/`, `observability/`, `evaluation/`) sit alongside but are not part of the numbered progression.
 
-> † Step 10's extractive compression introduces a tradeoff: Q18 (cross-reference disambiguation) and Q22 (blast-radius completeness) regress as aggressive sentence filtering removes context that multi-agent reasoning preserved. The Finance/HR slices in Step 11 recover these losses through domain-specific prompts and routing.
->
-> Q23–Q27 target the agent-tier steps (09–11). Run eval scripts to populate results.
+| Step | Name | What it adds | Tier fixed |
+|------|------|--------------|-----------|
+| [01](step_01_baseline_rag/README.md) | Baseline RAG | ChromaDB + HuggingFace MiniLM embeddings, top-k cosine retrieval | Tier 1 |
+| [02](step_02_chunking/README.md) | Format-aware Chunking | Markdown section splits + contextual headers (`[FILE | DOC | SECTION]`), per-row CSV | Tier 2 |
+| [03](step_03_tools/README.md) | CSV Tool Calling | Pandas tools for exact aggregates (total ARR, Q3 revenue, headcount) | Tier 3 |
+| [04](step_04_hybrid_retrieval/README.md) | BM25 + Dense Hybrid | BM25 fused with dense via Reciprocal Rank Fusion for keyword-exact lookups | Tier 4 |
+| [05](step_05_knowledge_graph/README.md) | Knowledge Graph | Entity nodes + edges from CSVs (reports_to, depends_on, uses) | Tier 5 |
+| [06](step_06_graph_rag/README.md) | Graph RAG | Alias resolution + BFS dependency-chain traversal | Tier 5 |
+| [07](step_07_multi_agent/README.md) | Multi-Agent | QueryAnalyst → Retrieval/Graph/CSV agents → Synthesis → Critic | Tier 6 |
+| [08](step_08_context_engineering/README.md) | Context Engineering | CrossEncoder rerank → Jaccard dedup → extractive compress → XML budget |  |
+| [09](step_09_vsa/README.md) | Vertical Slice Architecture | Keyword router dispatches to Finance/HR/Engineering domain slices |  |
+| [10](step_10_production/README.md) | Production Hardening | Semantic cache + retry/backoff + confidence scoring + health monitor |  |
 
-## Architecture at Step 12
+Latest eval results are written to each step's `results/eval_results.json` and rolled up below.
 
-```
-Query
-  │
-  ▼
-Semantic Cache ──hit──► cached answer
-  │ miss
-  ▼
-VSA Router  ──► Finance / HR / Engineering / General slice
-  │              (keyword scoring, zero LLM calls)
-  ▼
-QueryAnalyst → RetrievalSpecialist → GraphNavigator → StructuredData
-  │            (BM25 + dense, k=20)  (entity + BFS)   (Pandas CSV)
-  ▼
-Context Engineering
-  CrossEncoder rerank → Jaccard dedup → extractive compress → XML
-  │
-  ▼
-Synthesis (slice-specific system prompt)
-  │
-  ▼
-Critic → Confidence Score → Health Monitor → answer
-```
+## Question set & tiers
 
-## Running the Dashboard
+15 golden questions, each tier requires the next capability to PASS:
+
+| Tier | Range | Type | Fixed by |
+|------|-------|------|----------|
+| 1 | Q01–Q02 | Simple retrieval | Step 01 baseline |
+| 2 | Q03–Q04 | Format-aware chunking | Step 02 |
+| 3 | Q05–Q07 | CSV aggregate computation | Step 03 |
+| 4 | Q08–Q10 | BM25 keyword-exact | Step 04 |
+| 5 | Q11–Q13 | Knowledge-graph multi-hop | Step 05 |
+| 6 | Q14–Q15 | Cross-document / multi-step | Step 07 |
+
+Reduced from 31 to 15 for faster iteration on the free-tier LLM judge.
+
+## Evaluation
+
+All evaluation lives in one folder: `evaluation/`.
+
+- `evaluation/run_eval.py` — CLI runner with one `answer_step_NN(question)` adapter per step
+- `evaluation/judge_llm.py` — LangChain wrapper around `llm_gatewayV2` (prefers groq → gemini)
+- Scoring metric: **RAGAS `answer_correctness`** (semantic + factual, format-tolerant)
+- Threshold: `≥0.7` PASS, `≥0.4` PARTIAL, `<0.4` FAIL
 
 ```bash
-uv run streamlit run dashboard.py
+uv run python evaluation/run_eval.py --list                       # show all steps
+uv run python evaluation/run_eval.py --step step_04_hybrid_retrieval
+uv run python evaluation/run_eval.py --all                        # run everything
 ```
+
+Results land in `<step_name>/results/eval_results.json` with per-question scores and grades.
 
 ## LLM Gateway V2
 
-All LLM calls from Step 09 onward route through a local gateway:
+All LLM calls (both pipeline answer generation and RAGAS judge) route through a local gateway:
 
 ```bash
 cd llm_gatewayV2
 uv run uvicorn main:app --port 8100
 ```
 
-Providers: Gemini 3.1 Flash-Lite Preview, NVIDIA NIM, Groq, Cerebras — all free tier.
+Providers: Groq (llama-3.3-70b, fastest), Gemini (3.1 Flash-Lite, fallback), NVIDIA NIM, Cerebras — all free tier.
 
-## Running Evaluations
+## Storage
+
+One shared ChromaDB at the project root: `chroma_db/`.
+- `vertexia_baseline` collection — naive paragraph chunks (used by step_01)
+- `vertexia_smart` collection — format-aware section chunks (used by step_02+)
+
+## Running the dashboard
 
 ```bash
-uv run python step_01_baseline_rag/evaluation/run_eval.py
-uv run python step_02_chunking/evaluation/run_eval.py
-uv run python step_03_tools/evaluation/run_eval.py
-uv run python step_04_hybrid_retrieval/evaluation/run_eval.py
-uv run python step_05_knowledge_graph/evaluation/run_eval.py
-uv run python step_06_graph_rag/evaluation/run_eval.py
-uv run python step_07_multi_agent/evaluation/run_eval.py
-uv run python step_08_context_engineering/evaluation/run_eval.py
-uv run python step_09_vsa/evaluation/run_eval.py
-uv run python step_10_production/evaluation/run_eval.py
+uv run streamlit run dashboard.py
+```
+
+## Repository layout
+
+```
+agentic_graph_rag_fusion/
+├── dataset/                 # synthetic Vertexia corpus (50 files, 7 departments)
+├── observability/           # Arize Phoenix + JSONL trace store (utility)
+├── evaluation/              # RAGAS scorer + per-step adapters (utility)
+├── chroma_db/               # shared vector index, 2 collections
+├── step_01_baseline_rag/   ┐
+├── step_02_chunking/       │
+├── step_03_tools/          │
+├── step_04_hybrid_retrieval│  ← 10 numbered steps, cumulative
+├── step_05_knowledge_graph/│    each step inherits from the previous
+├── step_06_graph_rag/      │
+├── step_07_multi_agent/    │
+├── step_08_context_engineering/
+├── step_09_vsa/            │
+└── step_10_production/     ┘
 ```

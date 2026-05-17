@@ -1,10 +1,14 @@
-# Step 00 — Foundation Dataset
+# Dataset — Vertexia Corpus
+
+The synthetic corpus that every numbered step is evaluated against. This is a utility folder, not a numbered step.
 
 ## Goal
 
-Create a rich, realistic synthetic corpus for **Vertexia Inc.**, a fictional B2B SaaS company. This corpus must be complex enough to expose the failure modes of every retrieval strategy we will build in Steps 01–12.
+A rich, realistic corpus for **Vertexia Inc.**, a fictional B2B SaaS company. The corpus is complex enough to expose the failure modes of every retrieval strategy used across the 10 numbered steps.
 
-**The dataset is the experiment.** If the data is too clean, we will build a system that "works" but teaches us nothing. The data must have the same messiness, ambiguity, and cross-document complexity as real company data.
+**The dataset is the experiment.** If the data is too clean, we build a system that "works" but teaches us nothing. This data has the same messiness, ambiguity, and cross-document complexity as real company data.
+
+50 documents across 7 departments: engineering, executive, finance, hr, legal, product, sales. Formats: markdown, plain text, CSV, JSON. Two additional structured documents were added in 2026-05 (`engineering/oncall_runbook_top_alerts.md` and `legal/vendor_data_processing_matrix.md`) specifically to showcase the value of format-aware chunking in Step 02.
 
 ---
 
@@ -277,9 +281,4 @@ The original 10 design questions and the failure modes they target:
 
 ## Status
 
-**COMPLETE.** All 48 documents exist with internally consistent content. Every Trap is verifiable
-against the actual files. The eval suite (27 questions) is live in `step_01_baseline_rag/evaluation/`
-and used as the shared benchmark across all steps 01–12.
-
-Step 01 baseline result against this corpus: **26% (7/27)** — establishing the floor that
-all subsequent techniques are measured against.
+All 50 documents exist with internally consistent content. Every trap is verifiable against the actual files. The eval suite (15 questions across 6 tiers) is at `step_01_baseline_rag/evaluation/golden_questions.py` and is the shared benchmark across all 10 numbered steps. Per-step scores live in each step's `results/eval_results.json`; see the top-level `README.md` for the rollup.
