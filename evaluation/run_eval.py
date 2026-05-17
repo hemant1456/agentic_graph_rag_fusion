@@ -182,8 +182,10 @@ def evaluate_step(step_name: str) -> dict:
     ]
     dataset = Dataset.from_list(ragas_inputs)
 
-    # OpenAI has high concurrency limits — batch heavily for speed.
-    run_cfg = RunConfig(timeout=60, max_retries=3, max_workers=16)
+    # Free-tier gateway routing: sequential calls so the router cleanly fails
+    # over between providers (gemini 15 RPM, nvidia 40 RPM, groq 30 RPM,
+    # cerebras 30 RPM) without piling up requests on a cooling-down provider.
+    run_cfg = RunConfig(timeout=180, max_retries=3, max_workers=1)
     metric = AnswerCorrectness()
     result = evaluate(
         dataset,
