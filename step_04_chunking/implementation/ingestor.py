@@ -1,49 +1,21 @@
-import os
-import time
 from pathlib import Path
 
 import chromadb
-from dotenv import load_dotenv
-from google import genai
+from langchain_huggingface import HuggingFaceEmbeddings
 
 from step_04_chunking.implementation.types import SmartChunk
 
-load_dotenv()
-
-GEMINI_EMBED_MODEL = "gemini-embedding-2"
 CHROMA_COLLECTION = "vertexia_step04"
-EMBED_BATCH_PAUSE_EVERY = 50   # pause every N chunks to avoid rate limits
+
+_embedder = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 
 def embed_chunks(chunks: list[SmartChunk]) -> list[list[float]]:
-    """Embed all SmartChunks using Google gemini-embedding-2. One API call per chunk."""
-    api_key = os.environ.get("GOOGLE_API_KEY")
-    if not api_key:
-        raise EnvironmentError("GOOGLE_API_KEY not set")
-    client = genai.Client(api_key=api_key)
-
-    embeddings: list[list[float]] = []
-    for i, chunk in enumerate(chunks):
-        response = client.models.embed_content(
-            model=GEMINI_EMBED_MODEL,
-            contents=chunk.text,
-        )
-        embeddings.append(response.embeddings[0].values)
-        if (i + 1) % EMBED_BATCH_PAUSE_EVERY == 0:
-            print(f"    {i + 1}/{len(chunks)} embedded...")
-            time.sleep(0.5)
-
-    return embeddings
+    return _embedder.embed_documents([c.text for c in chunks])
 
 
 def embed_query(query: str) -> list[float]:
-    """Embed a single query string."""
-    api_key = os.environ.get("GOOGLE_API_KEY")
-    if not api_key:
-        raise EnvironmentError("GOOGLE_API_KEY not set")
-    client = genai.Client(api_key=api_key)
-    response = client.models.embed_content(model=GEMINI_EMBED_MODEL, contents=query)
-    return response.embeddings[0].values
+    return _embedder.embed_query(query)
 
 
 def get_chroma_collection(persist_dir: Path, reset: bool = False) -> chromadb.Collection:
@@ -65,7 +37,6 @@ def store_chunks(
     collection: chromadb.Collection,
     batch_size: int = 100,
 ) -> None:
-    """Upsert chunks + embeddings into ChromaDB in batches."""
     for i in range(0, len(chunks), batch_size):
         batch_chunks = chunks[i:i + batch_size]
         batch_embeds = embeddings[i:i + batch_size]
@@ -82,10 +53,9 @@ def build_index(
     persist_dir: Path,
     reset: bool = False,
 ) -> chromadb.Collection:
-    """Full ingestion pipeline: load → chunk → embed → store."""
     from step_04_chunking.implementation.chunker import load_and_chunk
 
-    print(f"Loading and chunking documents from {corpus_path}...")
+    print(f"Loading and chunking {corpus_path}...")
     chunks = load_and_chunk(corpus_path)
 
     by_type: dict[str, int] = {}
@@ -97,12 +67,11 @@ def build_index(
     collection = get_chroma_collection(persist_dir, reset=reset)
     if not reset and collection.count() > 0:
         print(f"  Index already has {collection.count()} chunks — skipping re-embedding.")
-        print("  Pass reset=True to force rebuild.")
         return collection
 
     print(f"Embedding {len(chunks)} chunks...")
     embeddings = embed_chunks(chunks)
-    print(f"  Done. Embedding dim: {len(embeddings[0])}")
+    print(f"  Done. Dim: {len(embeddings[0])}")
 
     print("Storing in ChromaDB...")
     store_chunks(chunks, embeddings, collection)

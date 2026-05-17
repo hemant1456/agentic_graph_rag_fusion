@@ -9,7 +9,7 @@ _PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from step_06_graph_rag.implementation.graph_query import build_graph_context
+from step_08_graph_rag.implementation.graph_query import build_graph_context
 from step_09_multi_agent.implementation.agents.contracts import GraphResult
 
 

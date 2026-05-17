@@ -12,7 +12,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 if TYPE_CHECKING:
     import networkx as nx
-    from step_07_rag_fusion.implementation.pipeline import Step07RAG
+    from step_06_hybrid_retrieval.implementation.pipeline import Step06HybridRAG
 
 _GATEWAY_URL = os.getenv("LLM_GATEWAY_V2_URL", "http://localhost:8100")
 _GEMINI_MODEL = "gemini-3.1-flash-lite-preview"
@@ -37,7 +37,7 @@ class SliceConfig:
 def run_with_config(
     question: str,
     config: SliceConfig,
-    retriever: "Step07RAG",
+    retriever: "Step06HybridRAG",
     graph: "nx.DiGraph",
 ) -> tuple[str, str, dict]:
     """

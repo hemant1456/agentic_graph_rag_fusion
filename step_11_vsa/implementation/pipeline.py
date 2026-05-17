@@ -16,11 +16,11 @@ from dataclasses import dataclass
 import networkx as nx
 
 from step_01_baseline_rag.implementation.pipeline import RAGResult
-from step_07_rag_fusion.implementation.pipeline import Step07RAG
+from step_06_hybrid_retrieval.implementation.pipeline import Step06HybridRAG
 from step_11_vsa.implementation.router import dispatch as vsa_dispatch
 
 CORPUS_PATH = _PROJECT_ROOT / "step_00_dataset"  / "company_data"
-GRAPH_PATH  = _PROJECT_ROOT / "step_05_knowledge_graph" / "results" / "graph.json"
+GRAPH_PATH  = _PROJECT_ROOT / "step_07_knowledge_graph" / "results" / "graph.json"
 
 
 @dataclass
@@ -44,13 +44,13 @@ class Step11RAG:
 
     def __init__(self, k: int = 5) -> None:
         self.k = k
-        self._retriever: Step07RAG | None = None
+        self._retriever: Step06HybridRAG | None = None
         self._graph: nx.DiGraph | None = None
 
     def build(self) -> "Step11RAG":
         # Wide candidate set — reranker will select the best 8
-        self._retriever = Step07RAG(k=20).build()
-        from step_05_knowledge_graph.implementation.graph_store import load_or_build
+        self._retriever = Step06HybridRAG(k=20).build()
+        from step_07_knowledge_graph.implementation.graph_store import load_or_build
         self._graph = load_or_build(CORPUS_PATH, GRAPH_PATH)
         return self
 

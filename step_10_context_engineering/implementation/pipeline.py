@@ -15,7 +15,7 @@ load_dotenv(_PROJECT_ROOT / ".env")
 import networkx as nx
 
 from step_01_baseline_rag.implementation.pipeline import RAGResult
-from step_07_rag_fusion.implementation.pipeline import Step07RAG
+from step_06_hybrid_retrieval.implementation.pipeline import Step06HybridRAG
 from step_09_multi_agent.implementation.agents import (
     critic,
     graph_navigator,
@@ -27,7 +27,7 @@ from step_09_multi_agent.implementation.agents import (
 from step_10_context_engineering.implementation.context_engineer import engineer_context
 
 CORPUS_PATH = _PROJECT_ROOT / "step_00_dataset" / "company_data"
-GRAPH_PATH  = _PROJECT_ROOT / "step_05_knowledge_graph" / "results" / "graph.json"
+GRAPH_PATH  = _PROJECT_ROOT / "step_07_knowledge_graph" / "results" / "graph.json"
 
 
 @dataclass
@@ -51,13 +51,13 @@ class Step10RAG:
         self.k = k
         self.rerank_k = rerank_k
         self.compress_ratio = compress_ratio
-        self._retriever: Step07RAG | None = None
+        self._retriever: Step06HybridRAG | None = None
         self._graph: nx.DiGraph | None = None
 
     def build(self) -> "Step10RAG":
         # Retrieve wide candidate set (k=20) for the reranker to select from
-        self._retriever = Step07RAG(k=20).build()
-        from step_05_knowledge_graph.implementation.graph_store import load_or_build
+        self._retriever = Step06HybridRAG(k=20).build()
+        from step_07_knowledge_graph.implementation.graph_store import load_or_build
         self._graph = load_or_build(CORPUS_PATH, GRAPH_PATH)
         return self
 

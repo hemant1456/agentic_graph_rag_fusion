@@ -9,7 +9,7 @@ class SmartChunk:
     source: str        # relative path from corpus root
     department: str    # engineering, hr, finance, etc.
     format: str        # txt, md, csv, json
-    chunk_type: str    # "row" | "aggregate" | "section" | "prose"
+    chunk_type: str    # "row" | "section" | "prose"
     chunk_index: int
     extra: dict = field(default_factory=dict)
     chunk_id: str = field(default="")

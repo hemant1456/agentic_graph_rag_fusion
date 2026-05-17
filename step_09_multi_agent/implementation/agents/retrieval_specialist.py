@@ -8,7 +8,7 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from step_01_baseline_rag.implementation.retrieve import format_context
-from step_07_rag_fusion.implementation.pipeline import Step07RAG
+from step_06_hybrid_retrieval.implementation.pipeline import Step06HybridRAG
 from step_09_multi_agent.implementation.agents.contracts import RetrievalResult
 
 
@@ -21,7 +21,7 @@ def _augment_query(query: str) -> str:
     return query
 
 
-def retrieve(question: str, retriever: Step07RAG, k: int = 10) -> RetrievalResult:
+def retrieve(question: str, retriever: Step06HybridRAG, k: int = 10) -> RetrievalResult:
     augmented = _augment_query(question)
     chunks = retriever.retrieve(augmented, k=k)
     context = format_context(chunks) or "[No relevant passages found]"

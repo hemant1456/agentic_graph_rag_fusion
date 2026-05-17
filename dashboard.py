@@ -36,13 +36,13 @@ st.set_page_config(
 # ── Paths ──────────────────────────────────────────────────────────────────────
 
 ROOT        = Path(__file__).parent
-GRAPH_PATH  = ROOT / "step_05_knowledge_graph" / "results" / "graph.json"
+GRAPH_PATH  = ROOT / "step_07_knowledge_graph" / "results" / "graph.json"
 STEP01_EVAL = ROOT / "step_01_baseline_rag" / "results" / "eval_results.json"
 STEP04_EVAL = ROOT / "step_04_chunking" / "results" / "eval_results.json"
-STEP05_EVAL = ROOT / "step_05_knowledge_graph" / "results" / "eval_results.json"
-STEP06_EVAL = ROOT / "step_06_graph_rag" / "results" / "eval_results.json"
-STEP07_EVAL = ROOT / "step_07_rag_fusion"   / "results" / "eval_results.json"
-STEP08_EVAL = ROOT / "step_08_agentic_rag"  / "results" / "eval_results.json"
+STEP05_EVAL = ROOT / "step_07_knowledge_graph" / "results" / "eval_results.json"
+STEP06_EVAL = ROOT / "step_08_graph_rag" / "results" / "eval_results.json"
+STEP07_EVAL = ROOT / "step_06_hybrid_retrieval"   / "results" / "eval_results.json"
+STEP08_EVAL = ROOT / "step_09_multi_agent"  / "results" / "eval_results.json"
 STEP09_EVAL = ROOT / "step_09_multi_agent"      / "results" / "eval_results.json"
 STEP10_EVAL = ROOT / "step_10_context_engineering" / "results" / "eval_results.json"
 STEP11_EVAL = ROOT / "step_11_vsa"                 / "results" / "eval_results.json"
@@ -835,10 +835,10 @@ def tab_analysis() -> None:
         st.code(
             "uv run python step_01_baseline_rag/evaluation/run_eval.py\n"
             "uv run python step_04_chunking/evaluation/run_eval.py\n"
-            "uv run python step_05_knowledge_graph/evaluation/run_eval.py\n"
-            "uv run python step_06_graph_rag/evaluation/run_eval.py\n"
-            "uv run python step_07_rag_fusion/evaluation/run_eval.py\n"
-            "uv run python -m step_08_agentic_rag.evaluation.run_eval\n"
+            "uv run python step_07_knowledge_graph/evaluation/run_eval.py\n"
+            "uv run python step_08_graph_rag/evaluation/run_eval.py\n"
+            "uv run python step_06_hybrid_retrieval/evaluation/run_eval.py\n"
+            "uv run python -m step_09_multi_agent.evaluation.run_eval\n"
             "uv run python step_09_multi_agent/evaluation/run_eval.py\n"
             "uv run python step_10_context_engineering/evaluation/run_eval.py\n"
             "uv run python step_11_vsa/evaluation/run_eval.py\n"
@@ -1540,14 +1540,14 @@ def tab_step_progress() -> None:
 
 @st.cache_resource
 def _load_step07_retriever():
-    from step_07_rag_fusion.implementation.pipeline import Step07RAG
-    return Step07RAG(k=10).build()
+    from step_06_hybrid_retrieval.implementation.pipeline import Step06HybridRAG
+    return Step06HybridRAG(k=10).build()
 
 
 @st.cache_resource
 def _load_step08_rag():
-    from step_08_agentic_rag.implementation.pipeline import Step08RAG
-    return Step08RAG(k=10).build()
+    from step_09_multi_agent.implementation.pipeline import Step09RAG
+    return Step09RAG(k=10).build()
 
 
 @st.cache_resource
@@ -1576,7 +1576,7 @@ def _load_step12_rag():
 
 @st.cache_resource
 def _load_graph():
-    from step_05_knowledge_graph.implementation.graph_store import load_or_build
+    from step_07_knowledge_graph.implementation.graph_store import load_or_build
     return load_or_build(CORPUS, GRAPH_PATH)
 
 
@@ -1718,7 +1718,7 @@ def _run_live_compare_steps(question: str, provider: str | None, k: int) -> list
     step_name  = "Knowledge Graph"
     try:
         t0 = time.perf_counter()
-        from step_05_knowledge_graph.implementation.query import expand_context, extract_entity_ids
+        from step_07_knowledge_graph.implementation.query import expand_context, extract_entity_ids
         graph = _load_graph()
         coll05 = _get_collection(str(STEP04_DB), "vertexia_step04")
         qvec05 = _embed_query_gemini(question)
@@ -1771,7 +1771,7 @@ def _run_live_compare_steps(question: str, provider: str | None, k: int) -> list
     step_name  = "Enhanced Graph RAG"
     try:
         t0 = time.perf_counter()
-        from step_06_graph_rag.implementation.graph_query import build_graph_context
+        from step_08_graph_rag.implementation.graph_query import build_graph_context
         graph = _load_graph()
         coll06 = _get_collection(str(STEP04_DB), "vertexia_step04")
         qvec06 = _embed_query_gemini(question)
@@ -1823,8 +1823,8 @@ def _run_live_compare_steps(question: str, provider: str | None, k: int) -> list
     step_name  = "RAG Fusion + CSV Tool"
     try:
         t0 = time.perf_counter()
-        from step_06_graph_rag.implementation.graph_query import build_graph_context as _bgc07
-        from step_07_rag_fusion.implementation.csv_tool import detect_intent, run_query
+        from step_08_graph_rag.implementation.graph_query import build_graph_context as _bgc07
+        from step_06_hybrid_retrieval.implementation.csv_tool import detect_intent, run_query
         rag07 = _load_step07_retriever()
         chunks07 = rag07.retrieve(question, k=k)
         vector_ctx07 = format_context(chunks07)

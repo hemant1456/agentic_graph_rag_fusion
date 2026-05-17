@@ -10,11 +10,11 @@ A 12-step learning project that builds a production-grade RAG system from scratc
 | [01](step_01_baseline_rag/README.md) | Baseline Vector RAG | 26% (7/27) | ChromaDB + Gemini embeddings, top-5 cosine retrieval |
 | [02](step_02_observability/README.md) | Observability | — | JSONL trace store + Arize Phoenix integration |
 | [03](step_03_evaluation/README.md) | Evaluation Framework | — | 5 RAGAS-style LLM-as-judge metrics |
-| [04](step_04_chunking/README.md) | Format-aware Chunking | 52% (14/27) | CSV aggregate chunks, Markdown section splits, text structure detection |
-| [05](step_05_knowledge_graph/README.md) | Knowledge Graph | 78% (21/27) | Entity nodes + relationship edges from CSVs (reports_to, depends_on, uses) |
-| [06](step_06_graph_rag/README.md) | Graph RAG | 85% (23/27) | Alias resolution + full dependency chain traversal |
-| [07](step_07_rag_fusion/README.md) | RAG Fusion + BM25 | 89% (24/27) | BM25 + dense RRF merge + Pandas structured CSV query tool |
-| [08](step_08_agentic_rag/README.md) | Agentic RAG | 85% (23/27) | Tool-calling loop via LLM Gateway V2 (Gemini/NVIDIA/Groq/Cerebras) |
+| [04](step_04_chunking/README.md) | Format-aware Chunking | — | Markdown section splits, text structure detection (row-by-row CSV) |
+| [05](step_05_tools/README.md) | CSV Tool Calling | — | Pandas query tools for exact aggregate computation (total ARR, Q3 revenue, headcount) |
+| [06](step_06_hybrid_retrieval/README.md) | Hybrid BM25 + Dense | — | BM25 + dense RRF merge for keyword-exact retrieval (version strings, vendor names) |
+| [07](step_07_knowledge_graph/README.md) | Knowledge Graph | — | Entity nodes + relationship edges from CSVs (reports_to, depends_on, uses) |
+| [08](step_08_graph_rag/README.md) | Graph RAG | — | Alias resolution + full dependency chain traversal |
 | [09](step_09_multi_agent/README.md) | Multi-Agent System | 93% (25/27) | 6 specialised agents + orchestrator + Critic + synthesis precision rules |
 | [10](step_10_context_engineering/README.md) | Context Engineering | 85% (23/27) † | CrossEncoder rerank → Jaccard dedup → extractive compress → XML budget |
 | [11](step_11_vsa/README.md) | Vertical Slice Architecture | 89% (24/27) | Keyword router dispatches to Finance/HR/Engineering/General domain slices |
@@ -57,7 +57,7 @@ uv run streamlit run dashboard.py
 
 ## LLM Gateway V2
 
-All LLM calls from Step 08 onward route through a local gateway:
+All LLM calls from Step 09 onward route through a local gateway:
 
 ```bash
 cd llm_gatewayV2
@@ -71,10 +71,10 @@ Providers: Gemini 3.1 Flash-Lite Preview, NVIDIA NIM, Groq, Cerebras — all fre
 ```bash
 uv run python step_01_baseline_rag/evaluation/run_eval.py
 uv run python step_04_chunking/evaluation/run_eval.py
-uv run python step_05_knowledge_graph/evaluation/run_eval.py
-uv run python step_06_graph_rag/evaluation/run_eval.py
-uv run python step_07_rag_fusion/evaluation/run_eval.py
-uv run python -m step_08_agentic_rag.evaluation.run_eval
+uv run python step_05_tools/evaluation/run_eval.py
+uv run python step_06_hybrid_retrieval/evaluation/run_eval.py
+uv run python step_07_knowledge_graph/evaluation/run_eval.py
+uv run python step_08_graph_rag/evaluation/run_eval.py
 uv run python step_09_multi_agent/evaluation/run_eval.py
 uv run python step_10_context_engineering/evaluation/run_eval.py
 uv run python step_11_vsa/evaluation/run_eval.py

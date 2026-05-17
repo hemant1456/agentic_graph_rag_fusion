@@ -21,7 +21,7 @@ from step_12_production.implementation.retry import with_retry
 from step_12_production.implementation.semantic_cache import SemanticCache
 
 CORPUS_PATH = _PROJECT_ROOT / "step_00_dataset" / "company_data"
-GRAPH_PATH  = _PROJECT_ROOT / "step_05_knowledge_graph" / "results" / "graph.json"
+GRAPH_PATH  = _PROJECT_ROOT / "step_07_knowledge_graph" / "results" / "graph.json"
 
 # Module-level singletons so build() calls across the session share state
 _global_cache: SemanticCache | None = None

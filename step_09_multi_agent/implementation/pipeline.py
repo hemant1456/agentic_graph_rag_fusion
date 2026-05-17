@@ -12,11 +12,11 @@ from dotenv import load_dotenv
 load_dotenv(_PROJECT_ROOT / ".env")
 
 from step_01_baseline_rag.implementation.pipeline import RAGResult
-from step_07_rag_fusion.implementation.pipeline import Step07RAG
+from step_06_hybrid_retrieval.implementation.pipeline import Step06HybridRAG
 from step_09_multi_agent.implementation.orchestrator import run as orchestrate
 
 CORPUS_PATH = _PROJECT_ROOT / "step_00_dataset" / "company_data"
-GRAPH_PATH  = _PROJECT_ROOT / "step_05_knowledge_graph" / "results" / "graph.json"
+GRAPH_PATH  = _PROJECT_ROOT / "step_07_knowledge_graph" / "results" / "graph.json"
 
 
 class Step09RAG:
@@ -30,12 +30,12 @@ class Step09RAG:
 
     def __init__(self, k: int = 5) -> None:
         self.k = k
-        self._retriever: Step07RAG | None = None
+        self._retriever: Step06HybridRAG | None = None
         self._graph = None
 
     def build(self) -> "Step09RAG":
-        self._retriever = Step07RAG(k=self.k).build()
-        from step_05_knowledge_graph.implementation.graph_store import load_or_build
+        self._retriever = Step06HybridRAG(k=self.k).build()
+        from step_07_knowledge_graph.implementation.graph_store import load_or_build
         self._graph = load_or_build(CORPUS_PATH, GRAPH_PATH)
         return self
 

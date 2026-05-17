@@ -16,12 +16,12 @@ from step_09_multi_agent.implementation.agents import (
 from step_09_multi_agent.implementation.agents.contracts import AgentTrace, QueryAnalysis
 
 if TYPE_CHECKING:
-    from step_07_rag_fusion.implementation.pipeline import Step07RAG
+    from step_06_hybrid_retrieval.implementation.pipeline import Step06HybridRAG
 
 
 def run(
     question: str,
-    retriever: "Step07RAG",
+    retriever: "Step06HybridRAG",
     graph: nx.DiGraph,
 ) -> tuple[str, str, list[AgentTrace]]:
     """

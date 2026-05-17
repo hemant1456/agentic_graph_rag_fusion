@@ -7,7 +7,7 @@ _PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from step_07_rag_fusion.implementation.csv_tool import detect_intent, run_query
+from step_05_tools.implementation.csv_tool import detect_intent, run_query
 from step_09_multi_agent.implementation.agents.contracts import CSVResult
 
 
