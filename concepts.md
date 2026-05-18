@@ -1,8 +1,23 @@
 # RAG to Production — A Concept Journey
 
-> This document follows the same 12-step arc as the project. Each section introduces only the concepts
-> needed for that step — building on what came before. Read it in order and you'll understand not just
-> *what* each technique does, but *why* we needed it and what it cost us.
+> This document follows the original 12-step design plan. The project has since been consolidated to
+> **7 numbered pipeline steps** (see [README.md](README.md) for the current structure):
+>
+> - Original Step 02 (Observability) and Step 03 (Evaluation) are now utility folders (`observability/`, `evaluation/`).
+> - Original Steps 01+04 (Baseline + Format-aware Chunking) merged into today's **Step 01**.
+> - Original Step 07 (RAG Fusion / BM25) became today's **Step 03**.
+> - Original Step 08 (Single Agentic RAG) was dropped — multi-agent (Step 05) absorbs it.
+> - Original Steps 05+06 (Knowledge Graph + Graph RAG) merged into today's **Step 04**.
+> - Original Steps 10+11 (Context Engineering + VSA) merged into today's **Step 06**.
+>
+> Chapter numbering below still tracks the original 12 — the narrative still teaches every concept,
+> just spread across a less-condensed scaffold than the current code. When you read "Step 09 Multi-Agent"
+> here, that's today's `step_05_multi_agent/`. The translation table in [MASTER_PLAN.md](MASTER_PLAN.md)
+> is the canonical mapping.
+
+> Each section introduces only the concepts needed for that step — building on what came before.
+> Read it in order and you'll understand not just *what* each technique does, but *why* we needed it
+> and what it cost us.
 
 ---
 
