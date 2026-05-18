@@ -33,17 +33,19 @@ class RAGResult:
 
 class BaselineRAG:
     """
-    Naive RAG pipeline:
-      query → embed → top-5 cosine search → format context → LLM → answer
+    Baseline RAG pipeline with format-aware chunking:
+      load → format-aware chunk (markdown by H1/H2, CSV by row, etc.)
+      → embed → top-k cosine search → format context → LLM → answer
 
-    Design choices (intentionally simple):
-    - k=5 retrieved chunks, no reranking
+    Design choices:
+    - k=10 retrieved chunks, no reranking
+    - Format-aware SmartChunks (markdown sections, CSV rows, paragraph prose)
     - No query preprocessing or expansion
     - No metadata filtering
     - No document-level deduplication
     """
 
-    def __init__(self, k: int = 5) -> None:
+    def __init__(self, k: int = 10) -> None:
         self.k = k
         self.collection: chromadb.Collection | None = None
 

@@ -16,15 +16,13 @@ ROOT = Path(__file__).parent.parent
 
 STEPS = [
     "step_01_baseline_rag",
-    "step_02_chunking",
-    "step_03_tools",
-    "step_04_hybrid_retrieval",
-    "step_05_knowledge_graph",
-    "step_06_graph_rag",
-    "step_07_multi_agent",
-    "step_08_context_engineering",
-    "step_09_vsa",
-    "step_10_production",
+    "step_02_tools",
+    "step_03_hybrid_retrieval",
+    "step_04_knowledge_graph",
+    "step_05_multi_agent",
+    "step_06_context_engineering",
+    "step_07_vsa",
+    "step_08_production",
 ]
 
 TABLE_START = "<!-- RESULTS_TABLE_START -->"

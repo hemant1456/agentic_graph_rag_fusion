@@ -408,14 +408,14 @@ All 10 numbered steps and 3 utility folders are implemented.
 |---|---|---|
 | Step 01 Baseline RAG | Paragraph chunks + MiniLM + top-5 cosine | `BaselineRAG` |
 | Step 02 Chunking | Section-aware Markdown / per-row CSV / contextual headers | `Step02RAG` |
-| Step 03 Tools | Pandas CSV tool for aggregates | `Step03ToolsRAG` |
-| Step 04 Hybrid Retrieval | BM25 fused with dense via RRF | `Step04HybridRAG` |
-| Step 05 Knowledge Graph | Entity / relationship graph + multi-hop | `Step05RAG` |
+| Step 03 Tools | Pandas CSV tool for aggregates | `Step02ToolsRAG` |
+| Step 04 Hybrid Retrieval | BM25 fused with dense via RRF | `Step03HybridRAG` |
+| Step 05 Knowledge Graph | Entity / relationship graph + multi-hop | `Step04RAG` |
 | Step 06 Graph RAG | Alias resolution + BFS blast radius | `Step06RAG` |
-| Step 07 Multi-Agent | QueryAnalyst → specialists → Critic → Synthesis | `Step07RAG` |
-| Step 08 Context Engineering | Rerank → dedup → compress → XML budget | `Step08RAG` |
-| Step 09 VSA | Domain slice router (Finance / HR / Eng) | `Step09RAG` |
-| Step 10 Production | Cache + retry + confidence + health | `Step10RAG` |
+| Step 07 Multi-Agent | QueryAnalyst → specialists → Critic → Synthesis | `Step05RAG` |
+| Step 08 Context Engineering | Rerank → dedup → compress → XML budget | `Step06RAG` |
+| Step 09 VSA | Domain slice router (Finance / HR / Eng) | `Step07RAG` |
+| Step 10 Production | Cache + retry + confidence + health | `Step08RAG` |
 
 | Utility | Purpose |
 |---|---|

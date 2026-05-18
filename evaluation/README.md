@@ -15,7 +15,7 @@ question
   └──> RAGAS (5 metrics) ──> JSON results
 ```
 
-Each step exposes its pipeline class (e.g. `Step04HybridRAG`). The runner picks the step via a small per-step adapter function, queries it with each golden question, and feeds (question, answer, contexts, reference) into RAGAS.
+Each step exposes its pipeline class (e.g. `Step03HybridRAG`). The runner picks the step via a small per-step adapter function, queries it with each golden question, and feeds (question, answer, contexts, reference) into RAGAS.
 
 ## The 5 metrics
 
@@ -105,7 +105,7 @@ Each step's results go into `<step_name>/results/eval_results.json` (not into th
 uv run python evaluation/run_eval.py --list
 
 # Score one step
-uv run python evaluation/run_eval.py --step step_04_hybrid_retrieval
+uv run python evaluation/run_eval.py --step step_03_hybrid_retrieval
 
 # Score every step (writes a JSON per step)
 uv run python evaluation/run_eval.py --all
@@ -123,7 +123,7 @@ Each `<step>/results/eval_results.json` has this shape:
 
 ```jsonc
 {
-  "step": "step_04_hybrid_retrieval",
+  "step": "step_03_hybrid_retrieval",
   "timestamp": "2026-05-17T21:35:12",
   "total_questions": 15,
   "grade_counts": {"PASS": 8, "PARTIAL": 4, "FAIL": 3},

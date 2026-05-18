@@ -1,4 +1,4 @@
-"""RAGAS-based evaluation for the 10-step RAG progression.
+"""RAGAS-based evaluation for the 8-step RAG progression.
 
 Structure (deliberately flat and readable):
 
@@ -15,7 +15,7 @@ Embeddings use HuggingFace all-MiniLM-L6-v2 (local, no API).
 
 Usage:
     uv run python evaluation/run_eval.py --list
-    uv run python evaluation/run_eval.py --step step_04_hybrid_retrieval
+    uv run python evaluation/run_eval.py --step step_03_hybrid_retrieval
     uv run python evaluation/run_eval.py --all
 """
 from __future__ import annotations
@@ -67,75 +67,61 @@ def _result_to_sample(r) -> dict:
 
 def answer_step_01(question: str) -> dict:
     from step_01_baseline_rag.implementation.pipeline import BaselineRAG
-    rag = _cached("step_01", lambda: BaselineRAG(k=5).build())
+    rag = _cached("step_01", lambda: BaselineRAG(k=10).build())
     return _result_to_sample(rag.query(question))
 
 
 def answer_step_02(question: str) -> dict:
-    from step_02_chunking.implementation.pipeline import Step02RAG
-    rag = _cached("step_02", lambda: Step02RAG(k=10).build())
+    from step_02_tools.implementation.pipeline import Step02ToolsRAG
+    rag = _cached("step_02", lambda: Step02ToolsRAG(k=10).build())
     return _result_to_sample(rag.query(question))
 
 
 def answer_step_03(question: str) -> dict:
-    from step_03_tools.implementation.pipeline import Step03ToolsRAG
-    rag = _cached("step_03", lambda: Step03ToolsRAG(k=10).build())
+    from step_03_hybrid_retrieval.implementation.pipeline import Step03HybridRAG
+    rag = _cached("step_03", lambda: Step03HybridRAG(k=10).build())
     return _result_to_sample(rag.query(question))
 
 
 def answer_step_04(question: str) -> dict:
-    from step_04_hybrid_retrieval.implementation.pipeline import Step04HybridRAG
-    rag = _cached("step_04", lambda: Step04HybridRAG(k=10).build())
+    from step_04_knowledge_graph.implementation.pipeline import Step04RAG
+    rag = _cached("step_04", lambda: Step04RAG(k=10).build())
     return _result_to_sample(rag.query(question))
 
 
 def answer_step_05(question: str) -> dict:
-    from step_05_knowledge_graph.implementation.pipeline import Step05RAG
+    from step_05_multi_agent.implementation.pipeline import Step05RAG
     rag = _cached("step_05", lambda: Step05RAG(k=10).build())
     return _result_to_sample(rag.query(question))
 
 
 def answer_step_06(question: str) -> dict:
-    from step_06_graph_rag.implementation.pipeline import Step06RAG
-    rag = _cached("step_06", lambda: Step06RAG(k=10).build())
+    from step_06_context_engineering.implementation.pipeline import Step06RAG
+    rag = _cached("step_06", lambda: Step06RAG(k=5, rerank_k=8, compress_ratio=0.60).build())
     return _result_to_sample(rag.query(question))
 
 
 def answer_step_07(question: str) -> dict:
-    from step_07_multi_agent.implementation.pipeline import Step07RAG
-    rag = _cached("step_07", lambda: Step07RAG(k=10).build())
+    from step_07_vsa.implementation.pipeline import Step07RAG
+    rag = _cached("step_07", lambda: Step07RAG(k=5).build())
     return _result_to_sample(rag.query(question))
 
 
 def answer_step_08(question: str) -> dict:
-    from step_08_context_engineering.implementation.pipeline import Step08RAG
-    rag = _cached("step_08", lambda: Step08RAG(k=5, rerank_k=8, compress_ratio=0.60).build())
-    return _result_to_sample(rag.query(question))
-
-
-def answer_step_09(question: str) -> dict:
-    from step_09_vsa.implementation.pipeline import Step09RAG
-    rag = _cached("step_09", lambda: Step09RAG(k=5).build())
-    return _result_to_sample(rag.query(question))
-
-
-def answer_step_10(question: str) -> dict:
-    from step_10_production.implementation.pipeline import Step10RAG
-    rag = _cached("step_10", lambda: Step10RAG(k=5).build())
+    from step_08_production.implementation.pipeline import Step08RAG
+    rag = _cached("step_08", lambda: Step08RAG(k=5).build())
     return _result_to_sample(rag.query(question))
 
 
 STEPS: dict[str, Callable[[str], dict]] = {
     "step_01_baseline_rag":         answer_step_01,
-    "step_02_chunking":             answer_step_02,
-    "step_03_tools":                answer_step_03,
-    "step_04_hybrid_retrieval":     answer_step_04,
-    "step_05_knowledge_graph":      answer_step_05,
-    "step_06_graph_rag":            answer_step_06,
-    "step_07_multi_agent":          answer_step_07,
-    "step_08_context_engineering":  answer_step_08,
-    "step_09_vsa":                  answer_step_09,
-    "step_10_production":           answer_step_10,
+    "step_02_tools":                answer_step_02,
+    "step_03_hybrid_retrieval":     answer_step_03,
+    "step_04_knowledge_graph":      answer_step_04,
+    "step_05_multi_agent":          answer_step_05,
+    "step_06_context_engineering":  answer_step_06,
+    "step_07_vsa":                  answer_step_07,
+    "step_08_production":           answer_step_08,
 }
 
 

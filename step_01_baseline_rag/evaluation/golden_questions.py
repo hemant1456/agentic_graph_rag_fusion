@@ -1,12 +1,11 @@
-"""Golden question set — 15 questions across 6 tiers.
+"""Golden question set — 15 questions across 5 tiers (over 8 pipeline steps).
 
 Each tier showcases a capability that the corresponding step adds:
-  Tier 1 (Q01-Q02):  Simple retrieval     — step_01_baseline_rag
-  Tier 2 (Q03-Q04):  Format-aware chunks  — step_02_chunking
-  Tier 3 (Q05-Q07):  CSV aggregates       — step_03_tools
-  Tier 4 (Q08-Q10):  BM25 keyword-exact   — step_04_hybrid_retrieval
-  Tier 5 (Q11-Q13):  Graph multi-hop      — step_05_knowledge_graph
-  Tier 6 (Q14-Q15):  Cross-document       — step_07_multi_agent
+  Tier 1 (Q01-Q04):  Simple retrieval + format-aware chunks — step_01_baseline_rag
+  Tier 2 (Q05-Q07):  CSV aggregates                         — step_02_tools
+  Tier 3 (Q08-Q10):  BM25 keyword-exact                     — step_03_hybrid_retrieval
+  Tier 4 (Q11-Q13):  Graph multi-hop + alias resolution     — step_04_knowledge_graph
+  Tier 5 (Q14-Q15):  Cross-document multi-agent             — step_05_multi_agent
 
 Reduced from 31 → 15 for faster eval iteration on free-tier judge API.
 """
@@ -29,7 +28,7 @@ class GoldenQuestion:
 
 GOLDEN_QUESTIONS: list[GoldenQuestion] = [
 
-    # ── TIER 1: Simple Retrieval ───────────────────────────────────────────────
+    # ── TIER 1: Simple retrieval + Format-aware Chunking ──────────────────────
 
     GoldenQuestion(
         id="Q01",
@@ -57,7 +56,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         reference_answer="Vertexia was co-founded by Arjun Mehta and Diana Volkov in 2019.",
     ),
 
-    # ── TIER 2: Format-aware Chunking ─────────────────────────────────────────
+    # ── TIER 1 (cont.): Format-aware Chunking ─────────────────────────────────
 
     GoldenQuestion(
         id="Q03",
@@ -68,11 +67,11 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         disqualifiers=["Felix Wagner", "Aisha Johnson", "Kenji Ito"],
         explanation=(
             "oncall_runbook_top_alerts.md '## PulseConnect webhook_delivery_failure_rate > 5%' "
-            "section. Step 01's chunker merges multiple alert sections; Step 02's section-aware "
-            "chunker with contextual headers returns the exact section."
+            "section. The merged Step 01 baseline now uses format-aware section chunking with "
+            "contextual headers, so the exact section is retrieved."
         ),
-        expected_outcome="FAIL",
-        fixed_by_step="step_02_chunking",
+        expected_outcome="PASS",
+        fixed_by_step="step_01_baseline_rag",
         reference_answer="For the PulseConnect webhook delivery failure alert, the first action is to check the SendGrid quota dashboard and the Twilio API status page. The escalation owner is Raj Patel.",
     ),
 
@@ -84,15 +83,16 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         partial_facts=["Datadog", "sub-processor", "retention"],
         disqualifiers=["us-central1", "90 days", "18 months", "24 months"],
         explanation=(
-            "vendor_data_processing_matrix.md '## Datadog' section. Step 01 mixes Snowflake / "
-            "SendGrid / Stripe fields into the same chunk; Step 02's per-vendor chunks isolate them."
+            "vendor_data_processing_matrix.md '## Datadog' section. The merged Step 01 baseline "
+            "now uses per-vendor section chunks, so Datadog fields are no longer mixed with "
+            "Snowflake / SendGrid / Stripe."
         ),
-        expected_outcome="FAIL",
-        fixed_by_step="step_02_chunking",
+        expected_outcome="PASS",
+        fixed_by_step="step_01_baseline_rag",
         reference_answer="Datadog uses AWS sub-processors in us-east-1, eu-west-1, and ap-southeast-1. Its data retention period for traces and logs is 15 months.",
     ),
 
-    # ── TIER 3: CSV Computation ───────────────────────────────────────────────
+    # ── TIER 2: CSV Computation ───────────────────────────────────────────────
 
     GoldenQuestion(
         id="Q05",
@@ -103,7 +103,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         disqualifiers=["8,450", "4,120"],
         explanation="customer_list.csv has 20 rows summing to $11,000,000 ARR. Needs a Pandas tool.",
         expected_outcome="FAIL",
-        fixed_by_step="step_03_tools",
+        fixed_by_step="step_02_tools",
         reference_answer="The total ARR across all 20 Vertexia customers combined is $11,000,000.",
     ),
 
@@ -116,7 +116,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         disqualifiers=["4.2M", "4,200,000"],
         explanation="revenue_by_product_2023.csv months 07/08/09 sum to $4,120,000.",
         expected_outcome="FAIL",
-        fixed_by_step="step_03_tools",
+        fixed_by_step="step_02_tools",
         reference_answer="The total revenue across all products combined in Q3 2023 (July, August, and September) was $4,120,000.",
     ),
 
@@ -129,11 +129,11 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         disqualifiers=[],
         explanation="employee_directory.csv filter status=active and location=Berlin → 5.",
         expected_outcome="FAIL",
-        fixed_by_step="step_03_tools",
+        fixed_by_step="step_02_tools",
         reference_answer="There are 5 active Vertexia employees based in Berlin.",
     ),
 
-    # ── TIER 4: BM25 / Keyword-Exact ──────────────────────────────────────────
+    # ── TIER 3: BM25 / Keyword-Exact ──────────────────────────────────────────
 
     GoldenQuestion(
         id="Q08",
@@ -147,7 +147,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "replaced by 'GET /v2/events/stream'. BM25 on 'v2.1' scores the right chunk."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_04_hybrid_retrieval",
+        fixed_by_step="step_03_hybrid_retrieval",
         reference_answer="The GET /v2/events/batch endpoint was deprecated in NexusFlow API v2.1 and replaced by GET /v2/events/stream.",
     ),
 
@@ -163,7 +163,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "The finding ID 'M-2' is a unique BM25 token."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_04_hybrid_retrieval",
+        fixed_by_step="step_03_hybrid_retrieval",
         reference_answer="The remediation owner for security audit finding M-2 is Daniel Osei, with a target remediation date of October 31, 2023.",
     ),
 
@@ -176,11 +176,11 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         disqualifiers=[],
         explanation="vendor_contracts_summary.csv: Snowflake row, annual=120000, renewal=2024-06-30.",
         expected_outcome="FAIL",
-        fixed_by_step="step_04_hybrid_retrieval",
+        fixed_by_step="step_03_hybrid_retrieval",
         reference_answer="Vertexia's annual spend on Snowflake is $120,000, and the contract expires on June 30, 2024.",
     ),
 
-    # ── TIER 5: Graph Multi-hop ───────────────────────────────────────────────
+    # ── TIER 4: Graph Multi-hop ───────────────────────────────────────────────
 
     GoldenQuestion(
         id="Q11",
@@ -194,7 +194,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Two-hop join across two CSVs."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_05_knowledge_graph",
+        fixed_by_step="step_04_knowledge_graph",
         reference_answer="Maya Sharma is the CSM managing the Phoenix Corp account, and her direct manager is Lisa Torres, the Chief Revenue Officer.",
     ),
 
@@ -207,7 +207,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         disqualifiers=[],
         explanation="api_dependencies.csv BFS from NexusFlow — direct + indirect downstream services.",
         expected_outcome="FAIL",
-        fixed_by_step="step_05_knowledge_graph",
+        fixed_by_step="step_04_knowledge_graph",
         reference_answer="If NexusFlow goes down, the directly and indirectly affected services are InsightLens, PulseConnect, and DataCraft, all of which depend on NexusFlow's APIs.",
     ),
 
@@ -220,11 +220,11 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         disqualifiers=[],
         explanation="employee_directory.csv: Aisha Johnson → Tomás García → Sarah Chen (CTO). Two-hop org traversal.",
         expected_outcome="FAIL",
-        fixed_by_step="step_05_knowledge_graph",
+        fixed_by_step="step_04_knowledge_graph",
         reference_answer="Aisha Johnson reports to Tomas Garcia, who in turn reports to Sarah Chen, the CTO.",
     ),
 
-    # ── TIER 6: Cross-document / Multi-step ───────────────────────────────────
+    # ── TIER 5: Cross-document / Multi-step ───────────────────────────────────
 
     GoldenQuestion(
         id="Q14",
@@ -238,7 +238,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "Gap is 0.09 pp — current target does NOT meet the SLA. Requires comparing two documents."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07_multi_agent",
+        fixed_by_step="step_05_multi_agent",
         reference_answer="NexusFlow's documented availability target is 99.9% while the Phoenix Corp contract requires 99.99% uptime. There is a 0.09 percentage point gap, so the current target does not meet the SLA requirement.",
     ),
 
@@ -254,7 +254,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
             "and Preet Kaur (Revenue, 2023-06-30, relocated). Diana Volkov is a 2021 distractor."
         ),
         expected_outcome="FAIL",
-        fixed_by_step="step_07_multi_agent",
+        fixed_by_step="step_05_multi_agent",
         reference_answer="Two employees left Vertexia voluntarily in 2023: Adrian Blake (Platform Engineering, last day 2023-08-31, joined competitor FinDataCo) and Preet Kaur (Revenue, last day 2023-06-30, relocated internationally).",
     ),
 ]

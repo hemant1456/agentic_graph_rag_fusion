@@ -59,7 +59,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["dataset/tests", "step_01_baseline_rag/tests", "observability/tests", "evaluation/tests", "step_02_chunking/tests"]
+testpaths = ["dataset/tests", "step_01_baseline_rag/tests", "observability/tests", "evaluation/tests"]
 python_files = ["test_*.py"]
 markers = ["integration: requires live API keys and built index"]
 
