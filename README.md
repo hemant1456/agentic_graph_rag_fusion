@@ -20,17 +20,17 @@ Latest eval results are written to each step's `results/eval_results.json` and r
 
 ## Question set & tiers
 
-15 golden questions, each tier requires the next capability to PASS:
+14 golden questions, each tier requires the next capability to PASS:
 
 | Tier | Range | Type | Fixed by |
 |------|-------|------|----------|
-| 1 | Q01–Q04 | Simple retrieval + format-aware chunking | Step 01 baseline |
-| 2 | Q05–Q07 | CSV aggregate computation | Step 02 (tools) |
-| 3 | Q08–Q10 | BM25 keyword-exact | Step 03 (hybrid) |
-| 4 | Q11–Q13 | Knowledge-graph multi-hop | Step 04 (knowledge graph) |
-| 5 | Q14–Q15 | Cross-document / multi-step | Step 05 (multi-agent) |
+| 1 | Q01–Q03 | Simple retrieval + format-aware chunking | Step 01 baseline |
+| 2 | Q04–Q06 | CSV aggregate computation | Step 02 (tools) |
+| 3 | Q07–Q09 | BM25 keyword-exact | Step 03 (hybrid) |
+| 4 | Q10–Q12 | Knowledge-graph multi-hop | Step 04 (knowledge graph) |
+| 5 | Q13–Q14 | Cross-document / multi-CSV composition | Step 05 (multi-agent) |
 
-Reduced from 31 to 15 for faster iteration on the free-tier LLM judge.
+Reduced from 31 to 14 — each tier is corpus-audited to be unreachable by prior steps (answer facts appear in no prose doc that earlier-step retrieval would surface).
 
 ## Latest eval results
 
@@ -44,8 +44,8 @@ Scored with RAGAS via `llm_gatewayV2` (cerebras → gemini → groq fallback). `
 | step_02_tools | 6 | 2 | 6 | 0.514 | 0.986 | 0.529 | 0.243 | 0.700 |
 | step_03_hybrid_retrieval | 9 | 2 | 3 | 0.721 | 0.914 | 0.757 | 0.256 | 0.921 |
 | step_04_knowledge_graph | 10 | 3 | 1 | 0.807 | 0.986 | 0.757 | 0.286 | 0.900 |
-| step_05_multi_agent | 10 | 2 | 2 | 0.807 | 0.736 | 0.650 | 0.259 | 1.000 |
-| step_06_context_engineering | 11 | 1 | 2 | 0.814 | 0.700 | 0.657 | 0.345 | 1.000 |
+| step_05_multi_agent | 0 | 0 | 14 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+| step_06_context_engineering | 0 | 0 | 14 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
 | step_07_production | _pending_ | | | | | | | |
 
 <!-- RESULTS_TABLE_END -->
