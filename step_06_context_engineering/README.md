@@ -32,3 +32,38 @@ See `step_06_context_engineering/results/eval_results.json` for the latest RAGAS
 
 ## Why this step exists
 Step 05 sends up to 20 chunks plus graph and CSV blocks straight to the LLM with one generic system prompt. Many chunks overlap, many contain only one or two relevant sentences, and one prompt cannot be optimal for every domain — finance answers must be exact numbers, HR answers must respect reporting chains, engineering answers must use canonical product names. CrossEncoder reranking promotes the chunks the bi-encoder underweighted; dedup cuts redundancy; compression trims filler sentences; XML formatting gives the model a clearly delimited budget. The VSA router then routes each question to a domain-specific prompt and configuration so each slice can be tuned independently. Pure-keyword routing keeps the dispatch cost near zero, and the exact graph and CSV outputs bypass compression so deterministic facts are never lossy.
+
+<!-- RESULTS_DETAIL_START -->
+
+## Eval results
+
+**Run summary** — 11 PASS · 1 PARTIAL · 2 FAIL out of 14 questions (79% pass rate).
+
+RAGAS averages:
+
+| answer_correctness | faithfulness | answer_relevancy | context_precision | context_recall |
+|---:|---:|---:|---:|---:|
+| 0.814 | 0.700 | 1.000 | 0.345 | 0.657 |
+
+### Per-question detail
+
+| ID | Grade | correctness | Fixed-by step | Notes |
+|---|---|---:|---|---|
+| **Q01** | PASS | 1.00 | `step_01_baseline_rag` | Continues to PASS from an earlier tier — capability still works. |
+| **Q02** | PASS | 1.00 | `step_01_baseline_rag` | Continues to PASS from an earlier tier — capability still works. |
+| **Q03** | PASS | 1.00 | `step_01_baseline_rag` | Continues to PASS from an earlier tier — capability still works. |
+| **Q04** | FAIL | 0.00 | `step_02_tools` | Regression: was solvable at step 2; now FAILED. The answer provides a specific figure not found in the provided context, indicating a hallucination or reliance on external data not present in the retrieved d… |
+| **Q05** | PASS | 1.00 | `step_02_tools` | Continues to PASS from an earlier tier — capability still works. |
+| **Q06** | PASS | 1.00 | `step_02_tools` | Continues to PASS from an earlier tier — capability still works. |
+| **Q07** | PASS | 1.00 | `step_03_hybrid_retrieval` | Continues to PASS from an earlier tier — capability still works. |
+| **Q08** | PASS | 1.00 | `step_03_hybrid_retrieval` | Continues to PASS from an earlier tier — capability still works. |
+| **Q09** | PASS | 1.00 | `step_03_hybrid_retrieval` | Continues to PASS from an earlier tier — capability still works. |
+| **Q10** | PASS | 1.00 | `step_04_knowledge_graph` | Continues to PASS from an earlier tier — capability still works. |
+| **Q11** | PASS | 1.00 | `step_04_knowledge_graph` | Continues to PASS from an earlier tier — capability still works. |
+| **Q12** | PARTIAL | 0.40 | `step_04_knowledge_graph` | Regression: was solvable at step 4; now only PARTIAL. The actual answer correctly identifies one employee (Priya Nair) with a valid reporting chain to Sarah Chen, but misses four others listed in the reference; al… |
+| **Q13** | FAIL | 0.00 | `step_05_multi_agent` | Regression: was solvable at step 5; now FAILED. The answer provides an incorrect calculation and hallucinates a value not supported by the provided context, which itself lacked the necessary data to perform… |
+| **Q14** | PASS | 1.00 | `step_05_multi_agent` | Continues to PASS from an earlier tier — capability still works. |
+
+> Each question's text + reference answer lives in `step_01_baseline_rag/evaluation/golden_questions.py`. The full per-question JSON (including the judge's reasoning) is in `results/eval_results.json`.
+
+<!-- RESULTS_DETAIL_END -->

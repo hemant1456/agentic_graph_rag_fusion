@@ -23,3 +23,38 @@ See `step_02_tools/results/eval_results.json` for the latest RAGAS scores.
 
 ## Why this step exists
 Dense retrieval can locate the customer-list CSV chunks for Q05 but cannot sum 20 ARR values. The LLM can sometimes add small numbers it sees in context, but it routinely truncates the CSV, hallucinates rows, or drops precision. A deterministic pandas call is both correct and traceable. This step makes the structured side of the corpus first-class instead of treating CSVs as if they were prose.
+
+<!-- RESULTS_DETAIL_START -->
+
+## Eval results
+
+**Run summary** — 6 PASS · 2 PARTIAL · 6 FAIL out of 14 questions (43% pass rate).
+
+RAGAS averages:
+
+| answer_correctness | faithfulness | answer_relevancy | context_precision | context_recall |
+|---:|---:|---:|---:|---:|
+| 0.514 | 0.986 | 0.700 | 0.243 | 0.529 |
+
+### Per-question detail
+
+| ID | Grade | correctness | Fixed-by step | Notes |
+|---|---|---:|---|---|
+| **Q01** | PASS | 1.00 | `step_01_baseline_rag` | Continues to PASS from an earlier tier — capability still works. |
+| **Q02** | PASS | 1.00 | `step_01_baseline_rag` | Continues to PASS from an earlier tier — capability still works. |
+| **Q03** | PASS | 1.00 | `step_01_baseline_rag` | Continues to PASS from an earlier tier — capability still works. |
+| **Q04** | PARTIAL | 0.50 | `step_02_tools` | Should PASS at this tier but only PARTIAL. The actual answer correctly reports both the $11M CSV total and the $16.5M finance report figure, acknowledging the discrepancy without inventing explanations, but the reference a… |
+| **Q05** | PASS | 1.00 | `step_02_tools` | Pass-tier hits as designed — the step's new capability surfaces the required fact(s). |
+| **Q06** | PASS | 1.00 | `step_02_tools` | Pass-tier hits as designed — the step's new capability surfaces the required fact(s). |
+| **Q07** | PASS | 1.00 | `step_03_hybrid_retrieval` | Unexpected PASS — question targets step 3's capability, but retrieved context happened to contain enough signal. |
+| **Q08** | FAIL | 0.00 | `step_03_hybrid_retrieval` | Expected FAIL — required capability arrives at step 3. |
+| **Q09** | FAIL | 0.00 | `step_03_hybrid_retrieval` | Expected FAIL — required capability arrives at step 3. |
+| **Q10** | FAIL | 0.30 | `step_04_knowledge_graph` | Expected FAIL — required capability arrives at step 4. |
+| **Q11** | PARTIAL | 0.40 | `step_04_knowledge_graph` | Expected — capability arrives at step 4. PARTIAL means retrieval brought some related context. The answer failed to identify PulseConnect and DataCraft as services, incorrectly attributed DataCraft as a consumer of… |
+| **Q12** | FAIL | 0.00 | `step_04_knowledge_graph` | Expected FAIL — required capability arrives at step 4. |
+| **Q13** | FAIL | 0.00 | `step_05_multi_agent` | Expected FAIL — required capability arrives at step 5. |
+| **Q14** | FAIL | 0.00 | `step_05_multi_agent` | Expected FAIL — required capability arrives at step 5. |
+
+> Each question's text + reference answer lives in `step_01_baseline_rag/evaluation/golden_questions.py`. The full per-question JSON (including the judge's reasoning) is in `results/eval_results.json`.
+
+<!-- RESULTS_DETAIL_END -->
