@@ -48,7 +48,7 @@ class GatewayChat(BaseChatModel):
                                   exhausts after ~70 min of full eval runs
       - cerebras (qwen3-235b):   ~500 ms-2 s/call, 30 RPM, 9999 RPD — fast,
                                   high daily cap, occasional empty responses
-      - gemini (3.1-flash-lite): ~900 ms/call, 15 RPM, 1k RPD — reliable
+      - gemini (2.5-flash-lite): ~900 ms/call, 15 RPM, 1k RPD — reliable
       - nvidia (deepseek-v4):    ~30 s/call — too slow for batch eval
 
     Default order: cerebras → groq → gemini → nvidia. Each provider is tried
@@ -116,7 +116,7 @@ def build_judge_llm(temperature: float = 0.0, max_tokens: int = 1024):
             raise RuntimeError("OPENAI_API_KEY not set (JUDGE_PROVIDER=openai)")
         return ChatOpenAI(
             api_key=api_key,
-            model=os.getenv("JUDGE_MODEL", "gpt-5.4-mini"),
+            model=os.getenv("JUDGE_MODEL", "gpt-4o-mini"),
             temperature=temperature,
             max_tokens=max_tokens,
             timeout=60,

@@ -18,7 +18,5 @@ def navigate(question: str, entity_hints: list[str], graph: nx.DiGraph) -> Graph
     seed_texts = entity_hints if entity_hints else []
     context = build_graph_context(question, seed_texts, graph)
     if not context:
-        return GraphResult(context="", entities_found=[], success=False)
-    # Count distinct entities found as a rough proxy
-    entities_found = [h for h in entity_hints if h.lower() in context.lower()]
-    return GraphResult(context=context, entities_found=entities_found, success=True)
+        return GraphResult(context="", success=False)
+    return GraphResult(context=context, success=True)

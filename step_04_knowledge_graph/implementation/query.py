@@ -1,5 +1,7 @@
 import networkx as nx
 
+_NAME_INDEX_ATTR = "_name_index"
+
 
 def _build_name_index(g: nx.DiGraph) -> dict[str, str]:
     """
@@ -21,9 +23,24 @@ def _build_name_index(g: nx.DiGraph) -> dict[str, str]:
     return index
 
 
+def _get_name_index(g: nx.DiGraph) -> dict[str, str]:
+    """Lazy-build and cache the name index on the graph itself.
+
+    The graph is immutable after load_or_build, so this index is safe to
+    memoize via networkx's graph-level attribute dict (`g.graph`). Subsequent
+    queries reuse the cached map without re-iterating every node.
+    """
+    cached = g.graph.get(_NAME_INDEX_ATTR)
+    if cached is not None:
+        return cached
+    index = _build_name_index(g)
+    g.graph[_NAME_INDEX_ATTR] = index
+    return index
+
+
 def extract_entity_ids(texts: list[str], g: nx.DiGraph) -> list[str]:
     """Return unique node IDs whose name appears in any of the given texts."""
-    index = _build_name_index(g)
+    index = _get_name_index(g)
     combined = " ".join(texts).lower()
     found: dict[str, str] = {}  # nid → matched name (dedup by nid)
     for name_lower, nid in index.items():

@@ -23,33 +23,44 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Install per step: uv sync --extra step-01
+# Per-step extras list only the *incremental* dependency that step needs over
+# the prior. Run `uv sync --extra step-04` to pull steps 01-04, etc.
+# See AUDIT_FIXES.md #16 for why the older mapping was misaligned.
 step-01 = [
     "chromadb>=0.5.0",
-    "openai>=1.50.0",
     "pandas>=2.2.0",
 ]
-step-02 = [
+# step-02 inherits everything it needs from step-01 (csv_tool uses pandas).
+step-03 = [
+    # rank-bm25 lives in base [dependencies] because evaluation imports the
+    # retriever directly; this empty extra is kept as a doc-only marker.
+]
+step-04 = [
+    "networkx>=3.3",
+]
+# step-05 needs nothing new — it composes step-03 + step-04 via the gateway.
+step-06 = [
+    # CrossEncoder reranker for context engineering.
+    "sentence-transformers>=3.0.0",
+]
+# step-07 needs nothing new — semantic_cache reuses sentence-transformers
+# from step-06.
+observability = [
+    # Phoenix + OTLP for the unnumbered observability/ utility folder.
     "arize-phoenix>=4.0.0",
     "opentelemetry-api>=1.25.0",
     "opentelemetry-sdk>=1.25.0",
 ]
-step-03 = [
-    "pandas>=2.2.0",
+dashboard = [
+    # Optional embedder used by the dashboard's experiment lab. Lazy-imported
+    # so the dashboard still runs without it (the feature is disabled).
+    "fastembed>=0.3.0",
+    "plotly>=6.7.0",
+    "streamlit>=1.57.0",
 ]
-step-04 = [
-    "chromadb>=0.5.0",
-]
-step-05 = [
-    "networkx>=3.3",
-    "pandas>=2.2.0",
-]
-step-07 = [
-    "sentence-transformers>=3.0.0",
-    "rank-bm25>=0.2.2",
-]
-step-10 = [
-    "sentence-transformers>=3.0.0",
+openai = [
+    # Only needed when JUDGE_PROVIDER=openai (paid eval fallback).
+    "openai>=1.50.0",
 ]
 dev = [
     "pytest>=8.0.0",
@@ -79,9 +90,18 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
+# Single "dev" group: installs everything needed for end-to-end work
+# (run pipelines + eval + observability + dashboard). Mirrors the
+# optional-dependencies extras a developer would otherwise have to pick.
 dev = [
     "chromadb>=0.5.0",
     "fastembed>=0.3.0",
     "plotly>=6.7.0",
     "streamlit>=1.57.0",
+    "sentence-transformers>=3.0.0",
+    "networkx>=3.3",
+    "pandas>=2.2.0",
+    "arize-phoenix>=4.0.0",
+    "opentelemetry-api>=1.25.0",
+    "opentelemetry-sdk>=1.25.0",
 ]

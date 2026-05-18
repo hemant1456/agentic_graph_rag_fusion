@@ -1,15 +1,20 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
 class QueryAnalysis:
-    """Output of the QueryAnalystAgent."""
+    """Output of the QueryAnalystAgent.
+
+    Note: earlier revisions also exposed needs_vector / needs_graph / needs_csv
+    routing flags. They were always set but never consulted — the orchestrator
+    runs vector, graph, and CSV branches unconditionally because empirically
+    every branch is cheap and aggressive routing was costing recall. The flags
+    were removed to stop the prompt and parser pretending to do work that the
+    orchestrator ignores.
+    """
     query_type: str          # simple_lookup | aggregation | multi_hop | comparative | graph | mixed
-    needs_vector: bool       # free-text document search needed
-    needs_graph: bool        # entity-relationship traversal needed
-    needs_csv: bool          # exact numerical aggregation needed
     sub_questions: list[str] # decomposed sub-questions for compound/multi-hop queries
     primary_entities: list[str]  # named entities mentioned in the question
 
@@ -26,7 +31,6 @@ class RetrievalResult:
 class GraphResult:
     """Output of the GraphNavigatorAgent."""
     context: str
-    entities_found: list[str]
     success: bool
 
 
@@ -62,3 +66,16 @@ class AgentTrace:
     output_summary: str
     latency_ms: float
     status: str = "ok"       # ok | error | skipped
+
+
+@dataclass
+class OrchestratorResult:
+    """Aggregated output of the multi-agent orchestrator. Carries everything the
+    pipeline needs to construct a RAGResult plus the critic verdict so callers
+    (e.g. step_07 confidence scoring) can route on it."""
+    answer: str
+    provider: str
+    traces: list[AgentTrace] = field(default_factory=list)
+    context_text: str = ""
+    critic_approved: bool = True
+    critic_notes: str = ""

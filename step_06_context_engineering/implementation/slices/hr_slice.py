@@ -32,17 +32,7 @@ CONFIG = SliceConfig(
         "customer success", "headcount", "hired", "joined", "left", "fired",
         "resignation", "offboard", "onboard", "finDataco",
     ],
-    force_csv=False,
-    force_graph=True,
     query_augmentation="employee org reporting manager team",
     rerank_k=8,
     compress_ratio=0.60,
-    owns_questions=["Q09", "Q13", "Q14", "Q19"],
 )
-
-
-def can_handle(question: str) -> float:
-    q = question.lower()
-    hits = sum(1 for kw in CONFIG.keywords if kw in q)
-    words = max(len(q.split()), 1)
-    return min(hits / words * 4.0, 1.0)

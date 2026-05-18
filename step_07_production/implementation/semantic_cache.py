@@ -26,6 +26,10 @@ class CacheEntry:
     ce_metrics: dict
     timestamp: float
     hits: int = 0
+    # Critic verdict carried with the cached answer so re-scoring confidence
+    # on a cache hit uses the same signals as the original miss path.
+    critic_approved: bool | None = None
+    critic_notes: str = ""
 
 
 class SemanticCache:
@@ -55,11 +59,21 @@ class SemanticCache:
             self._total_misses += 1
             return None
 
-    def put(self, question: str, answer: str, provider: str, ce_metrics: dict) -> None:
+    def put(
+        self,
+        question: str,
+        answer: str,
+        provider: str,
+        ce_metrics: dict,
+        *,
+        critic_approved: bool | None = None,
+        critic_notes: str = "",
+    ) -> None:
         emb = _get_model().encode(question, normalize_embeddings=True)
         entry = CacheEntry(
             query=question, embedding=emb, answer=answer,
-            provider=provider, ce_metrics=ce_metrics, timestamp=time.time()
+            provider=provider, ce_metrics=ce_metrics, timestamp=time.time(),
+            critic_approved=critic_approved, critic_notes=critic_notes,
         )
         with self._lock:
             if len(self._entries) >= self.max_size:

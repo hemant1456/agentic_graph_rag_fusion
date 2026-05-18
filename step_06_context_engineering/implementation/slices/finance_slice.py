@@ -28,18 +28,6 @@ CONFIG = SliceConfig(
         "subscription", "price", "total", "cost", "financial", "percentage",
         "enterprise", "segment", "invoice", "billing",
     ],
-    force_csv=True,
-    force_graph=False,
     rerank_k=8,
     compress_ratio=0.60,
-    owns_questions=["Q07", "Q08", "Q10", "Q11", "Q12", "Q15", "Q16", "Q21", "Q22"],
 )
-
-
-def can_handle(question: str) -> float:
-    """Return a confidence score [0..1] for routing this question to the Finance slice."""
-    q = question.lower()
-    hits = sum(1 for kw in CONFIG.keywords if kw in q)
-    # Normalize by number of question words to avoid length bias
-    words = max(len(q.split()), 1)
-    return min(hits / words * 4.0, 1.0)

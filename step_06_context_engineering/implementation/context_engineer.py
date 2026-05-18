@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from typing import TYPE_CHECKING
 
 from step_06_context_engineering.implementation import (
@@ -21,9 +22,14 @@ def engineer_context(
     rerank_k: int = 8,
     compress_ratio: float = 0.60,
     budget_chars: int = 24_000,
-) -> tuple[str, dict]:
+) -> tuple[str, dict, "list[RetrievedChunk]"]:
     """
-    Full context engineering pipeline.  Returns (context_xml, metrics).
+    Full context engineering pipeline. Returns (context_xml, metrics, display_chunks).
+
+    display_chunks: the post-rerank, post-dedup chunks that actually made it
+    into the engineered context. The pipeline returns them so callers (the
+    dashboard, the eval JSON) can render "sources used" without re-running
+    retrieval.
 
     metrics:
       raw_chars          — chars before any engineering
@@ -42,8 +48,7 @@ def engineer_context(
 
     compressed: list[tuple[float, "RetrievedChunk"]] = []
     for score, chunk in deduped:
-        # Shallow-copy the chunk so we don't mutate the shared retriever cache
-        import copy
+        # Shallow-copy the chunk so we don't mutate the shared retriever cache.
         c = copy.copy(chunk)
         c.text = compressor.compress(question, chunk.text, ratio=compress_ratio)
         compressed.append((score, c))
@@ -70,4 +75,5 @@ def engineer_context(
         "chunks_final": fmt_stats["chunks_used"],
     }
 
-    return context_xml, metrics
+    display_chunks = [c for _, c in compressed]
+    return context_xml, metrics, display_chunks

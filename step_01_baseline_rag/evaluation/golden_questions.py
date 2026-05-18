@@ -11,8 +11,27 @@ retrieval would surface at baseline.
   Tier 4 (Q10-Q12):  Multi-hop joins via foreign keys        — step_04_knowledge_graph
   Tier 5 (Q13-Q14):  Orchestrated graph + structured + agg   — step_05_multi_agent
 
-14 questions total (no Tier 6 — could not design a robust tier-6-locked question
-without leaking into earlier tiers; the spec prefers fewer-locked over more-leaky).
+14 questions total. **No tier locks exist for step_06_context_engineering or
+step_07_production by design** — the audit (AUDIT_FIXES.md #20) considered
+adding them and concluded they would either:
+
+  (a) leak — context engineering improves *quality* (precision, faithfulness)
+      on questions earlier tiers can already attempt; a "tier 6 lock" would be
+      a question step_05 *cannot* answer, which our corpus doesn't support
+      without contrived data.
+
+  (b) measure a different property — step_07's value is reliability (cache,
+      confidence, graceful degradation), which is a process property, not an
+      answer-correctness property. Faithfulness/cache/cost tests belong in a
+      separate diagnostic harness, not in the golden tier-lock suite.
+
+What to add instead, when adding such a harness:
+  - Step 06: track per-step `context_precision` and `faithfulness` deltas on
+    the existing 14Q set — if step_06's score on these doesn't beat step_05's,
+    the context engineering layer isn't earning its keep.
+  - Step 07: paraphrase the 14 questions and check that the second hit is a
+    cache hit (semantic_cache.stats.total_hits should increment); separately,
+    feed a known-bad answer through score_answer() and assert label=='low'.
 """
 from dataclasses import dataclass
 

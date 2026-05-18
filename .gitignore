@@ -16,3 +16,12 @@ wheels/
 
 # Generated vector store indexes (rebuild with ingest.py)
 **/chroma_db/
+
+# Gateway call log — runtime SQLite, regenerated on every gateway boot
+llm_gatewayV2/*.db
+
+# BM25 persisted index cache
+**/bm25_index.pkl
+
+# Graph artifact (rebuilds from corpus)
+step_04_knowledge_graph/results/graph.json

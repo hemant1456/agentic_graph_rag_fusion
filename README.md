@@ -93,6 +93,10 @@ One shared ChromaDB at the project root: `chroma_db/`.
 uv run streamlit run dashboard.py
 ```
 
+## Side experiments
+
+- [extras/hybrid_rerank/](extras/hybrid_rerank/) — a Step 03 variant that adds a CrossEncoder rerank stage on top of BM25+dense+RRF (no dedup, no compression). Self-contained, evaluated against the same 14-question golden set, useful as an ablation for "does the rerank alone help, or do you need the full Step 06 context-engineering stack?"
+
 ## Repository layout
 
 ```
@@ -101,6 +105,7 @@ agentic_graph_rag_fusion/
 ├── observability/           # Arize Phoenix + JSONL trace store (utility)
 ├── evaluation/              # RAGAS scorer + per-step adapters (utility)
 ├── chroma_db/               # shared vector index, 2 collections
+├── extras/                  # side experiments (rerank-only ablation)
 ├── step_01_baseline_rag/   ┐
 ├── step_02_tools/          │
 ├── step_03_hybrid_retrieval│  ← 7 numbered steps, cumulative

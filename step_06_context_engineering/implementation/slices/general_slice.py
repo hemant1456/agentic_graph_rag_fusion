@@ -30,19 +30,9 @@ CONFIG = SliceConfig(
         "acquisition", "datacraft", "history", "policy", "retention", "legal",
         "data", "company", "who is", "when was", "what is",
     ],
-    force_csv=False,
-    force_graph=False,
     rerank_k=8,
     compress_ratio=0.60,
-    owns_questions=["Q01", "Q02", "Q03", "Q04"],
+    # General slice keeps a confidence floor so it always competes — without
+    # this, finance/hr/engineering would dominate even on company-history Qs.
+    floor_confidence=0.15,
 )
-
-
-def can_handle(question: str) -> float:
-    """General slice has a constant low confidence — it accepts anything no other slice claims."""
-    q = question.lower()
-    hits = sum(1 for kw in CONFIG.keywords if kw in q)
-    words = max(len(q.split()), 1)
-    base = min(hits / words * 4.0, 1.0)
-    # Slight boost so general always competes rather than being pure fallback
-    return max(base, 0.15)

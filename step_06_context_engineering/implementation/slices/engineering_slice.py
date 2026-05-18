@@ -33,17 +33,7 @@ CONFIG = SliceConfig(
         "message", "queue", "broker", "stream", "product", "feature",
         "launch", "roadmap", "two", "same name", "disambiguation",
     ],
-    force_csv=False,
-    force_graph=True,
     query_augmentation="Project Phoenix",
     rerank_k=8,
     compress_ratio=0.80,
-    owns_questions=["Q05", "Q06", "Q17", "Q18", "Q20", "Q23", "Q24"],
 )
-
-
-def can_handle(question: str) -> float:
-    q = question.lower()
-    hits = sum(1 for kw in CONFIG.keywords if kw in q)
-    words = max(len(q.split()), 1)
-    return min(hits / words * 4.0, 1.0)

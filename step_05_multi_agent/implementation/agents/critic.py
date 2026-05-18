@@ -10,6 +10,7 @@ _PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
+from llm_gatewayV2.client import LLM
 from step_05_multi_agent.implementation.agents.contracts import CriticResult
 
 _GATEWAY_URL = os.getenv("LLM_GATEWAY_V2_URL", "http://localhost:8100")
@@ -29,7 +30,6 @@ Only reject (approved=false) if the answer contains facts NOT present in the con
 
 
 def _call_llm(prompt: str) -> dict:
-    from llm_gatewayV2.client import LLM
     llm = LLM(base_url=_GATEWAY_URL, timeout=60)
     result = llm.chat(
         messages=[{"role": "user", "content": prompt}],
@@ -66,7 +66,6 @@ def review(question: str, answer: str, contexts: dict[str, str]) -> CriticResult
             )
 
         # Low confidence → one revision attempt: ask gateway to try again with the issue noted
-        from llm_gatewayV2.client import LLM
         from step_05_multi_agent.implementation.agents.synthesis import _SYSTEM as SYNTH_SYS
         llm = LLM(base_url=_GATEWAY_URL, timeout=120)
         ctx_full = "\n\n".join(

@@ -1,19 +1,27 @@
 # RAG to Production — A Concept Journey
 
-> This document follows the original 12-step design plan. The project has since been consolidated to
-> **7 numbered pipeline steps** (see [README.md](README.md) for the current structure):
+> ⚠️ **HISTORICAL DOCUMENT — preserved for the learning narrative.**
 >
-> - Original Step 02 (Observability) and Step 03 (Evaluation) are now utility folders (`observability/`, `evaluation/`).
-> - Original Steps 01+04 (Baseline + Format-aware Chunking) merged into today's **Step 01**.
-> - Original Step 07 (RAG Fusion / BM25) became today's **Step 03**.
-> - Original Step 08 (Single Agentic RAG) was dropped — multi-agent (Step 05) absorbs it.
-> - Original Steps 05+06 (Knowledge Graph + Graph RAG) merged into today's **Step 04**.
-> - Original Steps 10+11 (Context Engineering + VSA) merged into today's **Step 06**.
+> This chapter-by-chapter walkthrough follows the *original 12-step design plan* the project
+> grew out of. The project has since been consolidated to **7 numbered pipeline steps** (see
+> [README.md](README.md) for the current structure) and the golden eval set was rebuilt from
+> 27 questions to 14. **Every pass-rate percentage below (e.g. "26% (7/27)", "78% (21/27)",
+> "93% (25/27)") references the obsolete 27-question set against the obsolete 12-step layout.**
+> They are kept here as a teaching artifact — they explain *why* each technique was added
+> and what it cost — but they are not current numbers.
 >
-> Chapter numbering below still tracks the original 12 — the narrative still teaches every concept,
-> just spread across a less-condensed scaffold than the current code. When you read "Step 09 Multi-Agent"
-> here, that's today's `step_05_multi_agent/`. The translation table in [MASTER_PLAN.md](MASTER_PLAN.md)
-> is the canonical mapping.
+> For the current numbers, see `<step>/results/eval_results.json` or the table in
+> [README.md](README.md). For the canonical step ↔ chapter mapping below, see
+> [MASTER_PLAN.md](MASTER_PLAN.md).
+>
+> Translation cheat sheet:
+> - Original Step 02 (Observability) and Step 03 (Evaluation) are now utility folders.
+> - Original Steps 01+04 (Baseline + Format-aware Chunking) merged → today's **Step 01**.
+> - Original Step 07 (RAG Fusion / BM25) → today's **Step 03**.
+> - Original Step 08 (Single Agentic RAG) was dropped — multi-agent absorbs it.
+> - Original Steps 05+06 (Knowledge Graph + Graph RAG) merged → today's **Step 04**.
+> - Original Steps 10+11 (Context Engineering + VSA) merged → today's **Step 06**.
+> - Original Step 12 (Production) → today's **Step 07**.
 
 > Each section introduces only the concepts needed for that step — building on what came before.
 > Read it in order and you'll understand not just *what* each technique does, but *why* we needed it

@@ -63,13 +63,21 @@ class Step06RAG:
             raise RuntimeError("Call .build() before .query()")
 
         t0 = time.perf_counter()
-        answer, provider, ce_metrics, slice_name, confidence, context_xml = vsa_dispatch(
-            question, self._retriever, self._graph
-        )
+        (
+            answer,
+            provider,
+            ce_metrics,
+            slice_name,
+            confidence,
+            context_xml,
+            display_chunks,
+        ) = vsa_dispatch(question, self._retriever, self._graph)
         total_ms = (time.perf_counter() - t0) * 1000
 
-        # Representative retrieval set for dashboard display
-        display_chunks = self._retriever.retrieve(question, k=self.k)
+        # display_chunks come from engineer_context (post-rerank+dedup). No
+        # second retrieval pass — the dashboard's "sources" panel renders the
+        # exact chunks the answer is grounded on, capped at self.k for display.
+        display_chunks = display_chunks[: self.k]
 
         rag_result = RAGResult(
             question=question,

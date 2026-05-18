@@ -6,22 +6,15 @@ Adds over Step 02:
   - Reciprocal Rank Fusion (RRF) to merge both ranked lists
   - Fixes keyword-exact questions (version strings, vendor names, exact dates)
 
-Retains from Step 02: CSV tool calling for aggregate questions.
+Retains from Step 02: CSV tool calling for aggregate questions. Step 02's
+`build_context_sections` adds the "csv" section automatically through the
+inheritance chain.
 """
 
-import time
-from pathlib import Path
-
-import chromadb
-
-from step_01_baseline_rag.implementation.generate import generate_answer
-from step_01_baseline_rag.implementation.pipeline import RAGResult
-from step_01_baseline_rag.implementation.retrieve import RetrievedChunk, format_context
-from step_01_baseline_rag.implementation.ingest import embed_query, get_chroma_collection
-from step_02_tools.implementation.csv_tool import detect_intent, run_query
+from step_01_baseline_rag.implementation.ingest import embed_query
+from step_01_baseline_rag.implementation.retrieve import RetrievedChunk
+from step_02_tools.implementation.pipeline import Step02ToolsRAG
 from step_03_hybrid_retrieval.implementation.bm25_retriever import BM25Index
-
-STEP02_DB = Path(__file__).parent.parent.parent / "chroma_db"
 
 
 def _rrf_fuse(
@@ -40,9 +33,8 @@ def _rrf_fuse(
     return [(text, meta) for text, (meta, _) in sorted(scores.items(), key=lambda x: -x[1][1])[:top_k]]
 
 
-class Step03HybridRAG:
-    """
-    Hybrid retrieval: BM25 + dense vector merged via RRF, plus CSV tool calling.
+class Step03HybridRAG(Step02ToolsRAG):
+    """BM25 + dense → RRF fusion + CSV tool calling.
 
     Usage:
         rag = Step03HybridRAG(k=10).build()
@@ -50,17 +42,17 @@ class Step03HybridRAG:
     """
 
     def __init__(self, k: int = 10) -> None:
-        self.k = k
-        self.collection: chromadb.Collection | None = None
+        super().__init__(k=k)
         self.bm25: BM25Index | None = None
 
-    def build(self) -> "Step03HybridRAG":
-        self.collection = get_chroma_collection(STEP02_DB)
-        print(f"Loaded baseline index: {self.collection.count()} chunks")
+    def build(self, reset: bool = False) -> "Step03HybridRAG":
+        super().build(reset=reset)
+        if self.collection is None:
+            raise RuntimeError("BaselineRAG.build() did not initialize the collection")
         self.bm25 = BM25Index().build(self.collection)
         return self
 
-    def retrieve(self, question: str, k: int | None = None) -> list[RetrievedChunk]:
+    def retrieve_chunks(self, question: str, k: int | None = None) -> list[RetrievedChunk]:
         if self.collection is None or self.bm25 is None:
             raise RuntimeError("Call .build() first")
         k = k or self.k
@@ -92,35 +84,6 @@ class Step03HybridRAG:
             for text, meta in fused
         ]
 
-    def query(self, question: str) -> RAGResult:
-        if self.collection is None or self.bm25 is None:
-            raise RuntimeError("Call .build() before .query()")
-
-        t0 = time.perf_counter()
-        chunks = self.retrieve(question)
-        retrieval_ms = (time.perf_counter() - t0) * 1000
-
-        vector_ctx = format_context(chunks)
-        csv_intent = detect_intent(question)
-        csv_ctx = run_query(csv_intent) if csv_intent else ""
-
-        parts = []
-        if csv_ctx:
-            parts.append(csv_ctx)
-        parts.append(vector_ctx)
-        context = "\n\n".join(parts)
-
-        t1 = time.perf_counter()
-        answer, provider = generate_answer(context, question)
-        generation_ms = (time.perf_counter() - t1) * 1000
-
-        return RAGResult(
-            question=question,
-            answer=answer,
-            provider=provider,
-            retrieved_chunks=chunks,
-            context_sent=context,
-            context_chars=len(context),
-            retrieval_latency_ms=retrieval_ms,
-            generation_latency_ms=generation_ms,
-        )
+    # `retrieve()` kept as an alias for older callers (step_05/06 use it).
+    def retrieve(self, question: str, k: int | None = None) -> list[RetrievedChunk]:
+        return self.retrieve_chunks(question, k=k)

@@ -8,10 +8,10 @@ _PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
+from llm_gatewayV2.client import LLM
 from step_05_multi_agent.implementation.agents.contracts import SynthesisResult
 
 _GATEWAY_URL = os.getenv("LLM_GATEWAY_V2_URL", "http://localhost:8100")
-_GEMINI_MODEL = "gemini-3.1-flash-lite-preview"
 
 _SYSTEM = """\
 You are a precise research assistant for Vertexia Inc.
@@ -55,8 +55,10 @@ def synthesize(
         f"QUESTION: {question}"
     )
 
+    # Gateway owns multi-provider fallback. The earlier direct-Gemini except
+    # branch hardcoded a non-existent preview model and ran a redundant retry
+    # layer below the gateway's own — see AUDIT_FIXES.md #10 and #13.
     try:
-        from llm_gatewayV2.client import LLM
         llm = LLM(base_url=_GATEWAY_URL, timeout=120)
         result = llm.chat(
             messages=[{"role": "user", "content": user_msg}],
@@ -64,25 +66,10 @@ def synthesize(
             max_tokens=1024,
             temperature=0.0,
         )
-        provider = f"gateway:{result.get('provider', 'gemini')}"
-        return SynthesisResult(answer=result["text"], provider=provider)
-    except Exception:
-        pass
-
-    try:
-        from google import genai
-        from google.genai import types as genai_types
-        client = genai.Client(api_key=os.environ["GOOGLE_API_KEY"])
-        response = client.models.generate_content(
-            model=_GEMINI_MODEL,
-            contents=user_msg,
-            config=genai_types.GenerateContentConfig(
-                system_instruction=_SYSTEM,
-                max_output_tokens=1024,
-                temperature=0.0,
-            ),
+        return SynthesisResult(
+            answer=result["text"],
+            provider=f"gateway:{result.get('provider', '?')}",
         )
-        return SynthesisResult(answer=response.text or "", provider="gemini-direct")
     except Exception as exc:
         return SynthesisResult(
             answer=f"[Synthesis failed: {exc}]",

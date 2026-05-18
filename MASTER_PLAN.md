@@ -336,16 +336,15 @@ Orchestrator Agent
 
 **Framework**: RAGAS via `llm_gatewayV2` (groq llama-3.3-70b → gemini fallback). Five metrics per question: `answer_correctness`, `faithfulness`, `answer_relevancy`, `context_precision`, `context_recall`. See `evaluation/README.md`.
 
-**Golden set**: 15 questions across 6 tiers, each tier requires the next capability to PASS:
+**Golden set**: 14 questions across 5 tiers, each tier requires the next capability to PASS:
 
 | Tier | IDs | Type | Step that unlocks it |
 |---|---|---|---|
-| 1 | Q01–Q02 | Simple retrieval | Step 01 baseline |
-| 2 | Q03–Q04 | Format-aware chunking | Step 02 |
-| 3 | Q05–Q07 | CSV aggregates | Step 03 |
-| 4 | Q08–Q10 | BM25 keyword-exact | Step 04 |
-| 5 | Q11–Q13 | Knowledge-graph multi-hop | Step 05 |
-| 6 | Q14–Q15 | Cross-document reasoning | Step 07 |
+| 1 | Q01–Q03 | Simple retrieval | Step 01 baseline + format-aware chunking |
+| 2 | Q04–Q06 | CSV aggregates | Step 02 (CSV tool) |
+| 3 | Q07–Q09 | BM25 keyword-exact | Step 03 (hybrid retrieval) |
+| 4 | Q10–Q12 | Knowledge-graph multi-hop | Step 04 |
+| 5 | Q13–Q14 | Multi-CSV / cross-document reasoning | Step 05 (multi-agent) |
 
 **Grading**: `answer_correctness ≥ 0.7` = PASS, `≥ 0.4` = PARTIAL, else FAIL.
 
@@ -357,7 +356,7 @@ The four non-correctness metrics exist to localize *why* a question fails:
 
 - Low `context_recall` + low `answer_correctness` → retrieval missed the document. Fix by adding the right retrieval strategy in the next step.
 - High `context_recall` + low `answer_correctness` → retrieval found it; generation failed. Fix by tightening the prompt, reranker, or compression budget.
-- Low `context_precision` → retrieval is noisy. Fix by adding reranking (Step 08) or domain slicing (Step 09).
+- Low `context_precision` → retrieval is noisy. Fix by adding reranking or domain slicing (today's Step 06 context-engineering layer).
 - Low `faithfulness` → model is hallucinating despite having context. Fix by stricter system prompt or smaller / cleaner context.
 
 This decomposition is what makes the step-by-step progression meaningful — each step targets one of these failure modes.
@@ -374,7 +373,7 @@ This decomposition is what makes the step-by-step progression meaningful — eac
 
 4. **What does context engineering actually buy?** Steps 09→10: 93%→85% — it *hurt* here. CrossEncoder reranking helps precision, but extractive compression is lossy. Net: reranking alone is worth it; compression requires tuning per query type. Lesson: measure before you compress.
 
-5. **Evaluation system that catches regressions?** Golden 27-question suite with `required_facts` + `disqualifiers` per question catches regressions reliably. The compression regression at step 10 was instantly visible. Key: disqualifiers (wrong answers that "pass" on a reading but fail on a specific fact) are as important as required_facts.
+5. **Evaluation system that catches regressions?** The 14-question golden suite with `required_facts` + `disqualifiers` per question catches regressions reliably. (The historical pass-rate numbers below were captured against an earlier 27-question version of this suite — see banner in [concepts.md](concepts.md).) Key: disqualifiers (wrong answers that "pass" on a reading but fail on a specific fact) are as important as required_facts.
 
 6. **Right granularity for observability?** Per-agent traces with latency_ms + input_summary + output_summary were sufficient. Token-level tracing (Arize Phoenix) added signal for debugging but wasn't needed for pass-rate work. Verdict: per-agent traces for eval; per-token for cost optimization.
 
@@ -384,7 +383,7 @@ This decomposition is what makes the step-by-step progression meaningful — eac
 
 9. **What does VSA buy?** Step 11 recovered 4pp from step 10 (85%→89%) using domain-specific system prompts. The keyword router added zero LLM calls for routing. VSA benefit at this scale: per-slice system prompts and compress_ratio tuning without touching orchestrator logic. Downside: keyword router can mis-route edge-case queries.
 
-10. **When to stop retrieving?** The confidence scoring in step 10 + early cache hit is the practical answer. For retrieval depth: graph BFS with max_depth=3 + vector top-20 was sufficient for the 15-question golden set. Stopping rule: when the top-1 CrossEncoder score > 0.85, the answer is likely in that chunk — stop expanding.
+10. **When to stop retrieving?** Confidence scoring + early cache hit (today's step 07) is the practical answer. For retrieval depth: graph BFS with max_depth=3 + vector top-20 was sufficient for the 14-question golden set. Stopping rule: when the top-1 CrossEncoder score > 0.85, the answer is likely in that chunk — stop expanding.
 
 ---
 

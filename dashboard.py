@@ -332,7 +332,7 @@ def _build_custom_index(
     include_csv_agg: bool,
 ) -> dict:
     """
-    Full pipeline: rechunk corpus → embed → store in ChromaDB → run 27 golden questions.
+    Full pipeline: rechunk corpus → embed → store in ChromaDB → run 14 golden questions.
 
     local_model: fastembed model name, or None to use the baseline HuggingFace MiniLM.
     strategy: "paragraph" | "fixed"
@@ -1474,40 +1474,37 @@ def tab_step_progress() -> None:
 # ── Cache helpers (declared at module level for @st.cache_resource) ────────────
 
 
-@st.cache_resource
-def _load_step02_rag():
-    from step_02_tools.implementation.pipeline import Step02ToolsRAG
-    return Step02ToolsRAG(k=10).build()
+# Single registry for the 6 step factories below. Adding a new step is one
+# row here, not a new ~6-line @st.cache_resource block + a parallel call site.
+_STEP_REGISTRY: dict[str, tuple[str, str, int]] = {
+    "step_02_tools":                ("step_02_tools.implementation.pipeline",                "Step02ToolsRAG", 10),
+    "step_03_hybrid_retrieval":     ("step_03_hybrid_retrieval.implementation.pipeline",     "Step03HybridRAG", 10),
+    "step_04_knowledge_graph":      ("step_04_knowledge_graph.implementation.pipeline",      "Step04RAG",      10),
+    "step_05_multi_agent":          ("step_05_multi_agent.implementation.pipeline",          "Step05RAG",      10),
+    "step_06_context_engineering":  ("step_06_context_engineering.implementation.pipeline",  "Step06RAG",       5),
+    "step_07_production":           ("step_07_production.implementation.pipeline",           "Step07RAG",       5),
+}
 
 
 @st.cache_resource
-def _load_step03_rag():
-    from step_03_hybrid_retrieval.implementation.pipeline import Step03HybridRAG
-    return Step03HybridRAG(k=10).build()
+def _load_step_rag(step_key: str):
+    """Lazy-load and build the RAG class for `step_key`. Each step's heavy
+    init (Chroma index, BM25, graph, CrossEncoder, cache) is paid once per
+    Streamlit session thanks to @st.cache_resource."""
+    import importlib
+    module_path, class_name, k = _STEP_REGISTRY[step_key]
+    cls = getattr(importlib.import_module(module_path), class_name)
+    return cls(k=k).build()
 
 
-@st.cache_resource
-def _load_step04_rag():
-    from step_04_knowledge_graph.implementation.pipeline import Step04RAG
-    return Step04RAG(k=10).build()
-
-
-@st.cache_resource
-def _load_step05_rag():
-    from step_05_multi_agent.implementation.pipeline import Step05RAG
-    return Step05RAG(k=10).build()
-
-
-@st.cache_resource
-def _load_step06_rag():
-    from step_06_context_engineering.implementation.pipeline import Step06RAG
-    return Step06RAG(k=5).build()
-
-
-@st.cache_resource
-def _load_step07_rag():
-    from step_07_production.implementation.pipeline import Step07RAG
-    return Step07RAG(k=5).build()
+# Thin per-step accessors kept for call-site readability and to preserve
+# Streamlit's per-function cache identity.
+def _load_step02_rag(): return _load_step_rag("step_02_tools")
+def _load_step03_rag(): return _load_step_rag("step_03_hybrid_retrieval")
+def _load_step04_rag(): return _load_step_rag("step_04_knowledge_graph")
+def _load_step05_rag(): return _load_step_rag("step_05_multi_agent")
+def _load_step06_rag(): return _load_step_rag("step_06_context_engineering")
+def _load_step07_rag(): return _load_step_rag("step_07_production")
 
 
 @st.cache_resource

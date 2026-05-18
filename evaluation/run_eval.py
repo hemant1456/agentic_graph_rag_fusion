@@ -241,6 +241,7 @@ def evaluate_step(step_name: str) -> dict:
             "reference": _reference_from_question(q),
             "_latency_ms": round(latency_ms, 1),
             "_required_facts": q.required_facts,
+            "_disqualifiers": q.disqualifiers,
         })
         print(f"  [{q.id}] {q.question[:70]}... ({latency_ms:.0f}ms)")
 
@@ -263,6 +264,7 @@ def evaluate_step(step_name: str) -> dict:
 
     grades: list[str] = []
     rows: list[dict] = []
+    _DOWNGRADE = {"PASS": "PARTIAL", "PARTIAL": "FAIL", "FAIL": "FAIL"}
     for s, sc in zip(samples, scores):
         ac = sc["answer_correctness"]
         if ac >= 0.7:
@@ -271,6 +273,19 @@ def evaluate_step(step_name: str) -> dict:
             grade = "PARTIAL"
         else:
             grade = "FAIL"
+
+        # Disqualifier check: each golden question lists strings that, if they
+        # appear in the answer, mean the model latched onto a confusable
+        # neighbor (e.g. wrong on-call engineer, wrong project alias). RAGAS
+        # `answer_correctness` is format-tolerant and sometimes scores high on
+        # an answer whose surface vocabulary matches but cites the wrong
+        # entity. Disqualifier hits force a one-step grade downgrade so these
+        # near-misses don't get rewarded.
+        ans_lower = (s["response"] or "").lower()
+        tripped = [d for d in s["_disqualifiers"] if d and d.lower() in ans_lower]
+        if tripped:
+            grade = _DOWNGRADE[grade]
+
         grades.append(grade)
         rows.append({
             "id": s["question_id"],
@@ -284,6 +299,7 @@ def evaluate_step(step_name: str) -> dict:
             "context_recall":     round(sc["context_recall"], 3),
             "judge_reasoning":    sc["reasoning"],
             "required_facts":     s["_required_facts"],
+            "disqualifiers_tripped": tripped,
             "retrieval_latency_ms": s["_latency_ms"],
             "contexts_count":     len(s["retrieved_contexts"]),
         })

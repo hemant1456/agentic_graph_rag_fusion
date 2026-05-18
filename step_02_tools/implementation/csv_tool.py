@@ -10,11 +10,26 @@ correct approach for aggregate questions.
 """
 
 import re
+from functools import lru_cache
 from pathlib import Path
 
 import pandas as pd
 
 CORPUS_PATH = Path(__file__).parent.parent.parent / "dataset" / "company_data"
+
+
+@lru_cache(maxsize=32)
+def _read_csv_cached(path_str: str, mtime: float) -> pd.DataFrame:
+    """Read a CSV once and cache the DataFrame. mtime is part of the lru_cache
+    key (hash on parameters) so regenerating the corpus invalidates the entry
+    automatically — it's intentionally unused inside the function body."""
+    del mtime
+    return pd.read_csv(path_str)
+
+
+def _read_csv(path: Path) -> pd.DataFrame:
+    """mtime-aware cached read. Returns a copy so callers can mutate freely."""
+    return _read_csv_cached(str(path), path.stat().st_mtime).copy()
 
 _PATTERNS: list[tuple[re.Pattern, str]] = [
     # Q09 — Q3 2023 total revenue
@@ -85,7 +100,7 @@ def run_query(intent: str) -> str:
 # ── Query implementations ─────────────────────────────────────────────────────
 
 def _q3_revenue() -> str:
-    df = pd.read_csv(CORPUS_PATH / "finance" / "revenue_by_product_2023.csv")
+    df = _read_csv(CORPUS_PATH / "finance" / "revenue_by_product_2023.csv")
     q3 = df[df["month"].isin(["2023-07", "2023-08", "2023-09"])].copy()
     total = int(q3["total_revenue"].sum())
     lines = [
@@ -103,7 +118,7 @@ def _q3_revenue() -> str:
 
 
 def _q3_closed_deals() -> str:
-    df = pd.read_csv(CORPUS_PATH / "sales" / "deal_pipeline_q3_2023.csv")
+    df = _read_csv(CORPUS_PATH / "sales" / "deal_pipeline_q3_2023.csv")
     won = df[df["stage"] == "Closed-Won"]
     total = int(won["arr"].sum())
     lines = ["[STRUCTURED CSV QUERY: Q3 2023 Closed-Won Deals — deal_pipeline_q3_2023.csv]"]
@@ -114,7 +129,7 @@ def _q3_closed_deals() -> str:
 
 
 def _total_arr() -> str:
-    df = pd.read_csv(CORPUS_PATH / "sales" / "customer_list.csv")
+    df = _read_csv(CORPUS_PATH / "sales" / "customer_list.csv")
     total = int(df["arr_usd"].sum())
     lines = [
         f"[STRUCTURED CSV QUERY — AUTHORITATIVE: total ARR across all {len(df)} customers]",
@@ -125,8 +140,8 @@ def _total_arr() -> str:
 
 
 def _h2_2023_arr() -> str:
-    q3 = pd.read_csv(CORPUS_PATH / "sales" / "deal_pipeline_q3_2023.csv")
-    q4 = pd.read_csv(CORPUS_PATH / "sales" / "deal_pipeline_q4_2023.csv")
+    q3 = _read_csv(CORPUS_PATH / "sales" / "deal_pipeline_q3_2023.csv")
+    q4 = _read_csv(CORPUS_PATH / "sales" / "deal_pipeline_q4_2023.csv")
     won_q3 = q3[q3["stage"] == "Closed-Won"]["arr"].sum()
     won_q4 = q4[q4["stage"] == "Closed-Won"]["arr"].sum()
     total = int(won_q3 + won_q4)
@@ -140,7 +155,7 @@ def _h2_2023_arr() -> str:
 
 
 def _employees_by_location() -> str:
-    df = pd.read_csv(CORPUS_PATH / "hr" / "employee_directory.csv")
+    df = _read_csv(CORPUS_PATH / "hr" / "employee_directory.csv")
     active = df[df["status"] == "active"]
     counts = active.groupby("location").size().sort_values(ascending=False)
     lines = ["[STRUCTURED CSV QUERY: Active Employees by Office Location — employee_directory.csv]"]
@@ -151,7 +166,7 @@ def _employees_by_location() -> str:
 
 
 def _total_headcount() -> str:
-    df = pd.read_csv(CORPUS_PATH / "finance" / "budget_allocation_2023.csv")
+    df = _read_csv(CORPUS_PATH / "finance" / "budget_allocation_2023.csv")
     total = int(df["headcount"].sum())
     lines = [
         f"[STRUCTURED CSV QUERY — AUTHORITATIVE: total planned headcount across all {len(df)} departments]",
@@ -171,8 +186,8 @@ def _arr_by_manager_reports(manager_name: str) -> str:
     This is the only intent that JOINS two CSV files — required for Tier 5
     questions where the multi-agent has to compose graph + structured aggregate.
     """
-    emp = pd.read_csv(CORPUS_PATH / "hr" / "employee_directory.csv")
-    cust = pd.read_csv(CORPUS_PATH / "sales" / "customer_list.csv")
+    emp = _read_csv(CORPUS_PATH / "hr" / "employee_directory.csv")
+    cust = _read_csv(CORPUS_PATH / "sales" / "customer_list.csv")
 
     match = emp[emp["name"].str.strip().str.lower() == manager_name.strip().lower()]
     if match.empty:

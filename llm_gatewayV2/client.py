@@ -1,15 +1,54 @@
 """Python client for LLM Gateway V2. Backward-compatible kwargs from V1; new
-kwargs (tools=, cache_system=, reasoning=, response_format=) are opt-in."""
-import os, json, httpx
+kwargs (tools=, cache_system=, reasoning=, response_format=) are opt-in.
+
+HTTP-level retry lives here so callers don't need a separate retry wrapper.
+The gateway server already does multi-provider fallback for upstream provider
+errors; client-side retry handles transient *transport* problems (connection
+refused, read timeout) and gateway 5xx that propagated through. We do not
+retry 4xx — those are caller errors.
+"""
+import os, json, time
+import httpx
 from typing import Any, Optional
 
 DEFAULT_URL = os.getenv("LLM_GATEWAY_V2_URL", "http://localhost:8100")
+
+# Transport-level retry. The gateway handles provider fallback internally.
+_MAX_ATTEMPTS = int(os.getenv("LLM_CLIENT_RETRIES", "3"))
+_BASE_DELAY = 0.5  # seconds; doubles each attempt, capped at 8s
+_RETRY_TRANSPORT = (httpx.ConnectError, httpx.ReadTimeout, httpx.RemoteProtocolError)
+
+
+def _should_retry_status(status_code: int) -> bool:
+    """Retry on gateway-side server errors only. 4xx is the caller's fault."""
+    return 500 <= status_code < 600
 
 
 class LLM:
     def __init__(self, base_url: str = DEFAULT_URL, timeout: float = 600):
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
+
+    def _post_with_retry(self, path: str, body: dict) -> dict:
+        delay = _BASE_DELAY
+        last_exc: Exception | None = None
+        for attempt in range(1, _MAX_ATTEMPTS + 1):
+            try:
+                r = httpx.post(f"{self.base_url}{path}", json=body, timeout=self.timeout)
+                if _should_retry_status(r.status_code) and attempt < _MAX_ATTEMPTS:
+                    time.sleep(delay)
+                    delay = min(delay * 2, 8.0)
+                    continue
+                r.raise_for_status()
+                return r.json()
+            except _RETRY_TRANSPORT as e:
+                last_exc = e
+                if attempt == _MAX_ATTEMPTS:
+                    raise
+                time.sleep(delay)
+                delay = min(delay * 2, 8.0)
+        # Should be unreachable, but satisfies type checker
+        raise last_exc or RuntimeError("gateway retry loop exited without result")
 
     def chat(self, prompt: str = None, *,
              messages: Optional[list] = None,
@@ -30,9 +69,7 @@ class LLM:
             "response_format": response_format,
         }
         body = {k: v for k, v in body.items() if v is not None}
-        r = httpx.post(f"{self.base_url}/v1/chat", json=body, timeout=self.timeout)
-        r.raise_for_status()
-        return r.json()
+        return self._post_with_retry("/v1/chat", body)
 
     def stream(self, prompt: str = None, *, messages=None, system=None,
                provider: str = None, model: str = None,
