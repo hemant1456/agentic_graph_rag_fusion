@@ -1,6 +1,6 @@
 {
   "step": "step_05_multi_agent",
-  "timestamp": "2026-05-18T13:04:03",
+  "timestamp": "2026-05-18T15:11:25",
   "total_questions": 14,
   "grade_counts": {
     "PASS": 10,
@@ -9,11 +9,11 @@
   },
   "pass_rate": 0.71,
   "ragas_averages": {
-    "answer_correctness": 0.8,
-    "faithfulness": 0.714,
+    "answer_correctness": 0.807,
+    "faithfulness": 0.736,
     "answer_relevancy": 1.0,
-    "context_precision": 0.233,
-    "context_recall": 0.607
+    "context_precision": 0.259,
+    "context_recall": 0.65
   },
   "thresholds": {
     "PASS": "answer_correctness>=0.7",
@@ -24,7 +24,7 @@
     {
       "id": "Q01",
       "question": "What is Vertexia's customer data retention policy for hot storage and cold storage?",
-      "answer": "Vertexia's customer data retention policy is 90 days for hot storage and 1 year for cold storage (S3 Glacier).",
+      "answer": "Vertexia's customer data retention policy is 90 days in hot storage and 1 year in cold storage (S3 Glacier).",
       "grade": "PASS",
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
@@ -36,7 +36,7 @@
         "90 day",
         "glacier"
       ],
-      "retrieval_latency_ms": 134509.5,
+      "retrieval_latency_ms": 54988.2,
       "contexts_count": 11
     },
     {
@@ -55,7 +55,7 @@
         "Diana Volkov",
         "2019"
       ],
-      "retrieval_latency_ms": 91214.0,
+      "retrieval_latency_ms": 91641.3,
       "contexts_count": 11
     },
     {
@@ -74,7 +74,7 @@
         "Twilio",
         "Raj Patel"
       ],
-      "retrieval_latency_ms": 183157.5,
+      "retrieval_latency_ms": 19426.4,
       "contexts_count": 11
     },
     {
@@ -91,7 +91,7 @@
       "required_facts": [
         "11,000,000"
       ],
-      "retrieval_latency_ms": 91241.4,
+      "retrieval_latency_ms": 3278.8,
       "contexts_count": 11
     },
     {
@@ -108,7 +108,7 @@
       "required_facts": [
         "5"
       ],
-      "retrieval_latency_ms": 181927.0,
+      "retrieval_latency_ms": 13016.6,
       "contexts_count": 11
     },
     {
@@ -119,13 +119,13 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.73,
+      "context_precision": 0.9,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is accurate and fully supported by the provided context, though the retrieved set included several irrelevant documents.",
+      "judge_reasoning": "The actual answer directly matches the reference and is supported by the retrieved contexts.",
       "required_facts": [
         "181"
       ],
-      "retrieval_latency_ms": 91072.6,
+      "retrieval_latency_ms": 89758.4,
       "contexts_count": 11
     },
     {
@@ -143,42 +143,42 @@
         "120,000",
         "2024-06-30"
       ],
-      "retrieval_latency_ms": 79199.7,
+      "retrieval_latency_ms": 137583.4,
       "contexts_count": 11
     },
     {
       "id": "Q08",
       "question": "Which NexusFlow API endpoint was deprecated in v2.1, and what endpoint replaced it?",
-      "answer": "The `GET /v2/events/batch` endpoint was deprecated in v2.1 and replaced by `GET /v2/events/stream`.",
+      "answer": "The endpoint `GET /v2/events/batch` was deprecated in v2.1, and it was replaced by `GET /v2/events/stream`.",
       "grade": "PASS",
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
       "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is accurate and fully supported by context [6], though most of the provided context chunks were irrelevant to the specific question.",
+      "judge_reasoning": "The answer is accurate and fully supported by the provided context, though only one of the eleven retrieved chunks was relevant to the query.",
       "required_facts": [
         "events/batch",
         "events/stream"
       ],
-      "retrieval_latency_ms": 68110.5,
+      "retrieval_latency_ms": 10342.9,
       "contexts_count": 11
     },
     {
       "id": "Q09",
       "question": "Per Vertexia's Q4 2023 on-call schedule, who was the on-call engineer for the Data Platform Team during the week starting 2023-10-16?",
-      "answer": "Priya Kapoor was the on-call engineer for the Data Platform Team during the week starting 2023-10-16.",
+      "answer": "Per the On Call Schedule Q4 2023 in the retrieved context, the on-call engineer for the Data Platform Team for the week starting 2023-10-16 was Priya Kapoor.",
       "grade": "PASS",
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
       "context_precision": 0.09,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is factually accurate and fully supported by the retrieved context, though the system retrieved many irrelevant documents.",
+      "judge_reasoning": "The answer correctly identifies the on-call engineer using the provided context, though the retrieved context set contained significant irrelevant documents.",
       "required_facts": [
         "Priya Kapoor"
       ],
-      "retrieval_latency_ms": 30823.3,
+      "retrieval_latency_ms": 75946.8,
       "contexts_count": 11
     },
     {
@@ -187,36 +187,39 @@
       "answer": "The CSM assigned to Summit Pharma is Anjali Patel. She is based in the San Francisco office, and her direct manager is Maya Sharma.",
       "grade": "PARTIAL",
       "answer_correctness": 0.5,
-      "faithfulness": 0.5,
+      "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.1,
-      "context_recall": 0.5,
-      "judge_reasoning": "The model correctly identified the CSM but hallucinated the office location and manager, as those facts were not present in the provided retrieved contexts.",
+      "context_precision": 0.2,
+      "context_recall": 0.6,
+      "judge_reasoning": "The answer is partially correct but lacks the direct manager's title and the CSM's office location is not explicitly supported by the retrieved contexts.",
       "required_facts": [
         "Anjali Patel",
         "San Francisco",
         "Maya Sharma"
       ],
-      "retrieval_latency_ms": 91250.2,
+      "retrieval_latency_ms": 38564.8,
       "contexts_count": 11
     },
     {
       "id": "Q11",
-      "question": "Based on Vertexia's API dependency graph, which Vertexia services directly depend on NexusFlow's APIs? Name all of them.",
-      "answer": "Based on Vertexia's API dependency graph, the services that directly depend on NexusFlow's APIs are InsightLens, PulseConnect, and DataCraft.",
+      "question": "Based on Vertexia's API dependency graph, which Vertexia services directly depend on NexusFlow's APIs? Name each service AND the specific NexusFlow endpoint it consumes.",
+      "answer": "Based on the provided API dependency graph and documentation, the following Vertexia services directly depend on NexusFlow APIs:\n\n*   **InsightLens** consumes the `events/stream` endpoint.\n*   **DataCraft** consumes the `ingest` endpoint (via the `ingest_api`).\n*   **PulseConnect** consumes the `pipelines` endpoint (via the `pipeline_status_api`).\n*   **DataCraft Integration** consumes the `events/stream` endpoint.",
       "grade": "PARTIAL",
-      "answer_correctness": 0.5,
-      "faithfulness": 1.0,
+      "answer_correctness": 0.6,
+      "faithfulness": 0.8,
       "answer_relevancy": 1.0,
-      "context_precision": 0.3,
-      "context_recall": 0.0,
-      "judge_reasoning": "The answer correctly identifies the services but fails to include the specific API dependencies required by the reference answer, and the provided context chunks do not contain the information necessary to verify those specific dependencies.",
+      "context_precision": 0.4,
+      "context_recall": 0.5,
+      "judge_reasoning": "The answer correctly identifies InsightLens but hallucinates DataCraft/PulseConnect endpoints not present in the provided context, while missing the specific API names required by the reference.",
       "required_facts": [
         "InsightLens",
         "PulseConnect",
-        "DataCraft"
+        "DataCraft",
+        "events_api",
+        "pipeline_status_api",
+        "ingest_api"
       ],
-      "retrieval_latency_ms": 123694.2,
+      "retrieval_latency_ms": 124108.3,
       "contexts_count": 11
     },
     {
@@ -237,24 +240,24 @@
         "Priya Kapoor",
         "Omar Faruk"
       ],
-      "retrieval_latency_ms": 91244.0,
+      "retrieval_latency_ms": 91797.8,
       "contexts_count": 11
     },
     {
       "id": "Q13",
       "question": "What is the combined ARR (sum of arr_usd in customer_list.csv) of all customers whose assigned CSM is an active direct report of Maya Sharma per the employee directory?",
-      "answer": "The combined ARR of customers whose CSM is an active direct report of Maya Sharma is $912,000.",
+      "answer": "The combined ARR of customers whose CSM is an active direct report of Maya Sharma is $1,116,000.",
       "grade": "FAIL",
       "answer_correctness": 0.0,
       "faithfulness": 0.0,
       "answer_relevancy": 1.0,
       "context_precision": 0.0,
       "context_recall": 0.0,
-      "judge_reasoning": "The model failed to identify the correct direct reports and hallucinated a value not supported by the provided context, which itself lacked the necessary employee hierarchy data.",
+      "judge_reasoning": "The model failed to identify the correct direct reports and instead calculated ARR for customers assigned directly to Maya Sharma, while the retrieved contexts lacked the necessary employee directory data to identify the correct CSMs.",
       "required_facts": [
         "3,708,000"
       ],
-      "retrieval_latency_ms": 35820.2,
+      "retrieval_latency_ms": 60344.6,
       "contexts_count": 11
     },
     {
@@ -272,7 +275,7 @@
         "2,400,000",
         "Anjali Patel"
       ],
-      "retrieval_latency_ms": 91576.6,
+      "retrieval_latency_ms": 153155.6,
       "contexts_count": 11
     }
   ]
