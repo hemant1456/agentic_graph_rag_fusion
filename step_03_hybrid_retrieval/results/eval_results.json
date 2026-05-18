@@ -1,19 +1,19 @@
 {
   "step": "step_03_hybrid_retrieval",
-  "timestamp": "2026-05-18T12:38:54",
+  "timestamp": "2026-05-18T13:36:53",
   "total_questions": 14,
   "grade_counts": {
     "PASS": 9,
-    "PARTIAL": 1,
-    "FAIL": 4
+    "PARTIAL": 2,
+    "FAIL": 3
   },
   "pass_rate": 0.64,
   "ragas_averages": {
-    "answer_correctness": 0.709,
+    "answer_correctness": 0.721,
     "faithfulness": 0.914,
-    "answer_relevancy": 0.874,
-    "context_precision": 0.206,
-    "context_recall": 0.671
+    "answer_relevancy": 0.921,
+    "context_precision": 0.256,
+    "context_recall": 0.757
   },
   "thresholds": {
     "PASS": "answer_correctness>=0.7",
@@ -36,7 +36,7 @@
         "90 day",
         "glacier"
       ],
-      "retrieval_latency_ms": 10179.5,
+      "retrieval_latency_ms": 9999.3,
       "contexts_count": 11
     },
     {
@@ -49,13 +49,13 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is accurate and fully supported by the retrieved documents, though many of the provided context chunks were irrelevant to the specific question.",
+      "judge_reasoning": "The actual answer matches the reference answer and is supported by the retrieved contexts.",
       "required_facts": [
         "Arjun Mehta",
         "Diana Volkov",
         "2019"
       ],
-      "retrieval_latency_ms": 1102.7,
+      "retrieval_latency_ms": 1028.0,
       "contexts_count": 11
     },
     {
@@ -74,7 +74,7 @@
         "Twilio",
         "Raj Patel"
       ],
-      "retrieval_latency_ms": 1256.9,
+      "retrieval_latency_ms": 1228.3,
       "contexts_count": 11
     },
     {
@@ -91,7 +91,7 @@
       "required_facts": [
         "11,000,000"
       ],
-      "retrieval_latency_ms": 1024.9,
+      "retrieval_latency_ms": 859.1,
       "contexts_count": 11
     },
     {
@@ -108,7 +108,7 @@
       "required_facts": [
         "5"
       ],
-      "retrieval_latency_ms": 1052.5,
+      "retrieval_latency_ms": 1088.9,
       "contexts_count": 11
     },
     {
@@ -125,7 +125,7 @@
       "required_facts": [
         "181"
       ],
-      "retrieval_latency_ms": 1198.2,
+      "retrieval_latency_ms": 1123.6,
       "contexts_count": 11
     },
     {
@@ -143,7 +143,7 @@
         "120,000",
         "2024-06-30"
       ],
-      "retrieval_latency_ms": 995.2,
+      "retrieval_latency_ms": 1024.2,
       "contexts_count": 11
     },
     {
@@ -161,7 +161,7 @@
         "events/batch",
         "events/stream"
       ],
-      "retrieval_latency_ms": 1154.5,
+      "retrieval_latency_ms": 1168.7,
       "contexts_count": 11
     },
     {
@@ -174,49 +174,52 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is accurate and fully supported by the retrieved context, though the system retrieved many irrelevant documents.",
+      "judge_reasoning": "The actual answer correctly identifies Priya Kapoor as the on-call engineer for the specified week, fully matching the reference; all claims are grounded in the retrieved context (specifically context [8]); the answer directly addresses the question; only one of the ten retrieved contexts (on_call_s",
       "required_facts": [
         "Priya Kapoor"
       ],
-      "retrieval_latency_ms": 923.2,
+      "retrieval_latency_ms": 1185.7,
       "contexts_count": 11
     },
     {
       "id": "Q10",
       "question": "Who is the CSM assigned to the customer 'Summit Pharma', what office location is that CSM based in, and who is that CSM's direct manager?",
       "answer": "Based on the provided documents, the CSM assigned to Summit Pharma is Anjali Patel.\n\nThe provided context does not contain information regarding the office location of Anjali Patel or the identity of her direct manager.",
-      "grade": "FAIL",
-      "answer_correctness": 0.33,
+      "grade": "PARTIAL",
+      "answer_correctness": 0.5,
       "faithfulness": 1.0,
-      "answer_relevancy": 0.33,
-      "context_precision": 0.2,
-      "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified the CSM but failed to retrieve the necessary HR documents to answer the location and manager questions, leading to an incomplete response.",
+      "answer_relevancy": 1.0,
+      "context_precision": 0.4,
+      "context_recall": 0.6,
+      "judge_reasoning": "The answer correctly identifies Anjali Patel as the CSM for Summit Pharma but honestly states that location and manager info are missing; all claims are grounded, but the retrieved contexts lack the employee directory with manager and location details.",
       "required_facts": [
         "Anjali Patel",
         "San Francisco",
         "Maya Sharma"
       ],
-      "retrieval_latency_ms": 1123.9,
+      "retrieval_latency_ms": 1331.1,
       "contexts_count": 11
     },
     {
       "id": "Q11",
-      "question": "Based on Vertexia's API dependency graph, which Vertexia services directly depend on NexusFlow's APIs? Name all of them.",
-      "answer": "Based on the provided documents, the following services directly depend on NexusFlow's APIs:\n\n*   **InsightLens:** The `events-api` (part of the NexusFlow platform) is consumed by InsightLens for its analytics ingestion path and to read materialized event streams.\n*   **DataCraft Integration:** The `NexusFlow Events API` specification lists \"DataCraft Integration\" as a consumer of the `/events/stream` endpoint.",
+      "question": "Based on Vertexia's API dependency graph, which Vertexia services directly depend on NexusFlow's APIs? Name each service AND the specific NexusFlow endpoint it consumes.",
+      "answer": "Based on the provided documents, the following services directly depend on NexusFlow's APIs:\n\n*   **InsightLens:** Consumes the `/events/stream` endpoint (as noted in the `NexusFlow Events API` specification and the InsightLens PRD).\n*   **DataCraft Integration:** Consumes the `/events/stream` endpoint (as noted in the `NexusFlow Events API` specification).\n\nAdditionally, the `Data Platform Team \u2014 On-Call Runbook` notes that **InsightLens** depends on the `events-api` for its analytics ingestion path, and the `NexusFlow System Architecture` document mentions that NexusFlow delivers data to **internal services like InsightLens**.",
       "grade": "PARTIAL",
       "answer_correctness": 0.4,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.3,
-      "context_recall": 0.0,
-      "judge_reasoning": "The answer correctly identifies InsightLens but fails to identify PulseConnect and DataCraft, and the provided context chunks did not contain the specific dependency mapping required to answer the question fully.",
+      "context_precision": 0.8,
+      "context_recall": 0.6,
+      "judge_reasoning": "The actual answer correctly identifies InsightLens and mentions DataCraft Integration but incorrectly maps endpoints and misses PulseConnect; all claims are grounded in context, but key facts from api_dependencies.csv are missing in retrieval.",
       "required_facts": [
         "InsightLens",
         "PulseConnect",
-        "DataCraft"
+        "DataCraft",
+        "events_api",
+        "pipeline_status_api",
+        "ingest_api"
       ],
-      "retrieval_latency_ms": 1136.7,
+      "retrieval_latency_ms": 1343.8,
       "contexts_count": 11
     },
     {
@@ -229,7 +232,7 @@
       "answer_relevancy": 0.3,
       "context_precision": 0.1,
       "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified that the provided context lacked the necessary information to link specific employees to the Bangalore office, though the context recall is low because the source documents indeed failed to provide the required mapping.",
+      "judge_reasoning": "The actual answer correctly states that the documents lack specific information about Bangalore-based employees reporting to Sarah Chen, which aligns with the retrieved contexts; however, the reference answer contains details not present in any retrieved context, making correctness and context recal",
       "required_facts": [
         "Priya Nair",
         "Kenji Ito",
@@ -237,7 +240,7 @@
         "Priya Kapoor",
         "Omar Faruk"
       ],
-      "retrieval_latency_ms": 1424.9,
+      "retrieval_latency_ms": 1623.2,
       "contexts_count": 11
     },
     {
@@ -254,7 +257,7 @@
       "required_facts": [
         "3,708,000"
       ],
-      "retrieval_latency_ms": 1331.1,
+      "retrieval_latency_ms": 1128.4,
       "contexts_count": 11
     },
     {
@@ -272,7 +275,7 @@
         "2,400,000",
         "Anjali Patel"
       ],
-      "retrieval_latency_ms": 2097.2,
+      "retrieval_latency_ms": 1920.1,
       "contexts_count": 11
     }
   ]
