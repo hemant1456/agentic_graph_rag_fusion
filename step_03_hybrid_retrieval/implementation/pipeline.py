@@ -1,12 +1,12 @@
 """
-Step 06 — Hybrid Retrieval pipeline (BM25 + dense vector, fused via RRF).
+Step 03 — Hybrid Retrieval pipeline (BM25 + dense vector, fused via RRF).
 
-Adds over Step 05:
+Adds over Step 02:
   - BM25 keyword retrieval alongside dense vector retrieval
   - Reciprocal Rank Fusion (RRF) to merge both ranked lists
   - Fixes keyword-exact questions (version strings, vendor names, exact dates)
 
-Retains from Step 05: CSV tool calling for aggregate questions.
+Retains from Step 02: CSV tool calling for aggregate questions.
 """
 
 import time
@@ -56,7 +56,7 @@ class Step03HybridRAG:
 
     def build(self) -> "Step03HybridRAG":
         self.collection = get_chroma_collection(STEP02_DB)
-        print(f"Loaded step04 index: {self.collection.count()} chunks")
+        print(f"Loaded baseline index: {self.collection.count()} chunks")
         self.bm25 = BM25Index().build(self.collection)
         return self
 

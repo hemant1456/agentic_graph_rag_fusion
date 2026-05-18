@@ -1,11 +1,11 @@
 """
-Entity alias table for Step 06 Graph RAG.
+Entity alias table for Step 04 Graph RAG.
 
 Maps graph node IDs → list of natural-language phrases that describe them.
 Used for alias-based entity resolution: when a query mentions "analytics dashboard",
 we resolve it to the InsightLens graph node even though the exact name isn't present.
 
-This is the key upgrade over Step 05's strict name-matching approach.
+Augments the strict name-matching in query.py with phrase-based resolution.
 """
 
 # node_id → list of lowercase keyword phrases

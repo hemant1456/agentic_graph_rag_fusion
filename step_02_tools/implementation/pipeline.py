@@ -1,12 +1,12 @@
 """
-Step 05 — CSV Tool pipeline.
+Step 02 — CSV Tool pipeline.
 
-Upgrades over Step 04:
+Upgrades over Step 01 baseline:
   - Detects aggregate questions (total ARR, Q3 revenue, headcount, etc.)
   - Runs exact Pandas queries and injects the result into LLM context
   - Fixes all Tier 2 questions that dense retrieval cannot answer
 
-Reuses: Step 04 ChromaDB index and dense retrieval.
+Reuses: Step 01 ChromaDB index and dense retrieval.
 """
 
 import time
@@ -36,7 +36,7 @@ class Step02ToolsRAG:
 
     def build(self) -> "Step02ToolsRAG":
         self.collection = get_chroma_collection(STEP02_DB)
-        print(f"Loaded step04 index: {self.collection.count()} chunks")
+        print(f"Loaded baseline index: {self.collection.count()} chunks")
         return self
 
     def query(self, question: str) -> RAGResult:

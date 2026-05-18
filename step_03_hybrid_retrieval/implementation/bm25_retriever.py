@@ -1,5 +1,5 @@
 """
-BM25 keyword retriever for Step 07.
+BM25 keyword retriever for Step 03.
 
 Loads all chunks from a ChromaDB collection at build time, builds a BM25Okapi
 index over them, and exposes a search method that returns ranked (text, meta, score)

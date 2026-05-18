@@ -1,7 +1,7 @@
 """
-Enhanced graph query module for Step 06.
+Enhanced graph query module for Step 04.
 
-Improvements over step_05/query.py:
+Adds over query.py:
   1. Alias resolution   — "analytics dashboard" → InsightLens node
   2. Aggregate queries  — sum/count over filtered node sets (e.g. enterprise ARR %)
   3. Deeper traversal   — up to 3 hops, with explicit path tracing
@@ -16,26 +16,6 @@ from step_04_knowledge_graph.implementation.query import (
     expand_context,
     extract_entity_ids as _exact_extract,
 )
-from step_04_knowledge_graph.implementation.aliases import resolve_aliases
-
-
-# ── Entity resolution ─────────────────────────────────────────────────────────
-
-def extract_entities(texts: list[str], g: nx.DiGraph) -> list[str]:
-    """
-    Resolve entity IDs from text using both:
-      - Exact name matching (Step 05)
-      - Alias / keyword matching (Step 06)
-    Deduplicates and returns unique node IDs.
-    """
-    combined = " ".join(texts)
-    exact = _exact_extract(texts, g)
-    aliases = resolve_aliases(combined)
-    seen: dict[str, None] = {}
-    for nid in exact + aliases:
-        if nid in g:
-            seen[nid] = None
-    return list(seen.keys())
 
 
 # ── Aggregate query detection + execution ────────────────────────────────────

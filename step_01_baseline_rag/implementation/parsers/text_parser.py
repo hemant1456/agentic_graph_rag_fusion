@@ -9,7 +9,6 @@ _COLON_HEADER_RE = re.compile(r"^.{1,59}:\s*$")
 
 CHUNK_SIZE = 1000
 OVERLAP = 200
-MIN_SECTION_LINES = 3
 
 
 def _filename_to_title(source: str) -> str:

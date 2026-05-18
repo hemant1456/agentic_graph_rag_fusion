@@ -1,12 +1,12 @@
 """
-Structured CSV query tools for Step 05.
+Structured CSV query tools for Step 02.
 
 Each function is a discrete Pandas query that computes an exact answer from raw
 CSV data. The pipeline calls detect_intent() to choose which tool to run, then
 injects the precise result into the LLM context alongside the retrieved chunks.
 
-This replaces pre-baked aggregate chunks (Step 04) with live computation at
-query time — the correct approach for aggregate questions.
+Replaces pre-baked aggregate chunks with live computation at query time — the
+correct approach for aggregate questions.
 """
 
 import re

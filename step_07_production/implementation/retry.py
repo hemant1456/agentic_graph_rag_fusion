@@ -20,7 +20,7 @@ def with_retry(
             for attempt in range(1, max_attempts + 1):
                 try:
                     return fn(*args, **kwargs)
-                except exceptions as exc:
+                except exceptions:
                     if attempt == max_attempts:
                         raise
                     time.sleep(delay)

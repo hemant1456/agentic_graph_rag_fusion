@@ -1,11 +1,11 @@
 """
-Step 07 — Knowledge Graph RAG pipeline.
+Step 04 — Knowledge Graph RAG pipeline.
 
-Adds over Step 06:
+Adds over Step 03:
   - Entity knowledge graph built from structured CSVs (org chart, API deps, etc.)
   - Multi-hop graph traversal appended to the retrieval context
 
-Retains from Step 06: BM25 + dense RRF retrieval, CSV tool calling.
+Retains from Step 03: BM25 + dense RRF retrieval, CSV tool calling.
 """
 
 import time

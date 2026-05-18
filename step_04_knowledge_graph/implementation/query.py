@@ -190,9 +190,3 @@ def expand_context(entity_ids: list[str], g: nx.DiGraph) -> str:
     if len(lines) == 1:
         return ""
     return "\n".join(lines)
-
-
-def get_graph_context(question: str, chunk_texts: list[str], g: nx.DiGraph) -> str:
-    """Primary entry point: extract entities from question + chunks, return graph context."""
-    entity_ids = extract_entity_ids([question] + chunk_texts, g)
-    return expand_context(entity_ids, g)
