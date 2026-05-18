@@ -1,796 +1,279 @@
 {
-  "step": "09_multi_agent",
-  "timestamp": "2026-05-17T19:38:24",
-  "total_questions": 31,
+  "step": "step_05_multi_agent",
+  "timestamp": "2026-05-18T13:04:03",
+  "total_questions": 14,
   "grade_counts": {
-    "PASS": 23,
-    "PARTIAL": 8,
-    "FAIL": 0
+    "PASS": 10,
+    "PARTIAL": 2,
+    "FAIL": 2
   },
-  "pass_rate": 0.74,
-  "pass_or_partial_rate": 1.0,
+  "pass_rate": 0.71,
+  "ragas_averages": {
+    "answer_correctness": 0.8,
+    "faithfulness": 0.714,
+    "answer_relevancy": 1.0,
+    "context_precision": 0.233,
+    "context_recall": 0.607
+  },
+  "thresholds": {
+    "PASS": "answer_correctness>=0.7",
+    "PARTIAL": ">=0.4",
+    "FAIL": "<0.4"
+  },
   "results": [
     {
       "id": "Q01",
-      "type": "simple_lookup",
       "question": "What is Vertexia's customer data retention policy for hot storage and cold storage?",
       "answer": "Vertexia's customer data retention policy is 90 days for hot storage and 1 year for cold storage (S3 Glacier).",
       "grade": "PASS",
-      "expected_outcome": "PASS",
-      "matched_expected": true,
-      "required_hits": [
+      "answer_correctness": 1.0,
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.7,
+      "context_recall": 1.0,
+      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by multiple retrieved contexts; most retrieved contexts are relevant but a few (e.g., vendor matrix, founding story) are not directly needed.",
+      "required_facts": [
         "90 day",
         "glacier"
       ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "hr/onboarding_handbook.txt",
-        "legal/phoenix_corp_msa.txt",
-        "legal/ip_policy.txt",
-        "legal/data_processing_agreement_template.txt",
-        "legal/data_processing_agreement_template.txt"
-      ],
-      "context_chars": 110,
-      "retrieval_latency_ms": 1165.4,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 134509.5,
+      "contexts_count": 11
     },
     {
       "id": "Q02",
-      "type": "simple_lookup",
       "question": "Who co-founded Vertexia and in what year was the company founded?",
       "answer": "Vertexia was co-founded by Arjun Mehta and Diana Volkov in March 2019.",
       "grade": "PASS",
-      "expected_outcome": "PASS",
-      "matched_expected": true,
-      "required_hits": [
+      "answer_correctness": 1.0,
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.5,
+      "context_recall": 1.0,
+      "judge_reasoning": "The actual answer perfectly matches the reference and is fully supported by the contexts, but only half of the retrieved contexts are relevant to the question.",
+      "required_facts": [
         "Arjun Mehta",
         "Diana Volkov",
         "2019"
       ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "hr/onboarding_handbook.txt",
-        "executive/founding_story.txt",
-        "executive/company_strategy_2024.txt",
-        "hr/org_chart_q1_2023.txt",
-        "product/pulseconnect_roadmap_2024.txt"
-      ],
-      "context_chars": 70,
-      "retrieval_latency_ms": 900.9,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 91214.0,
+      "contexts_count": 11
     },
     {
       "id": "Q03",
-      "type": "simple_lookup",
-      "question": "What was Sarah Chen's job title before she was promoted to CTO in April 2023?",
-      "answer": "Before her promotion to Chief Technology Officer on April 10, 2023, Sarah Chen held the title of VP Engineering.",
-      "grade": "PASS",
-      "expected_outcome": "PASS",
-      "matched_expected": true,
-      "required_hits": [
-        "VP Engineering"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "executive/board_meeting_april_2023.txt",
-        "hr/promotion_announcements_2023.txt",
-        "hr/promotion_announcements_2023.txt",
-        "hr/org_chart_q1_2023.txt",
-        "executive/founding_story.txt"
-      ],
-      "context_chars": 112,
-      "retrieval_latency_ms": 1030.9,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q04",
-      "type": "simple_lookup",
-      "question": "What are the three main products Vertexia sells?",
-      "answer": "The three main products Vertexia sells are NexusFlow, InsightLens, and PulseConnect.",
-      "grade": "PASS",
-      "expected_outcome": "PASS",
-      "matched_expected": true,
-      "required_hits": [
-        "NexusFlow",
-        "InsightLens",
-        "PulseConnect"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "product/user_research_q3_2023.txt",
-        "executive/founding_story.txt",
-        "finance/series_c_announcement.txt",
-        "finance/series_b_investor_update.txt",
-        "engineering/nexusflow_architecture.md"
-      ],
-      "context_chars": 84,
-      "retrieval_latency_ms": 825.0,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q05",
-      "type": "simple_lookup",
-      "question": "What message queue technology does Vertexia's data pipeline use after the DataCraft integration was completed?",
-      "answer": "After the DataCraft integration was completed, Vertexia's data pipeline uses Apache Pulsar as its message queue technology. The term \"message queue\" in this query refers to the product/service external_pulsar in Vertexia's system.",
-      "grade": "PASS",
-      "expected_outcome": "PASS",
-      "matched_expected": true,
-      "required_hits": [
-        "Pulsar"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "engineering/datacraft_original_architecture.md",
-        "engineering/nexusflow_architecture.md",
-        "executive/founding_story.txt",
-        "product/user_research_q3_2023.txt",
-        "engineering/nexusflow_architecture.md"
-      ],
-      "context_chars": 230,
-      "retrieval_latency_ms": 799.5,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q06",
-      "type": "simple_lookup",
-      "question": "What uptime SLA does the Phoenix Corp Master Service Agreement require for Vertexia's data pipeline services?",
-      "answer": "The Phoenix Corp Master Service Agreement requires a 99.99% uptime SLA for the NexusFlow and InsightLens services.",
-      "grade": "PASS",
-      "expected_outcome": "PASS",
-      "matched_expected": true,
-      "required_hits": [
-        "99.99"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "legal/phoenix_corp_msa.txt",
-        "legal/phoenix_corp_msa.txt",
-        "sales/phoenix_corp_deal_summary.txt",
-        "legal/phoenix_corp_msa.txt",
-        "legal/phoenix_corp_msa.txt"
-      ],
-      "context_chars": 114,
-      "retrieval_latency_ms": 1001.2,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q07",
-      "type": "simple_lookup",
-      "question": "How many engineers joined Vertexia through the DataCraft acquisition?",
-      "answer": "Exactly 12 engineers joined Vertexia through the DataCraft acquisition.",
-      "grade": "PASS",
-      "expected_outcome": "PASS",
-      "matched_expected": true,
-      "required_hits": [
-        "12"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "hr/datacraft_employee_integration.txt",
-        "engineering/datacraft_original_architecture.md",
-        "legal/datacraft_acquisition_summary.txt",
-        "legal/datacraft_acquisition_summary.txt",
-        "legal/datacraft_acquisition_summary.txt"
-      ],
-      "context_chars": 71,
-      "retrieval_latency_ms": 791.5,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q08",
-      "type": "chunking_dependent",
       "question": "In Vertexia's on-call runbook, what is the first action and the escalation owner for the PulseConnect webhook delivery failure alert?",
-      "answer": "The first action for the PulseConnect webhook_delivery_failure_rate > 5% alert is to check the external_sendgrid quota dashboard and the external_twilio API status page, and to inspect the outbound retry queue depth in the PulseConnect admin UI. The escalation owner is Raj Patel.",
+      "answer": "The first action for the PulseConnect webhook_delivery_failure_rate > 5% alert is to check the external_sendgrid quota dashboard and the external_twilio API status page, and to inspect the outbound retry queue depth in the PulseConnect admin UI. The escalation owner for this alert is Raj Patel.",
       "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
+      "answer_correctness": 1.0,
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.1,
+      "context_recall": 1.0,
+      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by context [3]; minor naming variation ('external_sendgrid' vs 'SendGrid') is format-tolerant; only context [3] is relevant, others are unrelated.",
+      "required_facts": [
         "SendGrid",
         "Twilio",
         "Raj Patel"
       ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "engineering/oncall_runbook_top_alerts.md",
-        "engineering/oncall_runbook_top_alerts.md",
-        "engineering/oncall_runbook_top_alerts.md",
-        "engineering/oncall_runbook_top_alerts.md",
-        "engineering/data_platform_runbook.md"
-      ],
-      "context_chars": 280,
-      "retrieval_latency_ms": 1037.2,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 183157.5,
+      "contexts_count": 11
     },
     {
-      "id": "Q09",
-      "type": "chunking_dependent",
-      "question": "According to Vertexia's vendor data processing matrix, what sub-processors does Datadog use, and what is its data retention period for traces and logs?",
-      "answer": "According to the Vertexia Vendor Data Processing Matrix, Datadog uses AWS us-east-1, eu-west-1, and ap-southeast-1 as sub-processors. Its data retention period for traces and logs is 15 months.",
-      "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "us-east-1",
-        "eu-west-1",
-        "ap-southeast-1",
-        "15 months"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "legal/vendor_data_processing_matrix.md",
-        "legal/vendor_data_processing_matrix.md",
-        "legal/data_processing_agreement_template.txt",
-        "legal/vendor_data_processing_matrix.md",
-        "legal/vendor_data_processing_matrix.md"
-      ],
-      "context_chars": 193,
-      "retrieval_latency_ms": 1070.4,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q10",
-      "type": "csv_aggregate",
+      "id": "Q04",
       "question": "What is the total ARR across all Vertexia customers combined?",
       "answer": "The total ARR across all Vertexia customers combined is $11,000,000.",
       "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
+      "answer_correctness": 1.0,
+      "faithfulness": 0.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.0,
+      "context_recall": 0.0,
+      "judge_reasoning": "The actual answer is factually correct but not supported by any retrieved context containing the customer_list.csv data or ARR sum, making it hallucinated.",
+      "required_facts": [
         "11,000,000"
       ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "sales/sales_playbook_2023.txt",
-        "finance/q3_2023_finance_report.txt",
-        "finance/q3_2023_finance_report.txt",
-        "engineering/datacraft_original_architecture.md",
-        "finance/series_b_investor_update.txt"
-      ],
-      "context_chars": 68,
-      "retrieval_latency_ms": 957.6,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 91241.4,
+      "contexts_count": 11
     },
     {
-      "id": "Q11",
-      "type": "csv_aggregate",
-      "question": "What was the total revenue across all products combined in Q3 2023 (July, August, and September)?",
-      "answer": "The total revenue across all products combined in Q3 2023 was $4,120,000.",
+      "id": "Q05",
+      "question": "How many active Vertexia employees are based in the Berlin office?",
+      "answer": "There are 5 active Vertexia employees based in the Berlin office.",
       "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "4,120,000"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "finance/q3_2023_finance_report.txt",
-        "sales/q3_closed_won_report.txt",
-        "executive/q3_2023_allhands_notes.txt",
-        "product/user_research_q3_2023.txt",
-        "product/user_research_q3_2023.txt"
-      ],
-      "context_chars": 73,
-      "retrieval_latency_ms": 846.4,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q12",
-      "type": "csv_aggregate",
-      "question": "How many active Vertexia employees are based in Berlin?",
-      "answer": "There are 5 active Vertexia employees based in Berlin.",
-      "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
+      "answer_correctness": 1.0,
+      "faithfulness": 0.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.0,
+      "context_recall": 0.0,
+      "judge_reasoning": "The actual answer is factually correct and matches the reference, but the retrieved contexts do not mention the Berlin office or the number of employees there, making the answer ungrounded in the provided context.",
+      "required_facts": [
         "5"
       ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "legal/ip_policy.txt",
-        "executive/q3_2023_allhands_notes.txt",
-        "hr/org_chart_q1_2023.txt",
-        "sales/sales_playbook_2023.txt",
-        "hr/datacraft_employee_integration.txt"
-      ],
-      "context_chars": 54,
-      "retrieval_latency_ms": 881.7,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 181927.0,
+      "contexts_count": 11
     },
     {
-      "id": "Q13",
-      "type": "csv_aggregate",
-      "question": "What is the total planned headcount across all departments in Vertexia's 2023 budget?",
-      "answer": "The total planned headcount across all departments in Vertexia's 2023 budget is 181.",
+      "id": "Q06",
+      "question": "What is the total planned headcount across all departments in Vertexia's 2023 budget allocation?",
+      "answer": "The total planned headcount across all departments in Vertexia's 2023 budget allocation is 181.",
       "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
+      "answer_correctness": 1.0,
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.73,
+      "context_recall": 1.0,
+      "judge_reasoning": "The answer is accurate and fully supported by the provided context, though the retrieved set included several irrelevant documents.",
+      "required_facts": [
         "181"
       ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "finance/budget_allocation_2023.csv",
-        "finance/q3_2023_finance_report.txt",
-        "finance/budget_allocation_2023.csv",
-        "hr/org_chart_q3_2023.txt",
-        "sales/sales_playbook_2023.txt"
-      ],
-      "context_chars": 84,
-      "retrieval_latency_ms": 827.0,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 91072.6,
+      "contexts_count": 11
     },
     {
-      "id": "Q14",
-      "type": "csv_aggregate",
-      "question": "What was the total ARR from all Closed-Won deals in Q3 2023?",
-      "answer": "The total ARR from all Closed-Won deals in Q3 2023 was $1,692,000.",
+      "id": "Q07",
+      "question": "According to Vertexia's vendor contracts summary, what is the annual contract value for Snowflake and when does that contract renew?",
+      "answer": "The annual contract value for Snowflake is $120,000, and the contract renews on 2024-06-30.",
       "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "1,692,000"
+      "answer_correctness": 1.0,
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.09,
+      "context_recall": 1.0,
+      "judge_reasoning": "The answer is accurate and fully supported by the retrieved context, though only one of the eleven provided context chunks was relevant to the query.",
+      "required_facts": [
+        "120,000",
+        "2024-06-30"
       ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "sales/q3_closed_won_report.txt",
-        "sales/q3_closed_won_report.txt",
-        "finance/q3_2023_finance_report.txt",
-        "executive/q3_2023_allhands_notes.txt",
-        "sales/deal_pipeline_q3_2023.csv"
-      ],
-      "context_chars": 66,
-      "retrieval_latency_ms": 908.3,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 79199.7,
+      "contexts_count": 11
     },
     {
-      "id": "Q15",
-      "type": "keyword_exact",
-      "question": "What specific action items were documented in the NexusFlow v2.1 postmortem and who owns each one?",
-      "answer": "The NexusFlow v2.1 postmortem documents two specific action items:\n\n*   AI-4: Document the InsightLens to NexusFlow events_api dependency in the service catalog so downstream impact is visible during incidents. This is owned by Aisha Johnson.\n*   AI-5: Reinforce blameless culture in the follow-up review. This is owned by Yuki Tanaka.",
-      "grade": "PARTIAL",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [],
-      "required_missing": [
-        "max_connections",
-        "config validation",
-        "canary"
-      ],
-      "sources_retrieved": [
-        "engineering/nexusflow_v21_postmortem.txt",
-        "engineering/nexusflow_api_changelog.md",
-        "engineering/nexusflow_v21_postmortem.txt",
-        "sales/sales_playbook_2023.txt",
-        "engineering/nexusflow_v21_postmortem.txt"
-      ],
-      "context_chars": 335,
-      "retrieval_latency_ms": 1113.0,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q16",
-      "type": "keyword_exact",
-      "question": "Who was the on-call engineer for the NexusFlow team during the week of August 14, 2023?",
-      "answer": "Kenji Ito was the on-call engineer for the week of August 14, 2023.",
-      "grade": "PARTIAL",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [],
-      "required_missing": [
-        "Yuki Tanaka"
-      ],
-      "sources_retrieved": [
-        "executive/founding_story.txt",
-        "engineering/nexusflow_v21_postmortem.txt",
-        "product/user_research_q3_2023.txt",
-        "engineering/nexusflow_architecture.md",
-        "executive/q3_2023_allhands_notes.txt"
-      ],
-      "context_chars": 67,
-      "retrieval_latency_ms": 972.8,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q17",
-      "type": "keyword_exact",
-      "question": "What is Vertexia's annual spend on AWS and when does that contract renew?",
-      "answer": "Vertexia's annual spend on AWS is $480,000, and the contract renews on 2024-12-31.",
-      "grade": "PARTIAL",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "480,000"
-      ],
-      "required_missing": [
-        "December 31, 2024"
-      ],
-      "sources_retrieved": [
-        "finance/vendor_contracts_summary.csv",
-        "legal/phoenix_corp_msa.txt",
-        "sales/sales_playbook_2023.txt",
-        "finance/q3_2023_finance_report.txt",
-        "hr/onboarding_handbook.txt"
-      ],
-      "context_chars": 82,
-      "retrieval_latency_ms": 795.6,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q18",
-      "type": "keyword_exact",
-      "question": "What is Vertexia's annual spend on Snowflake and when does the contract expire?",
-      "answer": "Vertexia's annual spend on Snowflake is $120,000, and the contract expires on 2024-06-30.",
-      "grade": "PARTIAL",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "120,000"
-      ],
-      "required_missing": [
-        "June 30, 2024"
-      ],
-      "sources_retrieved": [
-        "legal/vendor_data_processing_matrix.md",
-        "legal/phoenix_corp_msa.txt",
-        "sales/sales_playbook_2023.txt",
-        "sales/q3_closed_won_report.txt",
-        "hr/onboarding_handbook.txt"
-      ],
-      "context_chars": 89,
-      "retrieval_latency_ms": 844.6,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q19",
-      "type": "keyword_exact",
+      "id": "Q08",
       "question": "Which NexusFlow API endpoint was deprecated in v2.1, and what endpoint replaced it?",
       "answer": "The `GET /v2/events/batch` endpoint was deprecated in v2.1 and replaced by `GET /v2/events/stream`.",
       "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
+      "answer_correctness": 1.0,
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.1,
+      "context_recall": 1.0,
+      "judge_reasoning": "The answer is accurate and fully supported by context [6], though most of the provided context chunks were irrelevant to the specific question.",
+      "required_facts": [
         "events/batch",
         "events/stream"
       ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "engineering/nexusflow_api_changelog.md",
-        "engineering/nexusflow_api_changelog.md",
-        "engineering/nexusflow_api_changelog.md",
-        "engineering/nexusflow_architecture.md",
-        "engineering/nexusflow_api_changelog.md"
-      ],
-      "context_chars": 99,
-      "retrieval_latency_ms": 1017.0,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 68110.5,
+      "contexts_count": 11
     },
     {
-      "id": "Q20",
-      "type": "keyword_exact",
-      "question": "Who is the remediation owner for security audit finding M-2, and what was the target remediation date?",
-      "answer": "The remediation owner for security audit finding M-2 is Daniel Osei, and the target remediation date is 2023-10-31.",
+      "id": "Q09",
+      "question": "Per Vertexia's Q4 2023 on-call schedule, who was the on-call engineer for the Data Platform Team during the week starting 2023-10-16?",
+      "answer": "Priya Kapoor was the on-call engineer for the Data Platform Team during the week starting 2023-10-16.",
+      "grade": "PASS",
+      "answer_correctness": 1.0,
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.09,
+      "context_recall": 1.0,
+      "judge_reasoning": "The answer is factually accurate and fully supported by the retrieved context, though the system retrieved many irrelevant documents.",
+      "required_facts": [
+        "Priya Kapoor"
+      ],
+      "retrieval_latency_ms": 30823.3,
+      "contexts_count": 11
+    },
+    {
+      "id": "Q10",
+      "question": "Who is the CSM assigned to the customer 'Summit Pharma', what office location is that CSM based in, and who is that CSM's direct manager?",
+      "answer": "The CSM assigned to Summit Pharma is Anjali Patel. She is based in the San Francisco office, and her direct manager is Maya Sharma.",
       "grade": "PARTIAL",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "Daniel Osei"
+      "answer_correctness": 0.5,
+      "faithfulness": 0.5,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.1,
+      "context_recall": 0.5,
+      "judge_reasoning": "The model correctly identified the CSM but hallucinated the office location and manager, as those facts were not present in the provided retrieved contexts.",
+      "required_facts": [
+        "Anjali Patel",
+        "San Francisco",
+        "Maya Sharma"
       ],
-      "required_missing": [
-        "October 31, 2023"
-      ],
-      "sources_retrieved": [
-        "engineering/security_audit_2023.txt",
-        "engineering/security_audit_2023.txt",
-        "engineering/security_audit_2023.txt",
-        "engineering/security_audit_2023.txt",
-        "engineering/security_audit_2023.txt"
-      ],
-      "context_chars": 115,
-      "retrieval_latency_ms": 1012.4,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 91250.2,
+      "contexts_count": 11
     },
     {
-      "id": "Q21",
-      "type": "multi_hop",
-      "question": "Who is the CSM managing the Phoenix Corp account, and who is that person's direct manager?",
-      "answer": "The Customer Success Manager managing the Phoenix Corp account is Maya Sharma. Her direct manager is Lisa Torres.",
-      "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "Maya Sharma",
-        "Lisa Torres"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "sales/phoenix_corp_deal_summary.txt",
-        "sales/q3_closed_won_report.txt",
-        "hr/org_chart_q3_2023.txt",
-        "sales/phoenix_corp_deal_summary.txt",
-        "engineering/datacraft_original_architecture.md"
-      ],
-      "context_chars": 113,
-      "retrieval_latency_ms": 1087.8,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q22",
-      "type": "multi_hop",
-      "question": "Which services have a critical dependency on NexusFlow's events_api endpoint?",
-      "answer": "The InsightLens product has a critical dependency on the NexusFlow events_api endpoint.",
+      "id": "Q11",
+      "question": "Based on Vertexia's API dependency graph, which Vertexia services directly depend on NexusFlow's APIs? Name all of them.",
+      "answer": "Based on Vertexia's API dependency graph, the services that directly depend on NexusFlow's APIs are InsightLens, PulseConnect, and DataCraft.",
       "grade": "PARTIAL",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "InsightLens"
-      ],
-      "required_missing": [
-        "DataCraft"
-      ],
-      "sources_retrieved": [
-        "engineering/nexusflow_v21_postmortem.txt",
-        "engineering/project_phoenix_migration.md",
-        "engineering/nexusflow_v21_postmortem.txt",
-        "product/insightlens_prd_v1.md",
-        "engineering/data_platform_runbook.md"
-      ],
-      "context_chars": 87,
-      "retrieval_latency_ms": 936.6,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q23",
-      "type": "multi_hop",
-      "question": "Who was the on-call engineer for the Data Platform team during the week of August 14, 2023?",
-      "answer": "Kenji Ito was the on-call engineer for the Data Platform team during the week of August 14, 2023.",
-      "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "Kenji Ito"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "executive/q3_2023_allhands_notes.txt",
-        "executive/founding_story.txt",
-        "engineering/data_platform_runbook.md",
-        "finance/q3_2023_finance_report.txt",
-        "hr/org_chart_q3_2023.txt"
-      ],
-      "context_chars": 97,
-      "retrieval_latency_ms": 827.2,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q24",
-      "type": "multi_hop",
-      "question": "If NexusFlow goes down entirely, which services are directly or indirectly affected? List all of them.",
-      "answer": "If NexusFlow goes down entirely, the following services are directly or indirectly affected:\n\n*   InsightLens (directly via events_api and connectors_api)\n*   PulseConnect (indirectly via pipeline_status_api)\n*   DataCraft (directly via ingest_api)\n*   external_snowflake (indirectly via InsightLens)\n*   external_aws_s3 (indirectly via InsightLens and DataCraft)\n*   external_pulsar (indirectly via InsightLens and DataCraft)",
-      "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
+      "answer_correctness": 0.5,
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.3,
+      "context_recall": 0.0,
+      "judge_reasoning": "The answer correctly identifies the services but fails to include the specific API dependencies required by the reference answer, and the provided context chunks do not contain the information necessary to verify those specific dependencies.",
+      "required_facts": [
         "InsightLens",
         "PulseConnect",
         "DataCraft"
       ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "engineering/nexusflow_v21_postmortem.txt",
-        "legal/phoenix_corp_msa.txt",
-        "engineering/nexusflow_v21_postmortem.txt",
-        "hr/onboarding_handbook.txt",
-        "sales/q3_closed_won_report.txt"
-      ],
-      "context_chars": 426,
-      "retrieval_latency_ms": 1597.2,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 123694.2,
+      "contexts_count": 11
     },
     {
-      "id": "Q25",
-      "type": "multi_hop",
-      "question": "Who does Aisha Johnson report to, and who does that person report to? Give the full two-hop reporting chain.",
-      "answer": "Aisha Johnson reports to Tom\u00e1s Garc\u00eda, and Tom\u00e1s Garc\u00eda reports to Sarah Chen.",
-      "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "Tom\u00e1s Garc\u00eda",
-        "Sarah Chen"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "hr/promotion_announcements_2023.txt",
-        "hr/promotion_announcements_2023.txt",
-        "hr/promotion_announcements_2023.txt",
-        "hr/promotion_announcements_2023.txt",
-        "hr/org_chart_q1_2023.txt"
-      ],
-      "context_chars": 78,
-      "retrieval_latency_ms": 993.8,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q26",
-      "type": "multi_hop",
-      "question": "What external and internal services does PulseConnect depend on according to the API dependency data?",
-      "answer": "According to the API dependency data, PulseConnect depends on the following services:\n\nInternal services:\n* InsightLens (via metrics_api)\n* NexusFlow (via pipeline_status_api)\n\nExternal services:\n* external_sendgrid (via api_v3)\n* external_twilio (via api)\n\nThe term \"pulsar\" in this query refers to the product/service external_pulsar in Vertexia's system.",
-      "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "InsightLens",
-        "NexusFlow",
-        "sendgrid",
-        "twilio"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "engineering/api_dependencies.csv",
-        "sales/sales_playbook_2023.txt",
-        "product/pulseconnect_roadmap_2024.txt",
-        "engineering/data_platform_runbook.md",
-        "engineering/api_dependencies.csv"
-      ],
-      "context_chars": 357,
-      "retrieval_latency_ms": 1215.2,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q27",
-      "type": "disambiguation",
-      "question": "There are two different things at Vertexia referred to as 'Project Phoenix'. What is each one and what was the outcome of each?",
-      "answer": "The two efforts referred to as \"Project Phoenix\" are as follows:\n\nThe first is the infrastructure migration of the NexusFlow codebase from Python 2 to Python 3, which was completed in June 2022.\n\nThe second is the Phoenix Corp Master Service Agreement, a landmark enterprise contract signed on June 1, 2022, which remains active.",
-      "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "migration",
-        "signed",
-        "Phoenix Corp"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "executive/founding_story.txt",
-        "legal/phoenix_corp_msa.txt",
-        "sales/phoenix_corp_deal_summary.txt",
-        "engineering/datacraft_original_architecture.md",
-        "executive/company_strategy_2024.txt"
-      ],
-      "context_chars": 329,
-      "retrieval_latency_ms": 1239.3,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q28",
-      "type": "cross_document",
-      "question": "Does Vertexia's documented NexusFlow availability target meet the uptime requirement in the Phoenix Corp contract? What is the gap if any?",
-      "answer": "No, Vertexia's standard NexusFlow architecture target of 99.9% does not meet the 99.99% uptime SLA required by the Phoenix Corp contract. The gap between these two targets is 0.09%.",
-      "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "99.9",
-        "99.99"
-      ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "legal/phoenix_corp_msa.txt",
-        "legal/phoenix_corp_msa.txt",
-        "sales/phoenix_corp_deal_summary.txt",
-        "executive/company_strategy_2024.txt",
-        "sales/phoenix_corp_deal_summary.txt"
-      ],
-      "context_chars": 181,
-      "retrieval_latency_ms": 978.9,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
-    },
-    {
-      "id": "Q29",
-      "type": "cross_document",
-      "question": "Was InsightLens impacted by the August 2023 NexusFlow outage? If so, explain why via the dependency chain, and name the on-call engineer for each affected service.",
-      "answer": "Yes, InsightLens was impacted by the August 14, 2023, NexusFlow outage. InsightLens is operationally dependent on the NexusFlow `events_api` as its primary upstream source for product-usage analytics; when the NexusFlow data ingestion service experienced a rate limiter misconfiguration, the resulting throughput drop caused InsightLens dashboards to go dark.\n\nThe on-call engineer for the Data Platform Team (NexusFlow) during the week of the outage was not explicitly named in the provided records. The on-call engineer for the InsightLens team during the week of the outage was Aisha Johnson.",
-      "grade": "PARTIAL",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "InsightLens",
-        "events_api"
-      ],
-      "required_missing": [
+      "id": "Q12",
+      "question": "Which active Vertexia employees located in the Bangalore office report \u2014 directly or indirectly, through any number of management hops \u2014 to the CTO Sarah Chen? List every such employee.",
+      "answer": "The active Vertexia employees located in the Bangalore office who report to Sarah Chen are Priya Nair, Kenji Ito, Adrian Blake, and Priya Kapoor.",
+      "grade": "FAIL",
+      "answer_correctness": 0.2,
+      "faithfulness": 0.5,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.1,
+      "context_recall": 0.0,
+      "judge_reasoning": "The model hallucinated names not present in the provided context and failed to retrieve the specific employee list required to answer the question.",
+      "required_facts": [
+        "Priya Nair",
         "Kenji Ito",
-        "Yuki Tanaka"
+        "Lin Wei",
+        "Priya Kapoor",
+        "Omar Faruk"
       ],
-      "sources_retrieved": [
-        "executive/q3_2023_allhands_notes.txt",
-        "finance/q3_2023_finance_report.txt",
-        "product/insightlens_prd_v1.md",
-        "engineering/nexusflow_v21_postmortem.txt",
-        "engineering/rfc_001_event_schema.md"
-      ],
-      "context_chars": 595,
-      "retrieval_latency_ms": 1619.9,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 91244.0,
+      "contexts_count": 11
     },
     {
-      "id": "Q30",
-      "type": "cross_document",
-      "question": "What was the combined ARR from all Closed-Won deals across both Q3 and Q4 2023 (the full second half of the year)?",
-      "answer": "The combined ARR from all Closed-Won deals for Q3 2023 is $1,692,000. The provided context does not contain data regarding Closed-Won deals for Q4 2023.",
-      "grade": "PARTIAL",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [],
-      "required_missing": [
-        "3,456,000"
+      "id": "Q13",
+      "question": "What is the combined ARR (sum of arr_usd in customer_list.csv) of all customers whose assigned CSM is an active direct report of Maya Sharma per the employee directory?",
+      "answer": "The combined ARR of customers whose CSM is an active direct report of Maya Sharma is $912,000.",
+      "grade": "FAIL",
+      "answer_correctness": 0.0,
+      "faithfulness": 0.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.0,
+      "context_recall": 0.0,
+      "judge_reasoning": "The model failed to identify the correct direct reports and hallucinated a value not supported by the provided context, which itself lacked the necessary employee hierarchy data.",
+      "required_facts": [
+        "3,708,000"
       ],
-      "sources_retrieved": [
-        "sales/q3_closed_won_report.txt",
-        "sales/q3_closed_won_report.txt",
-        "finance/series_c_announcement.txt",
-        "product/pulseconnect_roadmap_2024.txt",
-        "executive/company_strategy_2024.txt"
-      ],
-      "context_chars": 152,
-      "retrieval_latency_ms": 992.8,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 35820.2,
+      "contexts_count": 11
     },
     {
-      "id": "Q31",
-      "type": "cross_document",
-      "question": "Which employees left Vertexia voluntarily in 2023? For each person, state their department, last day, and the stated reason for departure.",
-      "answer": "The employees who left Vertexia voluntarily in 2023 are as follows:\n\nAdrian Blake, from the Platform Engineering department, had a last day of 2023-08-31. The stated reason for departure was that he joined competitor FinDataCo.\n\nPreet Kaur, from the Revenue department, had a last day of 2023-06-30. The stated reason for departure was that she relocated internationally.",
+      "id": "Q14",
+      "question": "Consider Vertexia's active Customer Success Managers (role contains 'Customer Success Manager') who started at the company in 2022 per the employee directory. What is the combined ARR in customer_list.csv of the customers assigned to those CSMs?",
+      "answer": "The active Customer Success Managers who started in 2022 are Anjali Patel (start_date: 2022-03-15). \n\nThe customers assigned to Anjali Patel and their respective ARR are:\n* Summit Pharma: $300,000\n* OmegaLogistics: $156,000\n* Redwood Analytics: $720,000\n* Ironclad Security: $384,000\n* Northgate Bank: $840,000\n\nThe combined ARR for these customers is $2,400,000.",
       "grade": "PASS",
-      "expected_outcome": "FAIL",
-      "matched_expected": false,
-      "required_hits": [
-        "Adrian Blake",
-        "FinDataCo",
-        "Preet Kaur",
-        "relocated"
+      "answer_correctness": 1.0,
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.45,
+      "context_recall": 1.0,
+      "judge_reasoning": "The answer is factually accurate and fully supported by the provided context, though the retrieved set included several irrelevant documents.",
+      "required_facts": [
+        "2,400,000",
+        "Anjali Patel"
       ],
-      "required_missing": [],
-      "sources_retrieved": [
-        "hr/datacraft_employee_integration.txt",
-        "legal/ip_policy.txt",
-        "legal/phoenix_corp_msa.txt",
-        "hr/org_chart_q1_2023.txt",
-        "hr/org_chart_q3_2023.txt"
-      ],
-      "context_chars": 371,
-      "retrieval_latency_ms": 1216.6,
-      "generation_latency_ms": 0.0,
-      "provider": "multi-agent:gemini-direct"
+      "retrieval_latency_ms": 91576.6,
+      "contexts_count": 11
     }
   ]
 }
