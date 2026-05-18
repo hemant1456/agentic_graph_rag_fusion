@@ -40,10 +40,10 @@ Scored with RAGAS via `llm_gatewayV2` (cerebras → gemini → groq fallback). `
 
 | Step | PASS | PART | FAIL | answer_correctness | faithfulness | context_recall | context_precision | answer_relevancy |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| step_01_baseline_rag | _pending_ | | | | | | | |
-| step_02_tools | _pending_ | | | | | | | |
-| step_03_hybrid_retrieval | _pending_ | | | | | | | |
-| step_04_knowledge_graph | _pending_ | | | | | | | |
+| step_01_baseline_rag | 8 | 2 | 5 | 0.587 | 1.000 | 0.640 | 0.383 | 0.847 |
+| step_02_tools | 4 | 5 | 6 | 0.489 | 0.773 | 0.533 | 0.000 | 0.618 |
+| step_03_hybrid_retrieval | 4 | 4 | 7 | 0.402 | 0.733 | 0.667 | 0.000 | 0.642 |
+| step_04_knowledge_graph | 1 | 0 | 14 | 0.059 | 0.067 | 0.589 | 0.000 | 0.523 |
 | step_05_multi_agent | _pending_ | | | | | | | |
 | step_06_context_engineering | _pending_ | | | | | | | |
 | step_07_production | _pending_ | | | | | | | |
