@@ -13,12 +13,12 @@ from dotenv import load_dotenv
 load_dotenv(_PROJECT_ROOT / ".env")
 
 from step_01_baseline_rag.implementation.pipeline import RAGResult
-from step_07_vsa.implementation.pipeline import Step07RAG, Step07Result
-from step_08_production.implementation.confidence import score_answer
-from step_08_production.implementation.graceful_degradation import extractive_fallback
-from step_08_production.implementation.health_monitor import HealthMonitor
-from step_08_production.implementation.retry import with_retry
-from step_08_production.implementation.semantic_cache import SemanticCache
+from step_06_context_engineering.implementation.pipeline import Step06RAG, Step06Result
+from step_07_production.implementation.confidence import score_answer
+from step_07_production.implementation.graceful_degradation import extractive_fallback
+from step_07_production.implementation.health_monitor import HealthMonitor
+from step_07_production.implementation.retry import with_retry
+from step_07_production.implementation.semantic_cache import SemanticCache
 
 CORPUS_PATH = _PROJECT_ROOT / "dataset" / "company_data"
 GRAPH_PATH  = _PROJECT_ROOT / "step_04_knowledge_graph" / "results" / "graph.json"
@@ -29,7 +29,7 @@ _global_monitor: HealthMonitor | None = None
 
 
 @dataclass
-class Step08Result:
+class Step07Result:
     """Extended result with all production metadata."""
     rag_result: RAGResult
     slice_name: str
@@ -42,7 +42,7 @@ class Step08Result:
     health_snapshot: dict
 
 
-class Step08RAG:
+class Step07RAG:
     """
     Production-hardened RAG pipeline.
     """
@@ -50,13 +50,13 @@ class Step08RAG:
     def __init__(self, k: int = 5, cache_threshold: float = 0.92) -> None:
         self.k = k
         self.cache_threshold = cache_threshold
-        self._inner: Step07RAG | None = None
+        self._inner: Step06RAG | None = None
         self._cache: SemanticCache | None = None
         self._monitor: HealthMonitor | None = None
 
-    def build(self) -> "Step08RAG":
+    def build(self) -> "Step07RAG":
         global _global_cache, _global_monitor
-        self._inner = Step07RAG(k=self.k).build()
+        self._inner = Step06RAG(k=self.k).build()
         if _global_cache is None:
             _global_cache = SemanticCache(threshold=self.cache_threshold)
         if _global_monitor is None:
@@ -65,7 +65,7 @@ class Step08RAG:
         self._monitor = _global_monitor
         return self
 
-    def query_extended(self, question: str) -> Step08Result:
+    def query_extended(self, question: str) -> Step07Result:
         if self._inner is None:
             raise RuntimeError("Call .build() before .query()")
 
@@ -92,7 +92,7 @@ class Step08RAG:
                 retrieval_latency_ms=latency_ms,
                 generation_latency_ms=0.0,
             )
-            return Step08Result(
+            return Step07Result(
                 rag_result=rag_result,
                 slice_name="cache",
                 router_confidence=1.0,
@@ -112,7 +112,7 @@ class Step08RAG:
         @with_retry(max_attempts=3, base_delay=0.5, exceptions=(Exception,))
         def _run_pipeline():
             nonlocal answer, provider, ce_metrics, slice_name, router_confidence, display_chunks
-            ext: Step07Result = self._inner.query_extended(question)
+            ext: Step06Result = self._inner.query_extended(question)
             answer = ext.rag_result.answer
             provider = ext.rag_result.provider
             ce_metrics = ext.ce_metrics
@@ -157,7 +157,7 @@ class Step08RAG:
             retrieval_latency_ms=latency_ms,
             generation_latency_ms=0.0,
         )
-        return Step08Result(
+        return Step07Result(
             rag_result=rag_result,
             slice_name=slice_name,
             router_confidence=router_confidence,

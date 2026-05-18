@@ -22,21 +22,19 @@ A production-grade **Agentic Graph RAG Fusion** system over company-level hetero
 
 ## The Progression Model
 
-10 numbered pipeline steps, plus 3 unnumbered utility folders that support them.
+7 numbered pipeline steps, plus 3 unnumbered utility folders that support them.
 
 **Numbered steps — each adds one capability over the prior step:**
 
 ```
-Step 01: Baseline RAG           → The floor. Paragraph chunks + MiniLM + top-5 cosine.
-Step 02: Format-aware Chunking  → Markdown by section + CSV by row + contextual headers.
-Step 03: CSV Tool Calling       → Pandas tool for exact aggregates (total ARR, headcount).
-Step 04: BM25 Hybrid Retrieval  → BM25 + dense fused via RRF for keyword-exact queries.
-Step 05: Knowledge Graph        → Entity + relationship edges from CSVs; multi-hop traversal.
-Step 06: Graph RAG              → Alias resolution + BFS blast-radius queries.
-Step 07: Multi-Agent System     → QueryAnalyst → specialists → Critic → Synthesis.
-Step 08: Context Engineering    → CrossEncoder rerank → dedup → compress → XML budget.
-Step 09: Vertical Slice Arch    → Domain slice router (Finance / HR / Engineering).
-Step 10: Production Grade       → Cache + retry + confidence + health monitor.
+Step 01: Baseline RAG + Chunking → The floor. Format-aware chunks + MiniLM + top-k cosine.
+Step 02: CSV Tool Calling        → Pandas tool for exact aggregates (total ARR, headcount).
+Step 03: BM25 Hybrid Retrieval   → BM25 + dense fused via RRF for keyword-exact queries.
+Step 04: Knowledge Graph + Graph RAG → Entity/relationship edges + alias resolution + BFS.
+Step 05: Multi-Agent System      → QueryAnalyst → specialists → Synthesis → Critic.
+Step 06: Context Engineering + VSA → CrossEncoder rerank → dedup → compress → XML budget,
+                                     dispatched by a Finance/HR/Engineering/General slice router.
+Step 07: Production Grade        → Cache + retry + confidence + health monitor.
 ```
 
 **Utility folders — supporting infrastructure, not part of the progression:**
@@ -53,27 +51,27 @@ Observability and evaluation were originally steps 02 and 03; they were demoted 
 
 ## Step Breakdown (Original 12-step design)
 
-> **Note on numbering**: This section reflects the original plan, where observability and evaluation were numbered steps. They are now utility folders (`observability/`, `evaluation/`). Pipeline steps were renumbered into 10 capability-adding steps on 2026-05-17.
+> **Note on numbering**: This section reflects the original plan, where observability and evaluation were numbered steps. They are now utility folders (`observability/`, `evaluation/`). Pipeline steps were renumbered into 10 capability-adding steps on 2026-05-17, and then further consolidated to 7 steps on 2026-05-18 (knowledge-graph + graph-RAG merged into step_04, context-engineering + VSA merged into step_06).
 >
-> Translation table from the original 12 steps to today's 10 steps + 3 utility folders:
+> Translation table from the original 12 steps to today's 7 steps + 3 utility folders:
 >
 > | Original | Today |
 > |---|---|
 > | Step 00 Foundation Dataset | `dataset/` (utility) |
-> | Step 01 Baseline RAG | Step 01 (unchanged) |
+> | Step 01 Baseline RAG | Step 01 (merged with chunking) |
 > | Step 02 Observability | `observability/` (utility) |
 > | Step 03 Evaluation Framework | `evaluation/` (utility, now RAGAS-based) |
-> | Step 04 Parsing & Chunking | Step 02 |
-> | Step 05 Knowledge Graph | Step 05 |
-> | Step 06 Graph RAG | Step 06 |
-> | Step 07 RAG Fusion (BM25 + dense) | Step 04 |
+> | Step 04 Parsing & Chunking | Step 01 (merged) |
+> | Step 05 Knowledge Graph | Step 04 (merged with Graph RAG) |
+> | Step 06 Graph RAG | Step 04 (merged) |
+> | Step 07 RAG Fusion (BM25 + dense) | Step 03 |
 > | Step 08 Single Agentic RAG | dropped (redundant with multi-agent) |
-> | Step 09 Multi-Agent | Step 07 |
-> | Step 10 Context Engineering | Step 08 |
-> | Step 11 VSA | Step 09 |
-> | Step 12 Production | Step 10 |
+> | Step 09 Multi-Agent | Step 05 |
+> | Step 10 Context Engineering | Step 06 (merged with VSA) |
+> | Step 11 VSA | Step 06 (merged) |
+> | Step 12 Production | Step 07 |
 >
-> Step 03 (CSV Tool Calling) is new — it didn't exist in the original plan. The design rationale in each subsection below is preserved as the *why* behind that capability; cross-reference the table above when reading.
+> Step 02 (CSV Tool Calling) is new — it didn't exist in the original plan. The design rationale in each subsection below is preserved as the *why* behind that capability; cross-reference the table above when reading.
 
 ### STEP 00 — Foundation Dataset
 **Goal**: Create a rich, realistic synthetic company corpus that will stress-test every retrieval strategy we build.
@@ -402,20 +400,17 @@ This decomposition is what makes the step-by-step progression meaningful — eac
 
 ## Current Status
 
-All 10 numbered steps and 3 utility folders are implemented.
+All 7 numbered steps and 3 utility folders are implemented.
 
 | Step | Adds | Implementation key |
 |---|---|---|
-| Step 01 Baseline RAG | Paragraph chunks + MiniLM + top-5 cosine | `BaselineRAG` |
-| Step 02 Chunking | Section-aware Markdown / per-row CSV / contextual headers | `Step02RAG` |
-| Step 03 Tools | Pandas CSV tool for aggregates | `Step02ToolsRAG` |
-| Step 04 Hybrid Retrieval | BM25 fused with dense via RRF | `Step03HybridRAG` |
-| Step 05 Knowledge Graph | Entity / relationship graph + multi-hop | `Step04RAG` |
-| Step 06 Graph RAG | Alias resolution + BFS blast radius | `Step06RAG` |
-| Step 07 Multi-Agent | QueryAnalyst → specialists → Critic → Synthesis | `Step05RAG` |
-| Step 08 Context Engineering | Rerank → dedup → compress → XML budget | `Step06RAG` |
-| Step 09 VSA | Domain slice router (Finance / HR / Eng) | `Step07RAG` |
-| Step 10 Production | Cache + retry + confidence + health | `Step08RAG` |
+| Step 01 Baseline RAG + Chunking | Format-aware chunks + MiniLM + top-k cosine | `BaselineRAG` |
+| Step 02 Tools | Pandas CSV tool for aggregates | `Step02ToolsRAG` |
+| Step 03 Hybrid Retrieval | BM25 fused with dense via RRF | `Step03HybridRAG` |
+| Step 04 Knowledge Graph + Graph RAG | Entity / relationship graph + alias resolution + BFS | `Step04RAG` |
+| Step 05 Multi-Agent | QueryAnalyst → specialists → Critic → Synthesis | `Step05RAG` |
+| Step 06 Context Engineering + VSA | Rerank → dedup → compress → XML budget + domain slice router | `Step06RAG` |
+| Step 07 Production | Cache + retry + confidence + health | `Step07RAG` |
 
 | Utility | Purpose |
 |---|---|

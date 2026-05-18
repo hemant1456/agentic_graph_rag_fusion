@@ -45,8 +45,8 @@ STEP07_EVAL = ROOT / "step_03_hybrid_retrieval"   / "results" / "eval_results.js
 STEP08_EVAL = ROOT / "step_05_multi_agent"  / "results" / "eval_results.json"
 STEP09_EVAL = ROOT / "step_05_multi_agent"      / "results" / "eval_results.json"
 STEP10_EVAL = ROOT / "step_06_context_engineering" / "results" / "eval_results.json"
-STEP11_EVAL = ROOT / "step_07_vsa"                 / "results" / "eval_results.json"
-STEP12_EVAL = ROOT / "step_08_production"          / "results" / "eval_results.json"
+STEP11_EVAL = ROOT / "step_06_context_engineering" / "results" / "eval_results.json"
+STEP12_EVAL = ROOT / "step_07_production"          / "results" / "eval_results.json"
 STEP01_DB   = ROOT / "chroma_db"
 STEP02_DB   = ROOT / "chroma_db"
 CORPUS      = ROOT / "dataset" / "company_data"
@@ -839,8 +839,8 @@ def tab_analysis() -> None:
             "uv run python evaluation/run_eval.py --step step_04_knowledge_graph\n"
             "uv run python evaluation/run_eval.py --step step_05_multi_agent\n"
             "uv run python evaluation/run_eval.py --step step_06_context_engineering\n"
-            "uv run python evaluation/run_eval.py --step step_07_vsa\n"
-            "uv run python evaluation/run_eval.py --step step_08_production"
+            "uv run python evaluation/run_eval.py --step step_06_context_engineering\n"
+            "uv run python evaluation/run_eval.py --step step_07_production"
         )
         return
 
@@ -1557,19 +1557,19 @@ def _load_step09_rag():
 @st.cache_resource
 def _load_step10_rag():
     from step_06_context_engineering.implementation.pipeline import Step06RAG
-    return Step06RAG(k=5, rerank_k=8, compress_ratio=0.60).build()
+    return Step06RAG(k=5).build()
 
 
 @st.cache_resource
 def _load_step11_rag():
-    from step_07_vsa.implementation.pipeline import Step07RAG
-    return Step07RAG(k=5).build()
+    from step_06_context_engineering.implementation.pipeline import Step06RAG
+    return Step06RAG(k=5).build()
 
 
 @st.cache_resource
 def _load_step12_rag():
-    from step_08_production.implementation.pipeline import Step08RAG
-    return Step08RAG(k=5).build()
+    from step_07_production.implementation.pipeline import Step07RAG
+    return Step07RAG(k=5).build()
 
 
 @st.cache_resource

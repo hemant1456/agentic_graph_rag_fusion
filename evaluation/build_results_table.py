@@ -21,8 +21,7 @@ STEPS = [
     "step_04_knowledge_graph",
     "step_05_multi_agent",
     "step_06_context_engineering",
-    "step_07_vsa",
-    "step_08_production",
+    "step_07_production",
 ]
 
 TABLE_START = "<!-- RESULTS_TABLE_START -->"

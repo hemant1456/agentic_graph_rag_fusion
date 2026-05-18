@@ -1,4 +1,4 @@
-"""RAGAS-based evaluation for the 8-step RAG progression.
+"""RAGAS-based evaluation for the 7-step RAG progression.
 
 Structure (deliberately flat and readable):
 
@@ -97,19 +97,13 @@ def answer_step_05(question: str) -> dict:
 
 def answer_step_06(question: str) -> dict:
     from step_06_context_engineering.implementation.pipeline import Step06RAG
-    rag = _cached("step_06", lambda: Step06RAG(k=5, rerank_k=8, compress_ratio=0.60).build())
+    rag = _cached("step_06", lambda: Step06RAG(k=5).build())
     return _result_to_sample(rag.query(question))
 
 
 def answer_step_07(question: str) -> dict:
-    from step_07_vsa.implementation.pipeline import Step07RAG
+    from step_07_production.implementation.pipeline import Step07RAG
     rag = _cached("step_07", lambda: Step07RAG(k=5).build())
-    return _result_to_sample(rag.query(question))
-
-
-def answer_step_08(question: str) -> dict:
-    from step_08_production.implementation.pipeline import Step08RAG
-    rag = _cached("step_08", lambda: Step08RAG(k=5).build())
     return _result_to_sample(rag.query(question))
 
 
@@ -120,8 +114,7 @@ STEPS: dict[str, Callable[[str], dict]] = {
     "step_04_knowledge_graph":      answer_step_04,
     "step_05_multi_agent":          answer_step_05,
     "step_06_context_engineering":  answer_step_06,
-    "step_07_vsa":                  answer_step_07,
-    "step_08_production":           answer_step_08,
+    "step_07_production":           answer_step_07,
 }
 
 

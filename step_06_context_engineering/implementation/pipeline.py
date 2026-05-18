@@ -16,15 +16,7 @@ import networkx as nx
 
 from step_01_baseline_rag.implementation.pipeline import RAGResult
 from step_03_hybrid_retrieval.implementation.pipeline import Step03HybridRAG
-from step_05_multi_agent.implementation.agents import (
-    critic,
-    graph_navigator,
-    query_analyst,
-    retrieval_specialist,
-    structured_data,
-    synthesis,
-)
-from step_06_context_engineering.implementation.context_engineer import engineer_context
+from step_06_context_engineering.implementation.router import dispatch as vsa_dispatch
 
 CORPUS_PATH = _PROJECT_ROOT / "dataset" / "company_data"
 GRAPH_PATH  = _PROJECT_ROOT / "step_04_knowledge_graph" / "results" / "graph.json"
@@ -32,79 +24,48 @@ GRAPH_PATH  = _PROJECT_ROOT / "step_04_knowledge_graph" / "results" / "graph.jso
 
 @dataclass
 class Step06Result:
-    """Extended RAGResult that carries context engineering metrics."""
+    """Extended result that carries context-engineering + VSA routing metadata."""
     rag_result: RAGResult
-    ce_metrics: dict  # raw_chars, engineered_chars, compression_ratio, etc.
+    slice_name: str
+    router_confidence: float
+    ce_metrics: dict
 
 
 class Step06RAG:
     """
-    Context-Engineered RAG pipeline.
+    Context-Engineered RAG pipeline with VSA domain routing.
+
+    Each question is routed to a domain slice (Finance / HR / Engineering / General)
+    that owns its own system prompt, retrieval augmentation, rerank_k, and
+    compression ratio. The underlying context-engineering stack (rerank → dedup →
+    compress → XML budget) is shared across slices.
 
     Usage:
         rag = Step06RAG(k=5).build()
-        result = rag.query_extended("Who is the CEO?")   # → Step06Result
-        result = rag.query("Who is the CEO?")             # → RAGResult (eval-compatible)
+        ext = rag.query_extended("What is the total ARR?")   # → Step06Result
+        res = rag.query("What is the total ARR?")             # → RAGResult
     """
 
-    def __init__(self, k: int = 5, rerank_k: int = 8, compress_ratio: float = 0.60) -> None:
+    def __init__(self, k: int = 5) -> None:
         self.k = k
-        self.rerank_k = rerank_k
-        self.compress_ratio = compress_ratio
         self._retriever: Step03HybridRAG | None = None
         self._graph: nx.DiGraph | None = None
 
     def build(self) -> "Step06RAG":
-        # Retrieve wide candidate set (k=20) for the reranker to select from
+        # Wide candidate set — reranker selects the best top-k inside each slice
         self._retriever = Step03HybridRAG(k=20).build()
         from step_04_knowledge_graph.implementation.graph_store import load_or_build
         self._graph = load_or_build(CORPUS_PATH, GRAPH_PATH)
         return self
 
     def query_extended(self, question: str) -> Step06Result:
-        """Full query returning RAGResult + CE metrics."""
         if self._retriever is None or self._graph is None:
             raise RuntimeError("Call .build() before .query()")
 
         t0 = time.perf_counter()
-
-        analysis = query_analyst.analyze(question)
-
-        ret = retrieval_specialist.retrieve(question, self._retriever, k=20)
-        raw_chunks = list(ret.chunks)
-
-        # Sub-question retrieval for compound queries
-        for sub_q in analysis.sub_questions[:4]:
-            sub_ret = retrieval_specialist.retrieve(sub_q, self._retriever, k=10)
-            raw_chunks.extend(sub_ret.chunks)
-
-        # Graph + CSV contexts (not compressed — exact data must survive).
-        # Always run graph navigation using retrieved chunks as seeds, mirroring step 07.
-        csv_data = ""
-        graph_seeds = [c.text for c in raw_chunks] if raw_chunks else analysis.primary_entities
-        graph_res = graph_navigator.navigate(question, graph_seeds, self._graph)
-        graph_ctx = graph_res.context if graph_res.success else ""
-        # Always run structured CSV query — mirrors step 07's unconditional detect_intent() → run_query().
-        csv_res = structured_data.query(question)
-        if csv_res.success:
-            csv_data = csv_res.data
-
-        context_xml, ce_metrics = engineer_context(
-            question=question,
-            raw_chunks=raw_chunks,
-            csv_data=csv_data,
-            graph_context=graph_ctx,
-            rerank_k=self.rerank_k,
-            compress_ratio=self.compress_ratio,
+        answer, provider, ce_metrics, slice_name, confidence = vsa_dispatch(
+            question, self._retriever, self._graph
         )
-
-        synth = synthesis.synthesize(
-            question, {"Engineered Context": context_xml}, analysis.query_type
-        )
-        critic_res = critic.review(
-            question, synth.answer, {"Engineered Context": context_xml}
-        )
-
         total_ms = (time.perf_counter() - t0) * 1000
 
         # Representative retrieval set for dashboard display
@@ -112,15 +73,20 @@ class Step06RAG:
 
         rag_result = RAGResult(
             question=question,
-            answer=critic_res.answer,
-            provider=f"ce:{synth.provider}",
+            answer=answer,
+            provider=f"vsa:{slice_name}:{provider}",
             retrieved_chunks=display_chunks,
-            context_sent=context_xml[:2000] + ("…" if len(context_xml) > 2000 else ""),
-            context_chars=ce_metrics["engineered_chars"],
+            context_sent=f"[VSA slice={slice_name} conf={confidence:.2f}]",
+            context_chars=ce_metrics.get("engineered_chars", 0),
             retrieval_latency_ms=total_ms,
             generation_latency_ms=0.0,
         )
-        return Step06Result(rag_result=rag_result, ce_metrics=ce_metrics)
+        return Step06Result(
+            rag_result=rag_result,
+            slice_name=slice_name,
+            router_confidence=confidence,
+            ce_metrics=ce_metrics,
+        )
 
     def query(self, question: str) -> RAGResult:
         """Eval-compatible entry point — returns plain RAGResult."""

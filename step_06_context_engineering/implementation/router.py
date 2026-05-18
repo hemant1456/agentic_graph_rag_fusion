@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from step_07_vsa.implementation.slices import (
+from step_06_context_engineering.implementation.slices import (
     engineering_slice,
     finance_slice,
     general_slice,
     hr_slice,
 )
-from step_07_vsa.implementation.slices.base import SliceConfig, run_with_config
+from step_06_context_engineering.implementation.slices.base import SliceConfig, run_with_config
 
 _SLICE_MODULES = [
     finance_slice,

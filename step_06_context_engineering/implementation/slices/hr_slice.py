@@ -1,4 +1,4 @@
-from step_07_vsa.implementation.slices.base import SliceConfig
+from step_06_context_engineering.implementation.slices.base import SliceConfig
 
 _SYSTEM = """\
 You are Vertexia's HR & People Operations analyst.

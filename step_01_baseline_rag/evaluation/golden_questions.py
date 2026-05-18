@@ -1,4 +1,4 @@
-"""Golden question set — 15 questions across 5 tiers (over 8 pipeline steps).
+"""Golden question set — 15 questions across 5 tiers (over 7 pipeline steps).
 
 Each tier showcases a capability that the corresponding step adds:
   Tier 1 (Q01-Q04):  Simple retrieval + format-aware chunks — step_01_baseline_rag

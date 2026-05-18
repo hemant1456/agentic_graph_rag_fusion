@@ -1,10 +1,10 @@
 # Agentic Graph RAG Fusion
 
-An 8-step learning project that builds a production-grade RAG system from scratch, diagnosing and fixing one failure mode at a time over synthetic company data (Vertexia Inc.).
+A 7-step learning project that builds a production-grade RAG system from scratch, diagnosing and fixing one failure mode at a time over synthetic company data (Vertexia Inc.).
 
 ## Pipeline progression
 
-8 numbered steps, each cumulatively builds on the previous. Three utility folders (`dataset/`, `observability/`, `evaluation/`) sit alongside but are not part of the numbered progression.
+7 numbered steps, each cumulatively builds on the previous. Three utility folders (`dataset/`, `observability/`, `evaluation/`) sit alongside but are not part of the numbered progression.
 
 | Step | Name | What it adds | Tier fixed |
 |------|------|--------------|-----------|
@@ -13,9 +13,8 @@ An 8-step learning project that builds a production-grade RAG system from scratc
 | [03](step_03_hybrid_retrieval/README.md) | BM25 + Dense Hybrid | BM25 fused with dense via Reciprocal Rank Fusion for keyword-exact lookups | Tier 3 |
 | [04](step_04_knowledge_graph/README.md) | Knowledge Graph + Graph RAG | Entity nodes + edges from CSVs (reports_to, depends_on, uses), alias resolution + BFS dependency-chain traversal | Tier 4 |
 | [05](step_05_multi_agent/README.md) | Multi-Agent | QueryAnalyst → Retrieval/Graph/CSV agents → Synthesis → Critic | Tier 5 |
-| [06](step_06_context_engineering/README.md) | Context Engineering | CrossEncoder rerank → Jaccard dedup → extractive compress → XML budget |  |
-| [07](step_07_vsa/README.md) | Vertical Slice Architecture | Keyword router dispatches to Finance/HR/Engineering domain slices |  |
-| [08](step_08_production/README.md) | Production Hardening | Semantic cache + retry/backoff + confidence scoring + health monitor |  |
+| [06](step_06_context_engineering/README.md) | Context Engineering + VSA | CrossEncoder rerank → Jaccard dedup → extractive compress → XML budget, dispatched by a Finance/HR/Engineering/General domain router |  |
+| [07](step_07_production/README.md) | Production Hardening | Semantic cache + retry/backoff + confidence scoring + health monitor |  |
 
 Latest eval results are written to each step's `results/eval_results.json` and rolled up below.
 
@@ -47,8 +46,7 @@ Scored with RAGAS via `llm_gatewayV2` (cerebras → gemini → groq fallback). `
 | step_04_knowledge_graph | _pending_ | | | | | | | |
 | step_05_multi_agent | _pending_ | | | | | | | |
 | step_06_context_engineering | _pending_ | | | | | | | |
-| step_07_vsa | _pending_ | | | | | | | |
-| step_08_production | _pending_ | | | | | | | |
+| step_07_production | _pending_ | | | | | | | |
 
 <!-- RESULTS_TABLE_END -->
 
@@ -105,10 +103,9 @@ agentic_graph_rag_fusion/
 ├── chroma_db/               # shared vector index, 2 collections
 ├── step_01_baseline_rag/   ┐
 ├── step_02_tools/          │
-├── step_03_hybrid_retrieval│  ← 8 numbered steps, cumulative
+├── step_03_hybrid_retrieval│  ← 7 numbered steps, cumulative
 ├── step_04_knowledge_graph/│    each step inherits from the previous
 ├── step_05_multi_agent/    │
 ├── step_06_context_engineering/
-├── step_07_vsa/            │
-└── step_08_production/     ┘
+└── step_07_production/     ┘
 ```
