@@ -14,7 +14,6 @@ Run with:
 from __future__ import annotations
 
 import json
-import os
 import sys
 import time
 from pathlib import Path
@@ -37,18 +36,17 @@ st.set_page_config(
 
 ROOT        = Path(__file__).parent
 GRAPH_PATH  = ROOT / "step_04_knowledge_graph" / "results" / "graph.json"
-STEP01_EVAL = ROOT / "step_01_baseline_rag" / "results" / "eval_results.json"
-STEP04_EVAL = ROOT / "step_01_baseline_rag" / "results" / "eval_results.json"
-STEP05_EVAL = ROOT / "step_04_knowledge_graph" / "results" / "eval_results.json"
-STEP06_EVAL = ROOT / "step_04_knowledge_graph" / "results" / "eval_results.json"
-STEP07_EVAL = ROOT / "step_03_hybrid_retrieval"   / "results" / "eval_results.json"
-STEP08_EVAL = ROOT / "step_05_multi_agent"  / "results" / "eval_results.json"
-STEP09_EVAL = ROOT / "step_05_multi_agent"      / "results" / "eval_results.json"
-STEP10_EVAL = ROOT / "step_06_context_engineering" / "results" / "eval_results.json"
-STEP11_EVAL = ROOT / "step_06_context_engineering" / "results" / "eval_results.json"
-STEP12_EVAL = ROOT / "step_07_production"          / "results" / "eval_results.json"
-STEP01_DB   = ROOT / "chroma_db"
-STEP02_DB   = ROOT / "chroma_db"
+# 7-step layout (renumbered 2026-05-17). All steps point to <step>/results/eval_results.json.
+STEP01_EVAL = ROOT / "step_01_baseline_rag"        / "results" / "eval_results.json"
+STEP02_EVAL = ROOT / "step_02_tools"               / "results" / "eval_results.json"
+STEP03_EVAL = ROOT / "step_03_hybrid_retrieval"    / "results" / "eval_results.json"
+STEP04_EVAL = ROOT / "step_04_knowledge_graph"     / "results" / "eval_results.json"
+STEP05_EVAL = ROOT / "step_05_multi_agent"         / "results" / "eval_results.json"
+STEP06_EVAL = ROOT / "step_06_context_engineering" / "results" / "eval_results.json"
+STEP07_EVAL = ROOT / "step_07_production"          / "results" / "eval_results.json"
+# Shared ChromaDB at project root — single collection "vertexia_smart" after step_01+02 merge.
+CHROMA_DB   = ROOT / "chroma_db"
+CHROMA_COLLECTION = "vertexia_smart"
 CORPUS      = ROOT / "dataset" / "company_data"
 EXP_DB_ROOT = ROOT / "step_01_baseline_rag" / "results" / "chroma_experiments"
 
@@ -222,23 +220,18 @@ def _embed_local(texts: list[str], model_name: str) -> list[list[float]]:
     return [v.tolist() for v in model.embed(texts)]
 
 
-def _embed_gemini(texts: list[str]) -> list[list[float]]:
-    from google import genai
-    from step_01_baseline_rag.implementation.ingest import GEMINI_EMBED_MODEL
-    api_key = os.environ.get("GOOGLE_API_KEY", "")
-    client = genai.Client(api_key=api_key)
-    embeddings: list[list[float]] = []
-    for i, txt in enumerate(texts):
-        resp = client.models.embed_content(model=GEMINI_EMBED_MODEL, contents=txt)
-        raw = (resp.embeddings or [None])[0]
-        vec: list[float] = list(raw.values) if (raw is not None and raw.values is not None) else []
-        embeddings.append(vec)
-        if (i + 1) % 50 == 0:
-            time.sleep(0.5)
-    return embeddings
+def _embed_with_baseline(texts: list[str]) -> list[list[float]]:
+    """Embed via the project's baseline HuggingFace MiniLM (no API calls).
+
+    Step 01 now uses sentence-transformers/all-MiniLM-L6-v2 locally — the old
+    Gemini embedder was removed when the project was renumbered.
+    """
+    from step_01_baseline_rag.implementation.ingest import _embedder
+    return _embedder.embed_documents(texts)
 
 
-def _embed_query_gemini(query: str) -> list[float]:
+def _embed_query_baseline(query: str) -> list[float]:
+    """Embed a single query string with the project's baseline MiniLM embedder."""
     from step_01_baseline_rag.implementation.ingest import embed_query
     return embed_query(query)
 
@@ -341,7 +334,7 @@ def _build_custom_index(
     """
     Full pipeline: rechunk corpus → embed → store in ChromaDB → run 27 golden questions.
 
-    local_model: fastembed model name, or None to use Gemini API.
+    local_model: fastembed model name, or None to use the baseline HuggingFace MiniLM.
     strategy: "paragraph" | "fixed"
     include_csv_agg: whether to include aggregate chunks from CSV parser.
     """
@@ -352,8 +345,8 @@ def _build_custom_index(
     from step_01_baseline_rag.implementation.pipeline import RAGResult
     from step_01_baseline_rag.implementation.retrieve import RetrievedChunk, format_context
 
-    embed_label = local_model or "gemini"
-    model_slug  = (local_model or "gemini").replace("/", "_").replace("-", "_")
+    embed_label = local_model or "baseline_minilm"
+    model_slug  = (local_model or "baseline_minilm").replace("/", "_").replace("-", "_")
 
     # ── 1. Rechunk ────────────────────────────────────────────────────────────
     st.write("**1 / 4** — Chunking corpus…")
@@ -396,21 +389,11 @@ def _build_custom_index(
         embeddings = _embed_local(all_texts, local_model)
         prog.progress(1.0, text=f"Embedded {len(embeddings)} chunks locally.")
     else:
-        from google import genai
-        from step_01_baseline_rag.implementation.ingest import GEMINI_EMBED_MODEL
-        api_key = os.environ.get("GOOGLE_API_KEY", "")
-        client = genai.Client(api_key=api_key)
-        embeddings: list[list[float]] = []
-        for i, txt in enumerate(all_texts):
-            resp = client.models.embed_content(model=GEMINI_EMBED_MODEL, contents=txt)
-            raw = (resp.embeddings or [None])[0]
-            vec: list[float] = list(raw.values) if (raw is not None and raw.values is not None) else []
-            embeddings.append(vec)
-            if i % 20 == 0:
-                prog.progress((i + 1) / len(all_texts), text=f"Embedding {i+1}/{len(all_texts)}…")
-            if (i + 1) % 50 == 0:
-                time.sleep(0.5)
-        prog.progress(1.0, text="Embedding complete.")
+        # "API" branch retired — Gemini embedder was removed in the 7-step renumber.
+        # Fall back to the project's baseline MiniLM (same model Step 01 uses).
+        st.write("  Using baseline HuggingFace MiniLM (all-MiniLM-L6-v2) — no API calls.")
+        embeddings = _embed_with_baseline(all_texts)
+        prog.progress(1.0, text=f"Embedded {len(embeddings)} chunks with baseline MiniLM.")
 
     # ── 3. Store in ChromaDB ──────────────────────────────────────────────────
     st.write("**3 / 4** — Storing in ChromaDB…")
@@ -446,7 +429,7 @@ def _build_custom_index(
         if local_model:
             qvec = _embed_local([gq.question], local_model)[0]
         else:
-            qvec = _embed_query_gemini(gq.question)
+            qvec = _embed_query_baseline(gq.question)
         ret_ms = (time.perf_counter() - t_ret) * 1000
 
         res = coll.query(
@@ -507,7 +490,7 @@ def _build_custom_index(
 
     total = len(GOLDEN_QUESTIONS)
     strat_short = "para" if strategy == "paragraph" else "fixed"
-    model_short = (local_model or "gemini").split("/")[-1] if local_model else "gemini"
+    model_short = (local_model or "minilm").split("/")[-1] if local_model else "minilm"
     label = f"cs={chunk_size} ov={overlap} {strat_short} {model_short}"
 
     return {
@@ -537,21 +520,15 @@ def _sidebar() -> None:
         st.caption("Agentic Graph RAG — step-by-step")
         st.divider()
 
-        st.markdown("**Steps built**")
+        st.markdown("**7-step pipeline**")
         steps = [
-            ("✅", "Step 00", "Synthetic company dataset"),
-            ("✅", "Step 01", "Baseline vector RAG (26%)"),
-            ("✅", "Step 02", "Observability (Arize Phoenix)"),
-            ("✅", "Step 03", "Evaluation framework"),
-            ("✅", "Step 04", "Format-aware chunking (52%)"),
-            ("✅", "Step 05", "Knowledge graph (78%)"),
-            ("✅", "Step 06", "Graph RAG (85%)"),
-            ("✅", "Step 07", "RAG Fusion + BM25 (89%)"),
-            ("✅", "Step 08", "Agentic RAG / Gateway (85%)"),
-            ("✅", "Step 09", "Multi-Agent System (93%)"),
-            ("✅", "Step 10", "Context Engineering (85%)"),
-            ("✅", "Step 11", "Vertical Slice Architecture (89%)"),
-            ("✅", "Step 12", "Production Hardening (cache + retry + confidence)"),
+            ("✅", "Step 01", "Baseline RAG + format-aware chunking"),
+            ("✅", "Step 02", "CSV tool calling (exact aggregates)"),
+            ("✅", "Step 03", "BM25 hybrid retrieval (BM25 + dense RRF)"),
+            ("✅", "Step 04", "Knowledge graph + Graph RAG (alias + BFS)"),
+            ("✅", "Step 05", "Multi-Agent (QueryAnalyst → specialists → Critic)"),
+            ("✅", "Step 06", "Context engineering + VSA (rerank → dedup → compress)"),
+            ("✅", "Step 07", "Production hardening (cache + retry + confidence)"),
         ]
         for icon, step_id, desc in steps:
             color = "" if icon == "✅" else "color:#9e9e9e"
@@ -563,19 +540,19 @@ def _sidebar() -> None:
         st.divider()
         st.markdown("**Key insight — the deliberate hack**")
         st.markdown(
-            "Step 04's **aggregate chunks** pre-compute sums, breakdowns, and "
+            "Step 01's **aggregate chunks** pre-compute sums, breakdowns, and "
             "date-period totals at index time. This is a deliberate hack that "
             "proves why pure vector RAG fails on tabular data. "
-            "The real fix (Step 07) runs a **structured query tool** (Pandas/SQL) "
+            "The real fix (Step 02) runs a **structured query tool** (Pandas) "
             "at query time — not a pre-baked summary. Aggregate chunks are "
             "stale, inflexible, and don't generalise to filters you didn't predict."
         )
         st.divider()
-        st.markdown("**Remaining failure modes**")
+        st.markdown("**Architecture stack (top of pipeline)**")
         st.markdown(
-            "- Step 11 VSA routes each query to one of 4 domain slices (Finance / HR / Engineering / General)\n"
+            "- Step 06 VSA routes each query to one of 4 domain slices (Finance / HR / Engineering / General)\n"
             "- Each slice has its own system prompt, retrieval overrides, and evaluation suite\n"
-            "- Step 12: production hardening — reliability, cost control, SLOs"
+            "- Step 07: production hardening — reliability, cost control, SLOs"
         )
 
         n_exp = len(st.session_state.get("exp_history", []))
@@ -591,9 +568,10 @@ def _sidebar() -> None:
 
 def tab_experiment_lab() -> None:
     st.info(
-        "**Step 01 (26%) and Step 04 (52%) are fixed baselines** — their numbers never change. "
+        "**Step 01 (baseline RAG + format-aware chunking) is the fixed starting point.** "
         "Each time you click **Run**, you create a **new experiment** added to the history below. "
-        "The comparison shows how your experiments stack up against the baselines.",
+        "The comparison shows how your experiments stack up against the baselines from "
+        "each step's eval_results.json.",
         icon="ℹ️",
     )
 
@@ -635,9 +613,13 @@ def tab_experiment_lab() -> None:
 
         embed_backend = st.radio(
             "Embedding backend",
-            ["🤗 Local (fastembed)", "☁️ Gemini API"],
+            ["🤗 Local (fastembed)", "🤗 Baseline MiniLM (Step 01)"],
+            help=(
+                "Both options run locally. 'Local (fastembed)' lets you pick a model; "
+                "'Baseline MiniLM' uses the same all-MiniLM-L6-v2 the Step 01 index uses."
+            ),
         )
-        use_local = embed_backend.startswith("🤗")
+        use_local = embed_backend.startswith("🤗 Local")
 
         local_model_name: str | None = None
         if use_local:
@@ -650,8 +632,10 @@ def tab_experiment_lab() -> None:
             local_model_name = LOCAL_EMBED_MODELS[model_label]
             st.caption(f"`{local_model_name}` — ONNX runtime, no API calls.")
         else:
-            if not os.environ.get("GOOGLE_API_KEY"):
-                st.warning("Set `GOOGLE_API_KEY` to use Gemini embedding.")
+            st.caption(
+                "Uses `sentence-transformers/all-MiniLM-L6-v2` via HuggingFace — "
+                "same model the Step 01 baseline index was built with. No API calls."
+            )
 
     # ── RIGHT: instant corpus preview ─────────────────────────────────────────
     with right:
@@ -696,15 +680,15 @@ def tab_experiment_lab() -> None:
     # ── RUN section ────────────────────────────────────────────────────────────
     st.divider()
 
-    est_time = "~30 s (local CPU)" if use_local else "~3–8 min (API)"
-    cost_note = "free" if use_local else "~$0.05"
+    est_time = "~30 s (local CPU)" if use_local else "~30–60 s (local CPU)"
+    cost_note = "free (local)"
 
     col_run, col_info = st.columns([1, 4])
     run_btn = col_run.button("▶ Run Experiment", type="primary", use_container_width=True)
     col_info.info(
         f"chunk_size={chunk_size}  overlap={overlap}  k={k_val}  "
         f"strategy={strategy_key}  agg={'yes' if include_csv_agg else 'no'}  "
-        f"embed={'local' if use_local else 'gemini'}  |  "
+        f"embed={'fastembed' if use_local else 'baseline_minilm'}  |  "
         f"{est_time}  |  {cost_note}"
     )
 
@@ -752,36 +736,27 @@ def tab_experiment_lab() -> None:
 
         # Comparison bar chart
         s1 = load_eval(STEP01_EVAL)
+        s2 = load_eval(STEP02_EVAL)
+        s3 = load_eval(STEP03_EVAL)
         s4 = load_eval(STEP04_EVAL)
         s5 = load_eval(STEP05_EVAL)
         s6 = load_eval(STEP06_EVAL)
         s7 = load_eval(STEP07_EVAL)
-        s8 = load_eval(STEP08_EVAL)
-        s9  = load_eval(STEP09_EVAL)
-        s10 = load_eval(STEP10_EVAL)
-        s11 = load_eval(STEP11_EVAL)
-        s12 = load_eval(STEP12_EVAL)
         all_runs: list[tuple[str, dict]] = []
         if s1:
-            all_runs.append(("Step01 (baseline)", s1))
-        if s4:
-            all_runs.append(("Step04 (format-aware)", s4))
-        if s5:
-            all_runs.append(("Step05 (knowledge graph)", s5))
-        if s6:
-            all_runs.append(("Step06 (graph RAG)", s6))
-        if s7:
-            all_runs.append(("Step07 (RAG Fusion)", s7))
-        if s8:
-            all_runs.append(("Step08 (Agentic)", s8))
-        if s9 and s9.get("grade_counts", {}).get("PASS", 0) > 0:
-            all_runs.append(("Step09 (Multi-Agent)", s9))
-        if s10 and s10.get("grade_counts", {}).get("PASS", 0) > 0:
-            all_runs.append(("Step10 (Context Eng.)", s10))
-        if s11 and s11.get("grade_counts", {}).get("PASS", 0) > 0:
-            all_runs.append(("Step11 (VSA)", s11))
-        if s12 and s12.get("grade_counts", {}).get("PASS", 0) > 0:
-            all_runs.append(("Step12 (Production)", s12))
+            all_runs.append(("Step01 (baseline + format-aware)", s1))
+        if s2 and s2.get("grade_counts", {}).get("PASS", 0) > 0:
+            all_runs.append(("Step02 (CSV tool)", s2))
+        if s3 and s3.get("grade_counts", {}).get("PASS", 0) > 0:
+            all_runs.append(("Step03 (BM25 hybrid)", s3))
+        if s4 and s4.get("grade_counts", {}).get("PASS", 0) > 0:
+            all_runs.append(("Step04 (knowledge graph)", s4))
+        if s5 and s5.get("grade_counts", {}).get("PASS", 0) > 0:
+            all_runs.append(("Step05 (multi-agent)", s5))
+        if s6 and s6.get("grade_counts", {}).get("PASS", 0) > 0:
+            all_runs.append(("Step06 (context eng. + VSA)", s6))
+        if s7 and s7.get("grade_counts", {}).get("PASS", 0) > 0:
+            all_runs.append(("Step07 (production)", s7))
         for exp in history:
             all_runs.append((exp["label"], exp))
 
@@ -820,17 +795,14 @@ def tab_experiment_lab() -> None:
 
 def tab_analysis() -> None:
     s1 = load_eval(STEP01_EVAL)
+    s2 = load_eval(STEP02_EVAL)
+    s3 = load_eval(STEP03_EVAL)
     s4 = load_eval(STEP04_EVAL)
     s5 = load_eval(STEP05_EVAL)
     s6 = load_eval(STEP06_EVAL)
     s7 = load_eval(STEP07_EVAL)
-    s8 = load_eval(STEP08_EVAL)
-    s9  = load_eval(STEP09_EVAL)
-    s10 = load_eval(STEP10_EVAL)
-    s11 = load_eval(STEP11_EVAL)
-    s12 = load_eval(STEP12_EVAL)
 
-    if not any([s1, s4, s5, s6, s7, s8]):
+    if not any([s1, s2, s3, s4, s5, s6, s7]):
         st.warning("No baseline eval results found. Run the evaluation scripts first.")
         st.code(
             "uv run python evaluation/run_eval.py --step step_01_baseline_rag\n"
@@ -839,37 +811,25 @@ def tab_analysis() -> None:
             "uv run python evaluation/run_eval.py --step step_04_knowledge_graph\n"
             "uv run python evaluation/run_eval.py --step step_05_multi_agent\n"
             "uv run python evaluation/run_eval.py --step step_06_context_engineering\n"
-            "uv run python evaluation/run_eval.py --step step_06_context_engineering\n"
             "uv run python evaluation/run_eval.py --step step_07_production"
         )
         return
 
-    # Build run registry (baselines always present)
+    # Build run registry — pass rates come from each step's eval_results.json (live).
     base_runs: list[tuple[str, dict]] = []
-    if s1:
-        base_runs.append(("Step01 (26%)", s1))
-    if s4:
-        base_runs.append(("Step04 (52%)", s4))
-    if s5:
-        base_runs.append(("Step05 (78%)", s5))
-    if s6:
-        base_runs.append(("Step06 (85%)", s6))
-    if s7:
-        base_runs.append(("Step07 (89%)", s7))
-    if s8:
-        base_runs.append(("Step08 (85%)", s8))
-    if s9 and s9.get("grade_counts", {}).get("PASS", 0) > 0:
-        pct9 = round(s9["pass_rate"] * 100)
-        base_runs.append((f"Step09 ({pct9}%)", s9))
-    if s10 and s10.get("grade_counts", {}).get("PASS", 0) > 0:
-        pct10 = round(s10["pass_rate"] * 100)
-        base_runs.append((f"Step10 ({pct10}%)", s10))
-    if s11 and s11.get("grade_counts", {}).get("PASS", 0) > 0:
-        pct11 = round(s11["pass_rate"] * 100)
-        base_runs.append((f"Step11 ({pct11}%)", s11))
-    if s12 and s12.get("grade_counts", {}).get("PASS", 0) > 0:
-        pct12 = round(s12["pass_rate"] * 100)
-        base_runs.append((f"Step12 ({pct12}%)", s12))
+    step_specs: list[tuple[dict | None, str]] = [
+        (s1, "Step01 (baseline + format-aware)"),
+        (s2, "Step02 (CSV tool)"),
+        (s3, "Step03 (BM25 hybrid)"),
+        (s4, "Step04 (knowledge graph)"),
+        (s5, "Step05 (multi-agent)"),
+        (s6, "Step06 (context eng. + VSA)"),
+        (s7, "Step07 (production)"),
+    ]
+    for sd, label in step_specs:
+        if sd and sd.get("grade_counts", {}).get("PASS", 0) > 0:
+            pct = round(sd["pass_rate"] * 100)
+            base_runs.append((f"{label} ({pct}%)", sd))
 
     history: list[dict] = st.session_state["exp_history"]
     exp_options = [exp["label"] for exp in history]
@@ -1009,18 +969,16 @@ def tab_analysis() -> None:
 def tab_query_explorer() -> None:
     st.caption(
         "Live retrieval from any stored index. "
-        "For Step 01 and Step 04 only Gemini embedding will work "
-        "(they were built with Gemini). Local models are only compatible with experiment indexes."
+        "The Step 01 baseline index was built with HuggingFace MiniLM "
+        "(all-MiniLM-L6-v2). Experiments use whatever embedder you chose when running them."
     )
 
     # ── Index selector ─────────────────────────────────────────────────────────
     history: list[dict] = st.session_state["exp_history"]
     index_options: dict[str, tuple[Path, str, str]] = {}  # label → (db_path, coll_name, built_with)
 
-    if STEP01_DB.exists():
-        index_options["Step 01 Baseline"] = (STEP01_DB, "vertexia_baseline", "gemini")
-    if STEP02_DB.exists():
-        index_options["Step 04 Format-aware"] = (STEP02_DB, "vertexia_step04", "gemini")
+    if CHROMA_DB.exists():
+        index_options["Step 01 (baseline + format-aware)"] = (CHROMA_DB, CHROMA_COLLECTION, "local")
     for exp in history:
         db_p = Path(exp["db_path"])
         if db_p.exists():
@@ -1035,27 +993,25 @@ def tab_query_explorer() -> None:
 
     is_baseline_index = sel_index_label.startswith("Step 0")
     if is_baseline_index:
-        st.warning(
-            "This index was built with **Gemini embedding**. "
-            "Querying with a local model will return garbage — use Gemini for correct results."
+        st.info(
+            "The Step 01 baseline index was built with **HuggingFace MiniLM "
+            "(all-MiniLM-L6-v2, 384d)**. Use the same embedder for the query "
+            "or you'll get nonsense matches."
         )
 
     # ── Embedding mode ─────────────────────────────────────────────────────────
-    embed_options = ["Same as index was built with (recommended)", "Gemini API"] + list(LOCAL_EMBED_MODELS.keys())
+    embed_options = ["Same as index was built with (recommended)", "Baseline MiniLM (Step 01)"] + list(LOCAL_EMBED_MODELS.keys())
     embed_sel = st.selectbox("Query embedding mode", embed_options, key="qe_embed")
 
     if embed_sel == "Same as index was built with (recommended)":
         query_embed_mode = built_with
         query_local_model: str | None = None
-    elif embed_sel == "Gemini API":
-        query_embed_mode = "gemini"
+    elif embed_sel == "Baseline MiniLM (Step 01)":
+        query_embed_mode = "baseline"
         query_local_model = None
     else:
         query_embed_mode = "local"
         query_local_model = LOCAL_EMBED_MODELS[embed_sel]
-
-    if query_embed_mode == "gemini" and not os.environ.get("GOOGLE_API_KEY"):
-        st.error("Set `GOOGLE_API_KEY` to use Gemini embedding.")
 
     # ── Question input ─────────────────────────────────────────────────────────
     s1 = load_eval(STEP01_EVAL)
@@ -1086,14 +1042,11 @@ def tab_query_explorer() -> None:
     if retrieve_btn and question:
         with st.spinner("Embedding query…"):
             try:
-                if query_embed_mode == "gemini" or (
-                    query_embed_mode not in ("local",) and "gemini" in query_embed_mode.lower()
-                ):
-                    qvec = _embed_query_gemini(question)
-                elif query_embed_mode == "local" and query_local_model:
+                if query_embed_mode == "local" and query_local_model:
                     qvec = _embed_local([question], query_local_model)[0]
                 else:
-                    qvec = _embed_query_gemini(question)
+                    # "baseline" or any unknown/legacy mode → use baseline MiniLM
+                    qvec = _embed_query_baseline(question)
             except Exception as e:
                 st.error(f"Embedding failed: {e}")
                 st.stop()
@@ -1237,7 +1190,9 @@ def tab_chunk_browser() -> None:
     )
 
     # ── Source selector ────────────────────────────────────────────────────────
-    source_options: dict[str, str] = {"Step 01 (baseline)": "step01", "Step 04 (format-aware)": "step04"}
+    # Step 01 now uses format-aware chunking (the old naive baseline was merged in),
+    # so the baseline and "format-aware" sources are the same SmartChunk stream.
+    source_options: dict[str, str] = {"Step 01 (baseline + format-aware)": "step01"}
     history: list[dict] = st.session_state["exp_history"]
     for exp in history:
         source_options[exp["label"]] = f"exp:{exp['label']}"
@@ -1248,21 +1203,12 @@ def tab_chunk_browser() -> None:
     # ── Load chunks ────────────────────────────────────────────────────────────
     @st.cache_resource
     def _get_step01_chunks():
-        from step_01_baseline_rag.implementation.ingest import load_and_chunk as _l01
+        from step_01_baseline_rag.implementation.chunker import load_and_chunk as _l01
         return _l01(CORPUS)
-
-    @st.cache_resource
-    def _get_step04_chunks():
-        from step_01_baseline_rag.implementation.chunker import load_and_chunk as _l04
-        return _l04(CORPUS)
 
     with st.spinner("Loading chunks…"):
         if source_key == "step01":
             raw_chunks = _get_step01_chunks()
-            def _ctype(c: Any) -> str:
-                return str(getattr(c, "format", "prose"))
-        elif source_key == "step04":
-            raw_chunks = _get_step04_chunks()
             def _ctype(c: Any) -> str:
                 return str(getattr(c, "chunk_type", "prose"))
         else:
@@ -1376,16 +1322,13 @@ def tab_step_progress() -> None:
     import pandas as pd
 
     STEP_META = [
-        ("Step 01", "Baseline\nvector RAG", STEP01_EVAL, "Naive 2k-char chunks + dense retrieval"),
-        ("Step 04", "Format-aware\nchunking",   STEP04_EVAL, "CSV row chunks + aggregate pre-compute + section splitting"),
-        ("Step 05", "Knowledge\ngraph",          STEP05_EVAL, "Entity extraction + graph traversal for org/product context"),
-        ("Step 06", "Graph RAG\n+ aliases",      STEP06_EVAL, "Alias resolution (analytics dashboard → InsightLens) + dependency chains"),
-        ("Step 07", "RAG Fusion\n+ BM25",        STEP07_EVAL, "BM25 + dense RRF merge + structured CSV query tool at query time"),
-        ("Step 08", "Agentic RAG\n(Gateway)",    STEP08_EVAL, "Tool-calling agent via LLM Gateway V2 (Groq / Gemini / NVIDIA / Cerebras)"),
-        ("Step 09", "Multi-Agent\nSystem",        STEP09_EVAL, "Orchestrator + 6 specialized subagents with typed contracts + Critic verification"),
-        ("Step 10", "Context\nEngineering",       STEP10_EVAL, "CrossEncoder reranking → dedup → extractive compression → XML format → token budget"),
-        ("Step 11", "Vertical Slice\nArchitecture", STEP11_EVAL, "4 domain slices (Finance / HR / Engineering / General) — each owns prompt, retrieval config, eval"),
-        ("Step 12", "Production\nHardening",        STEP12_EVAL, "Semantic cache + retry/backoff + confidence scoring + health monitor + graceful degradation"),
+        ("Step 01", "Baseline +\nformat-aware",    STEP01_EVAL, "MiniLM dense retrieval + format-aware chunks (CSV rows, aggregate pre-compute, section splits)"),
+        ("Step 02", "CSV tool\ncalling",            STEP02_EVAL, "Pandas CSV tool for exact aggregates at query time (totals, breakdowns, period filters)"),
+        ("Step 03", "BM25 hybrid\nretrieval",       STEP03_EVAL, "BM25 + dense RRF fusion — keyword recall meets semantic precision"),
+        ("Step 04", "Knowledge graph\n+ Graph RAG", STEP04_EVAL, "Entity edges + alias resolution + BFS blast-radius expansion (graph_rag merged in)"),
+        ("Step 05", "Multi-Agent\nSystem",          STEP05_EVAL, "QueryAnalyst → specialists (retrieval / graph / structured) → Critic → Synthesis"),
+        ("Step 06", "Context engineering\n+ VSA",   STEP06_EVAL, "CrossEncoder rerank → dedup → compress → XML format + domain slicing (Finance/HR/Eng/General)"),
+        ("Step 07", "Production\nhardening",        STEP07_EVAL, "Semantic cache + retry/backoff + confidence scoring + health monitor + graceful degradation"),
     ]
 
     evals = [(label, short, load_eval(path), note) for label, short, path, note in STEP_META]
@@ -1489,30 +1432,24 @@ def tab_step_progress() -> None:
             else:
                 st.success("No regressions vs previous step.")
 
-    # ── Provider breakdown (Step 08 / 09) ─────────────────────────────────────
-    s8 = load_eval(STEP08_EVAL)
-    s9 = load_eval(STEP09_EVAL)
-    s10 = load_eval(STEP10_EVAL)
-    s11_pb = load_eval(STEP11_EVAL)
-    s12_pb = load_eval(STEP12_EVAL)
+    # ── Provider breakdown (latest available step in 5/6/7) ───────────────────
+    # Provider data lives in the per-step eval_results.json under each result's
+    # "provider" field. Prefer the latest step that has results.
+    s5_pb = load_eval(STEP05_EVAL)
+    s6_pb = load_eval(STEP06_EVAL)
+    s7_pb = load_eval(STEP07_EVAL)
     prov_step = None
     prov_label = ""
-    if s12_pb and s12_pb.get("grade_counts", {}).get("PASS", 0) > 0:
-        prov_step, prov_label = s12_pb, "Step 12 — Provider Breakdown (Gateway V2)"
-    elif s11_pb and s11_pb.get("grade_counts", {}).get("PASS", 0) > 0:
-        prov_step, prov_label = s11_pb, "Step 11 — Provider Breakdown (Gateway V2)"
-    elif s10 and s10.get("grade_counts", {}).get("PASS", 0) > 0:
-        prov_step, prov_label = s10, "Step 10 — Provider Breakdown (Gateway V2)"
-    elif s9 and s9.get("grade_counts", {}).get("PASS", 0) > 0:
-        prov_step, prov_label = s9, "Step 09 — Provider Breakdown (Gateway V2)"
-    elif s8:
-        prov_step, prov_label = s8, "Step 08 — Provider Breakdown (Gateway V2)"
+    if s7_pb and s7_pb.get("grade_counts", {}).get("PASS", 0) > 0:
+        prov_step, prov_label = s7_pb, "Step 07 — Provider Breakdown (Gateway V2)"
+    elif s6_pb and s6_pb.get("grade_counts", {}).get("PASS", 0) > 0:
+        prov_step, prov_label = s6_pb, "Step 06 — Provider Breakdown (Gateway V2)"
+    elif s5_pb and s5_pb.get("grade_counts", {}).get("PASS", 0) > 0:
+        prov_step, prov_label = s5_pb, "Step 05 — Provider Breakdown (Gateway V2)"
     if prov_step:
         st.subheader(prov_label)
-        s8 = prov_step  # reuse variable for the block below
-    if s8:
         providers: dict[str, int] = {}
-        for r in s8.get("results", []):
+        for r in prov_step.get("results", []):
             p = r.get("provider", "unknown")
             providers[p] = providers.get(p, 0) + 1
         if providers:
@@ -1536,38 +1473,39 @@ def tab_step_progress() -> None:
 
 # ── Cache helpers (declared at module level for @st.cache_resource) ────────────
 
+
 @st.cache_resource
-def _load_step07_retriever():
+def _load_step02_rag():
+    from step_02_tools.implementation.pipeline import Step02ToolsRAG
+    return Step02ToolsRAG(k=10).build()
+
+
+@st.cache_resource
+def _load_step03_rag():
     from step_03_hybrid_retrieval.implementation.pipeline import Step03HybridRAG
     return Step03HybridRAG(k=10).build()
 
 
 @st.cache_resource
-def _load_step08_rag():
+def _load_step04_rag():
+    from step_04_knowledge_graph.implementation.pipeline import Step04RAG
+    return Step04RAG(k=10).build()
+
+
+@st.cache_resource
+def _load_step05_rag():
     from step_05_multi_agent.implementation.pipeline import Step05RAG
     return Step05RAG(k=10).build()
 
 
 @st.cache_resource
-def _load_step09_rag():
-    from step_05_multi_agent.implementation.pipeline import Step05RAG
-    return Step05RAG(k=10).build()
-
-
-@st.cache_resource
-def _load_step10_rag():
+def _load_step06_rag():
     from step_06_context_engineering.implementation.pipeline import Step06RAG
     return Step06RAG(k=5).build()
 
 
 @st.cache_resource
-def _load_step11_rag():
-    from step_06_context_engineering.implementation.pipeline import Step06RAG
-    return Step06RAG(k=5).build()
-
-
-@st.cache_resource
-def _load_step12_rag():
+def _load_step07_rag():
     from step_07_production.implementation.pipeline import Step07RAG
     return Step07RAG(k=5).build()
 
@@ -1603,7 +1541,7 @@ def _gateway_generate(context: str, question: str, provider: str | None, system:
 
 
 def _run_live_compare_steps(question: str, provider: str | None, k: int) -> list[dict]:
-    """Run all 8 steps sequentially; return list of result dicts."""
+    """Run all 7 pipeline steps sequentially; return list of result dicts."""
     from step_01_baseline_rag.implementation.retrieve import RetrievedChunk, format_context
 
     SYSTEM_PROMPT = (
@@ -1615,13 +1553,13 @@ def _run_live_compare_steps(question: str, provider: str | None, k: int) -> list
 
     progress_bar = st.progress(0.0, text="Running Step 01…")
 
-    # ── Step 01 — Baseline Dense Vector ────────────────────────────────────────
+    # ── Step 01 — Baseline RAG + format-aware chunking ─────────────────────────
     step_label = "Step 01"
-    step_name  = "Baseline Dense Vector"
+    step_name  = "Baseline + format-aware"
     try:
         t0 = time.perf_counter()
-        coll01 = _get_collection(str(STEP01_DB), "vertexia_baseline")
-        qvec = _embed_query_gemini(question)
+        coll01 = _get_collection(str(CHROMA_DB), CHROMA_COLLECTION)
+        qvec = _embed_query_baseline(question)
         res01 = coll01.query(
             query_embeddings=[qvec],
             n_results=min(k, coll01.count()),
@@ -1648,7 +1586,7 @@ def _run_live_compare_steps(question: str, provider: str | None, k: int) -> list
             "step": step_label,
             "label": step_name,
             "chunks": chunks01,
-            "context_parts": {"Vector": context01},
+            "context_parts": {"Vector (MiniLM, format-aware chunks)": context01},
             "full_context": context01,
             "answer": answer01,
             "provider": prov01,
@@ -1661,45 +1599,92 @@ def _run_live_compare_steps(question: str, provider: str | None, k: int) -> list
             "full_context": "", "answer": "", "provider": "", "latency_ms": 0.0, "_error": str(exc),
         })
 
-    progress_bar.progress(1 / 10, text="Running Step 04…")
+    progress_bar.progress(1 / 7, text="Running Step 02…")
 
-    # ── Step 04 — Format-aware chunks ──────────────────────────────────────────
-    step_label = "Step 04"
-    step_name  = "Format-aware Chunks"
+    # ── Step 02 — CSV tool calling ─────────────────────────────────────────────
+    step_label = "Step 02"
+    step_name  = "CSV tool"
     try:
         t0 = time.perf_counter()
-        coll04 = _get_collection(str(STEP02_DB), "vertexia_step04")
-        qvec04 = _embed_query_gemini(question)
-        res04 = coll04.query(
-            query_embeddings=[qvec04],
-            n_results=min(k, coll04.count()),
-            include=["documents", "metadatas", "distances"],
-        )
-        docs04  = (res04["documents"] or [[]])[0]
-        metas04 = (res04["metadatas"] or [[]])[0]
-        dists04 = (res04["distances"] or [[]])[0]
-        chunks04 = [
-            RetrievedChunk(
-                text=d,
-                source=str(m.get("source", "")),
-                department=str(m.get("department", "")),
-                format=str(m.get("format", "")),
-                chunk_index=int(str(m.get("chunk_index") or 0)),
-                distance=dist,
-            )
-            for d, m, dist in zip(docs04, metas04, dists04)
-        ]
-        context04 = format_context(chunks04)
-        answer04, prov04 = _gateway_generate(context04, question, provider, SYSTEM_PROMPT)
+        rag02 = _load_step02_rag()
+        result02 = rag02.query(question)
+        latency02 = (time.perf_counter() - t0) * 1000
+        results.append({
+            "step": step_label,
+            "label": step_name,
+            "chunks": list(getattr(result02, "retrieved_chunks", []) or []),
+            "context_parts": {
+                "CSV tool + vector": (
+                    "Pandas CSV tool runs at query time for exact aggregates "
+                    "(totals, breakdowns, period filters). Falls back to vector for prose."
+                ),
+                "Context sent": getattr(result02, "context_sent", "") or "",
+            },
+            "full_context": getattr(result02, "context_sent", "") or "",
+            "answer": result02.answer,
+            "provider": getattr(result02, "provider", "tools"),
+            "latency_ms": latency02,
+            "_error": None,
+        })
+    except Exception as exc:
+        results.append({
+            "step": step_label, "label": step_name, "chunks": [], "context_parts": {},
+            "full_context": "", "answer": "", "provider": "", "latency_ms": 0.0, "_error": str(exc),
+        })
+
+    progress_bar.progress(2 / 7, text="Running Step 03…")
+
+    # ── Step 03 — BM25 hybrid retrieval (BM25 + dense RRF) ─────────────────────
+    step_label = "Step 03"
+    step_name  = "BM25 hybrid"
+    try:
+        t0 = time.perf_counter()
+        rag03 = _load_step03_rag()
+        result03 = rag03.query(question)
+        latency03 = (time.perf_counter() - t0) * 1000
+        results.append({
+            "step": step_label,
+            "label": step_name,
+            "chunks": list(getattr(result03, "retrieved_chunks", []) or []),
+            "context_parts": {
+                "BM25 + Dense RRF": getattr(result03, "context_sent", "") or "",
+            },
+            "full_context": getattr(result03, "context_sent", "") or "",
+            "answer": result03.answer,
+            "provider": getattr(result03, "provider", "hybrid"),
+            "latency_ms": latency03,
+            "_error": None,
+        })
+    except Exception as exc:
+        results.append({
+            "step": step_label, "label": step_name, "chunks": [], "context_parts": {},
+            "full_context": "", "answer": "", "provider": "", "latency_ms": 0.0, "_error": str(exc),
+        })
+
+    progress_bar.progress(3 / 7, text="Running Step 04…")
+
+    # ── Step 04 — Knowledge graph + Graph RAG ──────────────────────────────────
+    step_label = "Step 04"
+    step_name  = "Knowledge graph + Graph RAG"
+    try:
+        t0 = time.perf_counter()
+        rag04 = _load_step04_rag()
+        result04 = rag04.query(question)
         latency04 = (time.perf_counter() - t0) * 1000
         results.append({
             "step": step_label,
             "label": step_name,
-            "chunks": chunks04,
-            "context_parts": {"Vector (format-aware)": context04},
-            "full_context": context04,
-            "answer": answer04,
-            "provider": prov04,
+            "chunks": list(getattr(result04, "retrieved_chunks", []) or []),
+            "context_parts": {
+                "Graph + BM25 + Dense": (
+                    "Entity edges + alias resolution + BFS blast-radius expansion "
+                    "(graph_rag merged into this step)."
+                ),
+                "Context sent": getattr(result04, "context_sent", "") or "",
+            },
+            "full_context": getattr(result04, "context_sent", "") or "",
+            "answer": result04.answer,
+            "provider": getattr(result04, "provider", "graph"),
             "latency_ms": latency04,
             "_error": None,
         })
@@ -1709,50 +1694,30 @@ def _run_live_compare_steps(question: str, provider: str | None, k: int) -> list
             "full_context": "", "answer": "", "provider": "", "latency_ms": 0.0, "_error": str(exc),
         })
 
-    progress_bar.progress(2 / 10, text="Running Step 05…")
+    progress_bar.progress(4 / 7, text="Running Step 05…")
 
-    # ── Step 05 — Knowledge Graph ───────────────────────────────────────────────
+    # ── Step 05 — Multi-Agent system ───────────────────────────────────────────
     step_label = "Step 05"
-    step_name  = "Knowledge Graph"
+    step_name  = "Multi-Agent"
     try:
         t0 = time.perf_counter()
-        from step_04_knowledge_graph.implementation.query import expand_context, extract_entity_ids
-        graph = _load_graph()
-        coll05 = _get_collection(str(STEP02_DB), "vertexia_step04")
-        qvec05 = _embed_query_gemini(question)
-        res05 = coll05.query(
-            query_embeddings=[qvec05],
-            n_results=min(k, coll05.count()),
-            include=["documents", "metadatas", "distances"],
-        )
-        docs05  = (res05["documents"] or [[]])[0]
-        metas05 = (res05["metadatas"] or [[]])[0]
-        dists05 = (res05["distances"] or [[]])[0]
-        chunks05 = [
-            RetrievedChunk(
-                text=d,
-                source=str(m.get("source", "")),
-                department=str(m.get("department", "")),
-                format=str(m.get("format", "")),
-                chunk_index=int(str(m.get("chunk_index") or 0)),
-                distance=dist,
-            )
-            for d, m, dist in zip(docs05, metas05, dists05)
-        ]
-        vector_ctx05 = format_context(chunks05)
-        entity_ids05 = extract_entity_ids([question] + [c.text for c in chunks05], graph)
-        graph_ctx05  = expand_context(entity_ids05, graph)
-        context05 = "\n\n".join(filter(None, [graph_ctx05, vector_ctx05]))
-        answer05, prov05 = _gateway_generate(context05, question, provider, SYSTEM_PROMPT)
+        rag05 = _load_step05_rag()
+        result05 = rag05.query(question)
         latency05 = (time.perf_counter() - t0) * 1000
         results.append({
             "step": step_label,
             "label": step_name,
-            "chunks": chunks05,
-            "context_parts": {"Graph": graph_ctx05, "Vector": vector_ctx05},
-            "full_context": context05,
-            "answer": answer05,
-            "provider": prov05,
+            "chunks": list(getattr(result05, "retrieved_chunks", []) or []),
+            "context_parts": {
+                "Multi-Agent Pipeline": (
+                    "QueryAnalyst → RetrievalSpecialist (+ sub-question retrieval) → "
+                    "GraphNavigator → StructuredData → Synthesis → Critic"
+                ),
+                "Context sent": getattr(result05, "context_sent", "") or "",
+            },
+            "full_context": getattr(result05, "context_sent", "") or "",
+            "answer": result05.answer,
+            "provider": getattr(result05, "provider", "multi-agent"),
             "latency_ms": latency05,
             "_error": None,
         })
@@ -1762,49 +1727,41 @@ def _run_live_compare_steps(question: str, provider: str | None, k: int) -> list
             "full_context": "", "answer": "", "provider": "", "latency_ms": 0.0, "_error": str(exc),
         })
 
-    progress_bar.progress(3 / 10, text="Running Step 06…")
+    progress_bar.progress(5 / 7, text="Running Step 06…")
 
-    # ── Step 06 — Enhanced Graph RAG ────────────────────────────────────────────
+    # ── Step 06 — Context engineering + VSA ────────────────────────────────────
     step_label = "Step 06"
-    step_name  = "Enhanced Graph RAG"
+    step_name  = "Context eng. + VSA"
     try:
         t0 = time.perf_counter()
-        from step_04_knowledge_graph.implementation.graph_query import build_graph_context
-        graph = _load_graph()
-        coll06 = _get_collection(str(STEP02_DB), "vertexia_step04")
-        qvec06 = _embed_query_gemini(question)
-        res06 = coll06.query(
-            query_embeddings=[qvec06],
-            n_results=min(k, coll06.count()),
-            include=["documents", "metadatas", "distances"],
-        )
-        docs06  = (res06["documents"] or [[]])[0]
-        metas06 = (res06["metadatas"] or [[]])[0]
-        dists06 = (res06["distances"] or [[]])[0]
-        chunks06 = [
-            RetrievedChunk(
-                text=d,
-                source=str(m.get("source", "")),
-                department=str(m.get("department", "")),
-                format=str(m.get("format", "")),
-                chunk_index=int(str(m.get("chunk_index") or 0)),
-                distance=dist,
-            )
-            for d, m, dist in zip(docs06, metas06, dists06)
-        ]
-        vector_ctx06 = format_context(chunks06)
-        graph_ctx06  = build_graph_context(question, [c.text for c in chunks06], graph)
-        context06 = "\n\n".join(filter(None, [graph_ctx06, vector_ctx06]))
-        answer06, prov06 = _gateway_generate(context06, question, provider, SYSTEM_PROMPT)
+        rag06 = _load_step06_rag()
+        ext06 = rag06.query_extended(question)
+        result06 = ext06.rag_result
+        ce06     = ext06.ce_metrics
         latency06 = (time.perf_counter() - t0) * 1000
         results.append({
             "step": step_label,
             "label": step_name,
-            "chunks": chunks06,
-            "context_parts": {"Graph (enhanced)": graph_ctx06, "Vector": vector_ctx06},
-            "full_context": context06,
-            "answer": answer06,
-            "provider": prov06,
+            "chunks": [],
+            "context_parts": {
+                "Routing (VSA)": (
+                    f"Slice: {ext06.slice_name}  (confidence={ext06.router_confidence:.2f})\n"
+                    f"Finance · HR · Engineering · General — domain-specific prompt + overrides"
+                ),
+                "CE Pipeline": (
+                    f"Retrieve → CrossEncoder rerank → dedup → compress → XML format\n"
+                    f"raw={ce06.get('raw_chars', 0):,} chars → "
+                    f"engineered={ce06.get('engineered_chars', 0):,} chars "
+                    f"({ce06.get('compression_ratio', 1.0):.0%}) | "
+                    f"chunks {ce06.get('chunks_before', 0)}→"
+                    f"{ce06.get('chunks_after_dedup', ce06.get('chunks_final', 0))}→"
+                    f"{ce06.get('chunks_final', 0)}"
+                ),
+                "Engineered Context (XML)": result06.context_sent,
+            },
+            "full_context": result06.context_sent,
+            "answer": result06.answer,
+            "provider": getattr(result06, "provider", "ce+vsa"),
             "latency_ms": latency06,
             "_error": None,
         })
@@ -1814,228 +1771,45 @@ def _run_live_compare_steps(question: str, provider: str | None, k: int) -> list
             "full_context": "", "answer": "", "provider": "", "latency_ms": 0.0, "_error": str(exc),
         })
 
-    progress_bar.progress(4 / 10, text="Running Step 07…")
+    progress_bar.progress(6 / 7, text="Running Step 07…")
 
-    # ── Step 07 — RAG Fusion + CSV tool ─────────────────────────────────────────
+    # ── Step 07 — Production hardening ─────────────────────────────────────────
     step_label = "Step 07"
-    step_name  = "RAG Fusion + CSV Tool"
+    step_name  = "Production"
     try:
         t0 = time.perf_counter()
-        from step_04_knowledge_graph.implementation.graph_query import build_graph_context as _bgc07
-        from step_02_tools.implementation.csv_tool import detect_intent, run_query
-        rag07 = _load_step07_retriever()
-        chunks07 = rag07.retrieve(question, k=k)
-        vector_ctx07 = format_context(chunks07)
-        _graph07 = rag07.graph if rag07.graph is not None else _load_graph()
-        graph_ctx07  = _bgc07(question, [c.text for c in chunks07], _graph07)
-        csv_intent07 = detect_intent(question)
-        csv_ctx07    = run_query(csv_intent07) if csv_intent07 else ""
-        context07 = "\n\n".join(filter(None, [csv_ctx07, graph_ctx07, vector_ctx07]))
-        answer07, prov07 = _gateway_generate(context07, question, provider, SYSTEM_PROMPT)
+        rag07 = _load_step07_rag()
+        ext07 = rag07.query_extended(question)
+        result07 = ext07.rag_result
+        ce07     = ext07.ce_metrics
+        health07 = ext07.health_snapshot
         latency07 = (time.perf_counter() - t0) * 1000
         results.append({
             "step": step_label,
             "label": step_name,
-            "chunks": chunks07,
-            "context_parts": {
-                "CSV Query": csv_ctx07,
-                "Graph": graph_ctx07,
-                "Vector (BM25+Dense)": vector_ctx07,
-            },
-            "full_context": context07,
-            "answer": answer07,
-            "provider": prov07,
-            "latency_ms": latency07,
-            "_error": None,
-        })
-    except Exception as exc:
-        results.append({
-            "step": step_label, "label": step_name, "chunks": [], "context_parts": {},
-            "full_context": "", "answer": "", "provider": "", "latency_ms": 0.0, "_error": str(exc),
-        })
-
-    progress_bar.progress(5 / 10, text="Running Step 08…")
-
-    # ── Step 08 — Agentic RAG ───────────────────────────────────────────────────
-    step_label = "Step 08"
-    step_name  = "Agentic RAG"
-    try:
-        t0 = time.perf_counter()
-        rag08 = _load_step08_rag()
-        result08 = rag08.query(question)
-        answer08 = result08.answer
-        prov08   = f"gateway:{getattr(result08, 'provider', 'unknown')}"
-        latency08 = (time.perf_counter() - t0) * 1000
-        results.append({
-            "step": step_label,
-            "label": step_name,
-            "chunks": [],
-            "context_parts": {"Agentic (tool loop)": "Context-first agent, up to 3 tool rounds."},
-            "full_context": "",
-            "answer": answer08,
-            "provider": prov08,
-            "latency_ms": latency08,
-            "_error": None,
-        })
-    except Exception as exc:
-        results.append({
-            "step": step_label, "label": step_name, "chunks": [], "context_parts": {},
-            "full_context": "", "answer": "", "provider": "", "latency_ms": 0.0, "_error": str(exc),
-        })
-
-    progress_bar.progress(6 / 10, text="Running Step 09…")
-
-    # ── Step 09 — Multi-Agent RAG ───────────────────────────────────────────────
-    step_label = "Step 09"
-    step_name  = "Multi-Agent"
-    try:
-        t0 = time.perf_counter()
-        rag09 = _load_step09_rag()
-        result09 = rag09.query(question)
-        answer09 = result09.answer
-        prov09   = getattr(result09, "provider", "multi-agent")
-        latency09 = (time.perf_counter() - t0) * 1000
-        results.append({
-            "step": step_label,
-            "label": step_name,
-            "chunks": [],
-            "context_parts": {
-                "Multi-Agent Pipeline": (
-                    "QueryAnalyst → RetrievalSpecialist (+ sub-question retrieval) → "
-                    "GraphNavigator → StructuredData → Synthesis → Critic"
-                )
-            },
-            "full_context": "",
-            "answer": answer09,
-            "provider": prov09,
-            "latency_ms": latency09,
-            "_error": None,
-        })
-    except Exception as exc:
-        results.append({
-            "step": step_label, "label": step_name, "chunks": [], "context_parts": {},
-            "full_context": "", "answer": "", "provider": "", "latency_ms": 0.0, "_error": str(exc),
-        })
-
-    progress_bar.progress(7 / 10, text="Running Step 10…")
-
-    # ── Step 10 — Context Engineering ──────────────────────────────────────────
-    step_label = "Step 10"
-    step_name  = "Context Eng."
-    try:
-        t0 = time.perf_counter()
-        rag10 = _load_step10_rag()
-        ext10 = rag10.query_extended(question)
-        result10 = ext10.rag_result
-        ce10     = ext10.ce_metrics
-        prov10   = getattr(result10, "provider", "ce")
-        latency10 = (time.perf_counter() - t0) * 1000
-        results.append({
-            "step": step_label,
-            "label": step_name,
-            "chunks": [],
-            "context_parts": {
-                "CE Pipeline": (
-                    f"Retrieve k=20 → CrossEncoder rerank → dedup → compress (60%) → XML format\n"
-                    f"raw={ce10['raw_chars']:,} chars → engineered={ce10['engineered_chars']:,} chars "
-                    f"({ce10['compression_ratio']:.0%}) | "
-                    f"chunks {ce10['chunks_before']}→{ce10['chunks_after_dedup']}→{ce10['chunks_final']}"
-                ),
-                "Engineered Context (XML)": result10.context_sent,
-            },
-            "full_context": result10.context_sent,
-            "answer": result10.answer,
-            "provider": prov10,
-            "latency_ms": latency10,
-            "_error": None,
-        })
-    except Exception as exc:
-        results.append({
-            "step": step_label, "label": step_name, "chunks": [], "context_parts": {},
-            "full_context": "", "answer": "", "provider": "", "latency_ms": 0.0, "_error": str(exc),
-        })
-
-    progress_bar.progress(8 / 10, text="Running Step 11…")
-
-    # ── Step 11 — VSA ──────────────────────────────────────────────────────────
-    step_label = "Step 11"
-    step_name  = "VSA"
-    try:
-        t0 = time.perf_counter()
-        rag11 = _load_step11_rag()
-        ext11 = rag11.query_extended(question)
-        result11 = ext11.rag_result
-        prov11   = getattr(result11, "provider", "vsa")
-        latency11 = (time.perf_counter() - t0) * 1000
-        ce11     = ext11.ce_metrics
-        results.append({
-            "step": step_label,
-            "label": step_name,
             "chunks": [],
             "context_parts": {
                 "Routing": (
-                    f"Slice: {ext11.slice_name}  (confidence={ext11.router_confidence:.2f})\n"
-                    f"Finance · HR · Engineering · General — domain-specific prompt + overrides"
+                    f"Slice: {ext07.slice_name}  (confidence={ext07.router_confidence:.2f})\n"
+                    f"Cache: {'HIT' if ext07.from_cache else 'miss'} | "
+                    f"Answer confidence: {ext07.confidence_label} ({ext07.confidence_score:.2f})"
                 ),
                 "CE metrics": (
-                    f"raw={ce11.get('raw_chars', 0):,} chars → "
-                    f"engineered={ce11.get('engineered_chars', 0):,} chars "
-                    f"({ce11.get('compression_ratio', 1.0):.0%}) | "
-                    f"chunks {ce11.get('chunks_before', 0)}→{ce11.get('chunks_final', 0)}"
-                ),
-            },
-            "full_context": "",
-            "answer": result11.answer,
-            "provider": prov11,
-            "latency_ms": latency11,
-            "_error": None,
-        })
-    except Exception as exc:
-        results.append({
-            "step": step_label, "label": step_name, "chunks": [], "context_parts": {},
-            "full_context": "", "answer": "", "provider": "", "latency_ms": 0.0, "_error": str(exc),
-        })
-
-    progress_bar.progress(9 / 10, text="Running Step 12…")
-
-    # ── Step 12 — Production Hardening ─────────────────────────────────────────
-    step_label = "Step 12"
-    step_name  = "Production"
-    try:
-        t0 = time.perf_counter()
-        rag12 = _load_step12_rag()
-        ext12 = rag12.query_extended(question)
-        result12 = ext12.rag_result
-        prov12   = getattr(result12, "provider", "prod")
-        latency12 = (time.perf_counter() - t0) * 1000
-        ce12     = ext12.ce_metrics
-        health12 = ext12.health_snapshot
-        results.append({
-            "step": step_label,
-            "label": step_name,
-            "chunks": [],
-            "context_parts": {
-                "Routing": (
-                    f"Slice: {ext12.slice_name}  (confidence={ext12.router_confidence:.2f})\n"
-                    f"Cache: {'HIT' if ext12.from_cache else 'miss'} | "
-                    f"Answer confidence: {ext12.confidence_label} ({ext12.confidence_score:.2f})"
-                ),
-                "CE metrics": (
-                    f"raw={ce12.get('raw_chars', 0):,} chars → "
-                    f"engineered={ce12.get('engineered_chars', 0):,} chars "
-                    f"({ce12.get('compression_ratio', 1.0):.0%})"
+                    f"raw={ce07.get('raw_chars', 0):,} chars → "
+                    f"engineered={ce07.get('engineered_chars', 0):,} chars "
+                    f"({ce07.get('compression_ratio', 1.0):.0%})"
                 ),
                 "Health": (
-                    f"p50={health12.get('p50_latency_ms','?')}ms  "
-                    f"p95={health12.get('p95_latency_ms','?')}ms  "
-                    f"SLO={health12.get('slo_compliance',0):.0%}  "
-                    f"status={health12.get('status','?')}"
+                    f"p50={health07.get('p50_latency_ms','?')}ms  "
+                    f"p95={health07.get('p95_latency_ms','?')}ms  "
+                    f"SLO={health07.get('slo_compliance',0):.0%}  "
+                    f"status={health07.get('status','?')}"
                 ),
             },
             "full_context": "",
-            "answer": result12.answer,
-            "provider": prov12,
-            "latency_ms": latency12,
+            "answer": result07.answer,
+            "provider": getattr(result07, "provider", "prod"),
+            "latency_ms": latency07,
             "_error": None,
         })
     except Exception as exc:
@@ -2137,16 +1911,13 @@ def tab_live_compare() -> None:
                 """
 | Step | Technique added |
 |---|---|
-| Step 01 | Dense vector only, naive 2k-char chunks |
-| Step 04 | Format-aware chunks: CSV rows + aggregate + section split |
-| Step 05 | Knowledge graph: entity context + org/product relationships |
-| Step 06 | Graph RAG: alias resolution + dependency chain traversal |
-| Step 07 | BM25 + Dense RRF fusion + structured CSV query tool |
-| Step 08 | Agentic loop: tool-calling LLM via Gateway V2 |
-| Step 09 | Multi-agent: orchestrator + 6 specialized subagents + Critic |
-| Step 10 | Context engineering: CrossEncoder rerank → dedup → compress → XML |
-| Step 11 | VSA: route to Finance / HR / Engineering / General slice by domain |
-| Step 12 | Production: semantic cache + retry/backoff + confidence scoring + health monitor |
+| Step 01 | Baseline RAG: MiniLM dense retrieval + format-aware chunks (CSV rows + aggregate pre-compute + section splits) |
+| Step 02 | CSV tool calling: Pandas at query time for exact aggregates |
+| Step 03 | BM25 + Dense RRF fusion (keyword recall meets semantic precision) |
+| Step 04 | Knowledge graph + Graph RAG: entity edges, alias resolution, BFS blast-radius |
+| Step 05 | Multi-agent: QueryAnalyst → specialists (retrieval / graph / structured) → Critic → Synthesis |
+| Step 06 | Context engineering + VSA: rerank → dedup → compress → XML + domain slicing (Finance/HR/Eng/General) |
+| Step 07 | Production: semantic cache + retry/backoff + confidence scoring + health monitor + graceful degradation |
 """
             )
 
