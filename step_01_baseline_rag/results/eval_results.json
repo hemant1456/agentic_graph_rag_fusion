@@ -1,6 +1,6 @@
 {
   "step": "step_01_baseline_rag",
-  "timestamp": "2026-05-18T11:54:39",
+  "timestamp": "2026-05-18T12:02:48",
   "total_questions": 15,
   "grade_counts": {
     "PASS": 8,
@@ -9,10 +9,10 @@
   },
   "pass_rate": 0.53,
   "ragas_averages": {
-    "answer_correctness": 0.587,
+    "answer_correctness": 0.607,
     "faithfulness": 1.0,
-    "answer_relevancy": 0.847,
-    "context_precision": 0.383,
+    "answer_relevancy": 0.827,
+    "context_precision": 0.3,
     "context_recall": 0.64
   },
   "thresholds": {
@@ -29,15 +29,15 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.6,
+      "context_precision": 0.8,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer accurately reflects the retention policy found in the retrieved documents, which contradict the reference answer's claim of 90 days for cold storage.",
+      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by multiple retrieved contexts; most retrieved contexts are relevant but a few (e.g., vendor matrix, IP policy) are less directly related.",
       "required_facts": [
         "90 day",
         "glacier"
       ],
-      "retrieval_latency_ms": 9997.4,
-      "contexts_count": 10
+      "retrieval_latency_ms": 11008.6,
+      "contexts_count": 11
     },
     {
       "id": "Q02",
@@ -47,35 +47,35 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.8,
+      "context_precision": 0.5,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer correctly identifies both co-founders and the founding year (March 2019), which is consistent with the reference and supported by the retrieved contexts; all claims are grounded, directly address the question, and the contexts contain all necessary facts, though one context (legal/",
+      "judge_reasoning": "The actual answer correctly identifies both co-founders and the founding year (March 2019), which is consistent with the reference and supported by retrieved contexts; all claims are grounded, directly address the question, and the contexts contain the necessary facts, though only about half of the ",
       "required_facts": [
         "Arjun Mehta",
         "Diana Volkov",
         "2019"
       ],
-      "retrieval_latency_ms": 1175.7,
-      "contexts_count": 10
+      "retrieval_latency_ms": 882.7,
+      "contexts_count": 11
     },
     {
       "id": "Q03",
       "question": "In Vertexia's on-call runbook, what is the first action and the escalation owner for the PulseConnect webhook delivery failure alert?",
       "answer": "For the **PulseConnect webhook_delivery_failure_rate > 5%** alert, the details are as follows:\n\n*   **First action:** Check SendGrid quota dashboard and the Twilio API status page. Inspect outbound retry queue depth in PulseConnect admin UI.\n*   **Owner:** Raj Patel",
       "grade": "PASS",
-      "answer_correctness": 0.8,
+      "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.2,
+      "context_precision": 0.7,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer is mostly correct but includes an extra action.",
+      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by the retrieved contexts, though some retrieved contexts are irrelevant.",
       "required_facts": [
         "SendGrid",
         "Twilio",
         "Raj Patel"
       ],
-      "retrieval_latency_ms": 1382.4,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1066.3,
+      "contexts_count": 11
     },
     {
       "id": "Q04",
@@ -85,17 +85,17 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.1,
+      "context_precision": 0.3,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is perfectly accurate and grounded in the provided context, though the retrieval process returned many irrelevant documents.",
+      "judge_reasoning": "The actual answer correctly and precisely matches the reference, is fully supported by context [2], directly answers the question, but only 3 of 10 retrieved contexts (e.g., [2], [3], [8]) are relevant, lowering precision.",
       "required_facts": [
         "us-east-1",
         "eu-west-1",
         "ap-southeast-1",
         "15 months"
       ],
-      "retrieval_latency_ms": 1154.7,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1123.7,
+      "contexts_count": 11
     },
     {
       "id": "Q05",
@@ -104,15 +104,15 @@
       "grade": "FAIL",
       "answer_correctness": 0.0,
       "faithfulness": 1.0,
-      "answer_relevancy": 1.0,
+      "answer_relevancy": 0.8,
       "context_precision": 0.3,
       "context_recall": 0.0,
-      "judge_reasoning": "The actual answer provides a different ARR value and does not mention the number of customers.",
+      "judge_reasoning": "The actual answer reports $16.5M ARR as of Q3 2023, which is factually supported by the contexts but does not match the reference answer's $11M across 20 customers; the retrieved contexts lack the specific detail about the number of customers and the correct total ARR, making correctness and context",
       "required_facts": [
         "11,000,000"
       ],
-      "retrieval_latency_ms": 1244.0,
-      "contexts_count": 10
+      "retrieval_latency_ms": 918.7,
+      "contexts_count": 11
     },
     {
       "id": "Q06",
@@ -124,12 +124,12 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.4,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer correctly identifies the GAAP revenue and provides helpful context, though several retrieved chunks were irrelevant to the specific Q3 2023 query.",
+      "judge_reasoning": "The answer is accurate and fully supported by the provided context, though the retrieval included several irrelevant CSV chunks.",
       "required_facts": [
         "4,120,000"
       ],
-      "retrieval_latency_ms": 1968.2,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1646.0,
+      "contexts_count": 11
     },
     {
       "id": "Q07",
@@ -138,15 +138,15 @@
       "grade": "FAIL",
       "answer_correctness": 0.0,
       "faithfulness": 1.0,
-      "answer_relevancy": 0.8,
+      "answer_relevancy": 1.0,
       "context_precision": 0.0,
       "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified that the provided context lacks information about Berlin, but the reference answer indicates the information exists, meaning the retrieval failed to provide the necessary documents.",
+      "judge_reasoning": "The model correctly identified that the provided context lacks information about Berlin, but the reference answer claims there are 5 employees there, indicating the context provided to the model was insufficient to answer the question.",
       "required_facts": [
         "5"
       ],
-      "retrieval_latency_ms": 1290.1,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1021.5,
+      "contexts_count": 11
     },
     {
       "id": "Q08",
@@ -156,15 +156,15 @@
       "answer_correctness": 0.0,
       "faithfulness": 1.0,
       "answer_relevancy": 0.3,
-      "context_precision": 0.0,
+      "context_precision": 0.2,
       "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified that the provided context lacked the answer, but the context recall is 0.0 because the provided documents did not contain the necessary information to answer the question.",
+      "judge_reasoning": "The actual answer states that the documents do not contain the required information.",
       "required_facts": [
         "events/batch",
         "events/stream"
       ],
-      "retrieval_latency_ms": 1338.9,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1137.1,
+      "contexts_count": 11
     },
     {
       "id": "Q09",
@@ -176,13 +176,13 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is factually accurate and fully supported by the context, though only one of the ten retrieved chunks was relevant to the query.",
+      "judge_reasoning": "The answer is factually accurate and fully supported by the retrieved context, though the retrieval process returned many irrelevant chunks.",
       "required_facts": [
         "Daniel Osei",
         "October 31, 2023"
       ],
-      "retrieval_latency_ms": 1016.1,
-      "contexts_count": 10
+      "retrieval_latency_ms": 910.2,
+      "contexts_count": 11
     },
     {
       "id": "Q10",
@@ -192,15 +192,15 @@
       "answer_correctness": 0.0,
       "faithfulness": 1.0,
       "answer_relevancy": 0.3,
-      "context_precision": 0.1,
+      "context_precision": 0.0,
       "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified that the provided context lacked the requested information, but the reference answer indicates the information should have been present, implying a failure in retrieval recall.",
+      "judge_reasoning": "The actual answer states that the documents do not contain the required information.",
       "required_facts": [
         "120,000",
         "June 30, 2024"
       ],
-      "retrieval_latency_ms": 922.6,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1333.9,
+      "contexts_count": 11
     },
     {
       "id": "Q11",
@@ -209,35 +209,35 @@
       "grade": "PARTIAL",
       "answer_correctness": 0.5,
       "faithfulness": 1.0,
-      "answer_relevancy": 1.0,
-      "context_precision": 0.8,
+      "answer_relevancy": 0.7,
+      "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer correctly identifies Maya Sharma as the CSM for Phoenix Corp but does not confirm her manager, Lisa Torres, despite the org chart supporting it; the answer is faithful and relevant but partially incomplete.",
+      "judge_reasoning": "The model correctly identified the CSM but failed to acknowledge the clear reporting line provided in the retrieved org chart, despite correctly identifying the source.",
       "required_facts": [
         "Maya Sharma",
         "Lisa Torres"
       ],
-      "retrieval_latency_ms": 1432.7,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1265.2,
+      "contexts_count": 11
     },
     {
       "id": "Q12",
       "question": "If NexusFlow goes down entirely, which services are directly or indirectly affected? List all of them.",
       "answer": "Based on the provided documents, if NexusFlow goes down, the following services are affected:\n\n*   **Data Ingestion Service:** This service is directly affected, as it is owned by the Data Platform Team and experienced a major outage during the NexusFlow v2.1 incident.\n*   **InsightLens:** This service is indirectly affected because it depends on the NexusFlow `events_api` for analytics ingestion.\n\nThe provided documents explicitly state that PulseConnect was unaffected during the NexusFlow v2.1 outage.",
       "grade": "PARTIAL",
-      "answer_correctness": 0.5,
+      "answer_correctness": 0.6,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.8,
+      "context_precision": 0.4,
       "context_recall": 0.6,
-      "judge_reasoning": "The actual answer correctly identifies Data Ingestion Service and InsightLens as affected, but incorrectly claims PulseConnect was unaffected, contradicting the reference; all claims are grounded in context, but context 3, 4, 7, 8 are less relevant, and the contexts omit explicit confirmation that D",
+      "judge_reasoning": "The answer correctly identifies InsightLens but misses DataCraft, which is listed in the reference answer as a dependent service, while correctly noting the status of PulseConnect.",
       "required_facts": [
         "InsightLens",
         "PulseConnect",
         "DataCraft"
       ],
-      "retrieval_latency_ms": 1228.3,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1397.3,
+      "contexts_count": 11
     },
     {
       "id": "Q13",
@@ -247,15 +247,15 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.8,
+      "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer correctly identifies the two-hop reporting chain from Aisha Johnson to Tom\u00e1s Garc\u00eda to Sarah Chen, fully matching the reference and using only supported facts from the retrieved contexts.",
+      "judge_reasoning": "The answer is accurate and fully supported by the provided context, though the retrieval process returned many irrelevant documents.",
       "required_facts": [
         "Tom\u00e1s Garc\u00eda",
         "Sarah Chen"
       ],
-      "retrieval_latency_ms": 921.9,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1023.0,
+      "contexts_count": 11
     },
     {
       "id": "Q14",
@@ -265,15 +265,15 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.75,
+      "context_precision": 0.4,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer correctly identifies the 99.9% vs 99.99% gap and is fully supported by retrieved contexts; all reference facts are present in contexts, but some retrieved chunks are redundant or less relevant.",
+      "judge_reasoning": "The answer is accurate and fully supported by the context, though several retrieved documents were irrelevant to the specific question asked.",
       "required_facts": [
         "99.9",
         "99.99"
       ],
-      "retrieval_latency_ms": 1331.1,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1592.1,
+      "contexts_count": 11
     },
     {
       "id": "Q15",
@@ -285,15 +285,15 @@
       "answer_relevancy": 0.3,
       "context_precision": 0.0,
       "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified that the provided context lacked the requested information, but the context recall is 0.0 because the necessary information was not present in the retrieved chunks.",
+      "judge_reasoning": "The model correctly identified that the provided context lacked the requested information, but the context itself failed to retrieve the necessary documents to answer the question.",
       "required_facts": [
         "Adrian Blake",
         "FinDataCo",
         "Preet Kaur",
         "relocated"
       ],
-      "retrieval_latency_ms": 1136.5,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1485.7,
+      "contexts_count": 11
     }
   ]
 }
