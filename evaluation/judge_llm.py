@@ -1,11 +1,11 @@
 """LLM judge for RAGAS via llm_gatewayV2 (free-tier provider routing).
 
 The gateway (port 8100) routes each call among gemini / nvidia / groq / cerebras
-based on RPM/RPD/cooldown. With max_workers=1 in the RAGAS RunConfig, calls are
-sequential so the router cleanly fails over when one provider hits its cap.
+based on RPM/RPD/cooldown. JUDGE_PROVIDERS env var sets the priority order
+(default: cerebras → groq → gemini → nvidia).
 
 A direct OpenAI fallback is available via JUDGE_PROVIDER=openai for cases when
-the gateway is down or you want a fast paid run.
+free-tier providers are exhausted and you need a fast paid run.
 """
 from __future__ import annotations
 
@@ -28,10 +28,8 @@ from llm_gatewayV2.client import LLM as GatewayClient
 
 load_dotenv(ROOT / ".env")
 
-JUDGE_PROVIDER = os.getenv("JUDGE_PROVIDER", "gateway")  # "gateway" | "openai" | "ollama"
+JUDGE_PROVIDER = os.getenv("JUDGE_PROVIDER", "gateway")  # "gateway" | "openai"
 GATEWAY_URL = os.getenv("LLM_GATEWAY_V2_URL", "http://localhost:8100")
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
-OLLAMA_MODEL = os.getenv("OLLAMA_JUDGE_MODEL", "llama3.2:latest")
 
 
 def _msg_role(m: BaseMessage) -> str:
@@ -53,8 +51,8 @@ class GatewayChat(BaseChatModel):
       - gemini (3.1-flash-lite): ~900 ms/call, 15 RPM, 1k RPD — reliable
       - nvidia (deepseek-v4):    ~30 s/call — too slow for batch eval
 
-    Default order: cerebras → gemini → groq.  Each provider is tried in
-    sequence; empty text or RPM/RPD errors fall through to the next.
+    Default order: cerebras → groq → gemini → nvidia. Each provider is tried
+    in sequence; empty text or RPM/RPD errors fall through to the next.
     Override via JUDGE_PROVIDERS env var (comma-separated).
     """
 
@@ -64,9 +62,6 @@ class GatewayChat(BaseChatModel):
     providers: list[str] = []  # set in model_post_init
 
     def model_post_init(self, __context: Any) -> None:
-        # gemini RPD typically exhausts mid-way through a full --all run, so
-        # keep it but list cerebras + groq first; nvidia is slow but reliable
-        # as a last resort.
         env_order = os.getenv("JUDGE_PROVIDERS", "cerebras,groq,gemini,nvidia")
         self.providers = [p.strip() for p in env_order.split(",") if p.strip()]
 
@@ -112,22 +107,9 @@ def build_judge_llm(temperature: float = 0.0, max_tokens: int = 1024):
     """Return a LangChain chat model for RAGAS.
 
     JUDGE_PROVIDER env var picks the backend:
-      - "ollama"  → local Ollama via its OpenAI-compatible endpoint (no rate limits).
-                    Model defaults to deepseek-r1:1.5b; override via OLLAMA_JUDGE_MODEL.
+      - "gateway" → llm_gatewayV2 free-tier rotation (default).
       - "openai"  → real OpenAI API (paid, very fast).
-      - "gateway" → llm_gatewayV2 free-tier rotation (default, rate-limit prone).
     """
-    if JUDGE_PROVIDER == "ollama":
-        return ChatOpenAI(
-            base_url=f"{OLLAMA_URL}/v1",
-            api_key="ollama",  # any non-empty string works
-            model=OLLAMA_MODEL,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            timeout=120,
-            max_retries=2,
-        )
-
     if JUDGE_PROVIDER == "openai":
         api_key = os.getenv("OPENAI_API_KEY", "").strip()
         if not api_key:
