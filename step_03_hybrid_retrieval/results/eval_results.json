@@ -1,19 +1,19 @@
 {
   "step": "step_03_hybrid_retrieval",
-  "timestamp": "2026-05-18T11:57:02",
+  "timestamp": "2026-05-18T12:05:11",
   "total_questions": 15,
   "grade_counts": {
-    "PASS": 9,
-    "PARTIAL": 2,
-    "FAIL": 4
+    "PASS": 12,
+    "PARTIAL": 1,
+    "FAIL": 2
   },
-  "pass_rate": 0.6,
+  "pass_rate": 0.8,
   "ragas_averages": {
-    "answer_correctness": 0.667,
-    "faithfulness": 0.933,
-    "answer_relevancy": 0.88,
-    "context_precision": 0.283,
-    "context_recall": 0.673
+    "answer_correctness": 0.813,
+    "faithfulness": 1.0,
+    "answer_relevancy": 0.893,
+    "context_precision": 0.213,
+    "context_recall": 0.84
   },
   "thresholds": {
     "PASS": "answer_correctness>=0.7",
@@ -31,13 +31,13 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.8,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by multiple retrieved contexts; context 7 and 9 are irrelevant, lowering precision.",
+      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by multiple retrieved contexts; most retrieved contexts are relevant but a few (e.g., vendor-specific or founding story) are not directly needed.",
       "required_facts": [
         "90 day",
         "glacier"
       ],
-      "retrieval_latency_ms": 10246.1,
-      "contexts_count": 10
+      "retrieval_latency_ms": 10562.1,
+      "contexts_count": 11
     },
     {
       "id": "Q02",
@@ -47,35 +47,35 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.8,
+      "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly in substance, with slightly more detail (March 2019), all supported by contexts [1], [4], and [5]; context_precision is reduced due to 2 of 10 retrieved chunks being irrelevant.",
+      "judge_reasoning": "The answer accurately identifies the co-founders and the founding date using the provided context, though many retrieved documents were irrelevant to the specific query.",
       "required_facts": [
         "Arjun Mehta",
         "Diana Volkov",
         "2019"
       ],
-      "retrieval_latency_ms": 1330.6,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1223.0,
+      "contexts_count": 11
     },
     {
       "id": "Q03",
       "question": "In Vertexia's on-call runbook, what is the first action and the escalation owner for the PulseConnect webhook delivery failure alert?",
       "answer": "For the **PulseConnect webhook_delivery_failure_rate > 5%** alert, the details are as follows:\n\n*   **First action:** Check SendGrid quota dashboard and the Twilio API status page. Inspect outbound retry queue depth in PulseConnect admin UI.\n*   **Owner:** Raj Patel",
       "grade": "PASS",
-      "answer_correctness": 1.0,
+      "answer_correctness": 0.9,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.2,
+      "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by context [2]; extra retrieved contexts are irrelevant, lowering precision.",
+      "judge_reasoning": "The actual answer accurately addresses the question with supported claims, but includes minor extra details.",
       "required_facts": [
         "SendGrid",
         "Twilio",
         "Raj Patel"
       ],
-      "retrieval_latency_ms": 1190.0,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1450.6,
+      "contexts_count": 11
     },
     {
       "id": "Q04",
@@ -85,34 +85,34 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.1,
+      "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is accurate and fully supported by the retrieved context, though only one of the ten provided chunks was relevant to the query.",
+      "judge_reasoning": "The actual answer accurately matches the reference answer and is supported by the retrieved contexts.",
       "required_facts": [
         "us-east-1",
         "eu-west-1",
         "ap-southeast-1",
         "15 months"
       ],
-      "retrieval_latency_ms": 1034.3,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1213.9,
+      "contexts_count": 11
     },
     {
       "id": "Q05",
       "question": "What is the total ARR across all Vertexia customers combined?",
       "answer": "The total ARR across all 20 customers is $11,000,000.",
-      "grade": "FAIL",
-      "answer_correctness": 0.0,
+      "grade": "PASS",
+      "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
-      "judge_reasoning": "The actual answer matches the reference answer but the retrieved contexts do not contain the information to support the answer.",
+      "context_precision": 0.1,
+      "context_recall": 1.0,
+      "judge_reasoning": "The actual answer matches the reference exactly and is fully supported by the retrieved context; however, only 1 of the 10 retrieved contexts is relevant, dragging down precision.",
       "required_facts": [
         "11,000,000"
       ],
-      "retrieval_latency_ms": 1048.5,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1127.5,
+      "contexts_count": 11
     },
     {
       "id": "Q06",
@@ -122,31 +122,31 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.5,
+      "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer correctly identifies the GAAP revenue figure provided in the context, which matches the reference answer's value.",
+      "judge_reasoning": "The answer correctly identifies the GAAP revenue figure supported by the provided documents, though many retrieved chunks were irrelevant to the specific query.",
       "required_facts": [
         "4,120,000"
       ],
-      "retrieval_latency_ms": 804.2,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1108.6,
+      "contexts_count": 11
     },
     {
       "id": "Q07",
       "question": "How many active Vertexia employees are based in Berlin?",
       "answer": "Based on the provided employee directory, there are 5 active employees based in Berlin.",
-      "grade": "FAIL",
-      "answer_correctness": 0.0,
-      "faithfulness": 0.0,
+      "grade": "PASS",
+      "answer_correctness": 1.0,
+      "faithfulness": 1.0,
       "answer_relevancy": 1.0,
       "context_precision": 0.2,
-      "context_recall": 0.0,
-      "judge_reasoning": "The retrieved contexts only contain 2 employees in Berlin, making the claim of 5 employees a hallucination not supported by the provided documents.",
+      "context_recall": 1.0,
+      "judge_reasoning": "The answer is accurate and grounded in the provided CSV data, though the retrieved context set contained significant irrelevant documents.",
       "required_facts": [
         "5"
       ],
-      "retrieval_latency_ms": 942.6,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1655.4,
+      "contexts_count": 11
     },
     {
       "id": "Q08",
@@ -156,15 +156,15 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.143,
+      "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer accurately identifies the deprecated endpoint and its replacement, with all claims supported by the retrieved contexts.",
+      "judge_reasoning": "The answer is accurate and fully supported by the context, though the retrieved set contained significant irrelevant documents.",
       "required_facts": [
         "events/batch",
         "events/stream"
       ],
-      "retrieval_latency_ms": 893.2,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1100.6,
+      "contexts_count": 11
     },
     {
       "id": "Q09",
@@ -176,13 +176,13 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is factually accurate and fully supported by the retrieved context, though only one of the ten provided chunks was relevant to the query.",
+      "judge_reasoning": "The answer is factually accurate and fully supported by the context, though the retrieval process returned many irrelevant chunks.",
       "required_facts": [
         "Daniel Osei",
         "October 31, 2023"
       ],
-      "retrieval_latency_ms": 947.2,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1354.3,
+      "contexts_count": 11
     },
     {
       "id": "Q10",
@@ -194,50 +194,50 @@
       "answer_relevancy": 0.3,
       "context_precision": 0.0,
       "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified that the provided context lacked the requested information, but the context recall is 0.0 because the necessary information was not present in the retrieved documents.",
+      "judge_reasoning": "The model correctly identified that the information was missing from the provided context, but the context itself failed to contain the necessary information to answer the question.",
       "required_facts": [
         "120,000",
         "June 30, 2024"
       ],
-      "retrieval_latency_ms": 1229.3,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1023.9,
+      "contexts_count": 11
     },
     {
       "id": "Q11",
       "question": "Who is the CSM managing the Phoenix Corp account, and who is that person's direct manager?",
       "answer": "Based on the provided documents, Maya Sharma is the VP of Customer Success and serves as the dedicated Executive Sponsor for the Phoenix Corp account.\n\nThe documents do not explicitly name a specific \"CSM\" (Customer Success Manager) managing the account, but they identify Maya Sharma as the person who owns the Phoenix Corp account. According to the Q3 2023 Org Chart, Maya Sharma reports to Lisa Torres, the Chief Revenue Officer.",
-      "grade": "PARTIAL",
-      "answer_correctness": 0.5,
+      "grade": "PASS",
+      "answer_correctness": 0.7,
       "faithfulness": 1.0,
       "answer_relevancy": 0.8,
-      "context_precision": 0.2,
-      "context_recall": 0.5,
-      "judge_reasoning": "The model correctly identified the account owner and her manager from the provided context, but failed to identify a specific CSM because the documents do not explicitly name one, leading to a partially correct answer.",
+      "context_precision": 0.3,
+      "context_recall": 1.0,
+      "judge_reasoning": "The model correctly identified the account owner and manager but failed to confirm Maya Sharma as the CSM, despite the context implying her leadership of the Customer Success team.",
       "required_facts": [
         "Maya Sharma",
         "Lisa Torres"
       ],
-      "retrieval_latency_ms": 1352.5,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1196.2,
+      "contexts_count": 11
     },
     {
       "id": "Q12",
       "question": "If NexusFlow goes down entirely, which services are directly or indirectly affected? List all of them.",
       "answer": "Based on the provided documents, the following services are affected if NexusFlow goes down:\n\n*   **InsightLens:** This service is indirectly affected because it depends on the NexusFlow `events_api` for its analytics ingestion path.\n*   **Data Ingestion Service:** While the postmortem notes that the outage originated from a misconfiguration in the data ingestion service, the documentation indicates that the `data-ingestion-service` underpins NexusFlow.\n\nThe provided context does not list any other services as being affected by a NexusFlow outage; specifically, it notes that **PulseConnect** was unaffected during the August 14, 2023, NexusFlow v2.1 outage.",
       "grade": "PARTIAL",
-      "answer_correctness": 0.5,
+      "answer_correctness": 0.6,
       "faithfulness": 1.0,
-      "answer_relevancy": 0.8,
-      "context_precision": 0.4,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.3,
       "context_recall": 0.6,
-      "judge_reasoning": "The answer correctly identifies InsightLens but fails to include PulseConnect and DataCraft as affected services, despite the reference answer and context implying their dependency on the NexusFlow ecosystem.",
+      "judge_reasoning": "The answer correctly identifies InsightLens but misses DataCraft, which is identified as a downstream consumer of NexusFlow in the provided context.",
       "required_facts": [
         "InsightLens",
         "PulseConnect",
         "DataCraft"
       ],
-      "retrieval_latency_ms": 1417.0,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1363.4,
+      "contexts_count": 11
     },
     {
       "id": "Q13",
@@ -247,15 +247,15 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.3,
+      "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer accurately identifies the reporting chain using the provided context, though several retrieved documents were irrelevant to the specific question.",
+      "judge_reasoning": "The answer is accurate and fully supported by the provided context, though the retrieval included several irrelevant documents.",
       "required_facts": [
         "Tom\u00e1s Garc\u00eda",
         "Sarah Chen"
       ],
-      "retrieval_latency_ms": 1326.8,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1228.6,
+      "contexts_count": 11
     },
     {
       "id": "Q14",
@@ -265,15 +265,15 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.5,
+      "context_precision": 0.4,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer accurately identifies the gap and requirements using the provided context, though some retrieved documents were extraneous to the specific question.",
+      "judge_reasoning": "The answer accurately identifies the uptime gap using the provided context, though several retrieved documents were irrelevant to the specific question.",
       "required_facts": [
         "99.9",
         "99.99"
       ],
-      "retrieval_latency_ms": 1434.9,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1539.9,
+      "contexts_count": 11
     },
     {
       "id": "Q15",
@@ -285,15 +285,15 @@
       "answer_relevancy": 0.3,
       "context_precision": 0.0,
       "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified that the provided context lacked the requested information, but the context recall is 0.0 because the necessary information was not provided to the model.",
+      "judge_reasoning": "The model correctly identified that the provided context lacked the requested information, but the context recall is 0.0 because the retrieval system failed to provide the necessary documents containing the employee departure data.",
       "required_facts": [
         "Adrian Blake",
         "FinDataCo",
         "Preet Kaur",
         "relocated"
       ],
-      "retrieval_latency_ms": 1453.1,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1430.2,
+      "contexts_count": 11
     }
   ]
 }
