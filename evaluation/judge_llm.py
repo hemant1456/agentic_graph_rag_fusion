@@ -116,7 +116,7 @@ def build_judge_llm(temperature: float = 0.0, max_tokens: int = 1024):
             raise RuntimeError("OPENAI_API_KEY not set (JUDGE_PROVIDER=openai)")
         return ChatOpenAI(
             api_key=api_key,
-            model=os.getenv("JUDGE_MODEL", "gpt-4o-mini"),
+            model=os.getenv("JUDGE_MODEL", "gpt-5.4-mini"),
             temperature=temperature,
             max_tokens=max_tokens,
             timeout=60,

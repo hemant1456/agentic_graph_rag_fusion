@@ -12,43 +12,37 @@ The list of items comes from the audit dated 2026-05-18. The `pipeline/` folder 
 
 ---
 
+> ⚠️ **Correction (2026-05-18, post-review):** Fixes #1 and #2 below were originally framed as "the hardcoded model IDs don't exist and 404 every call." That premise was **wrong** — `gemini-3.1-flash-lite-preview` and `gpt-5.4-mini` are valid current model IDs the user is running against. The audit subagent guessed at the model lineup and I trusted the guess. The architectural changes still stand (consolidate LLM calls behind the gateway, drop duplicate try/except direct-SDK fallbacks) but the *reason* was about single-source-of-truth and instrumentation, not 404s. Sections #10, #13, #15 carried the same false premise and have the same correction. The judge default has been reverted to `gpt-5.4-mini`; the gateway's provider default was never changed in code (only proposed and reverted before commit).
+
 ## 1. Route step_01 generation through the LLM gateway
 
-**Problem.** [step_01_baseline_rag/implementation/generate.py:9](step_01_baseline_rag/implementation/generate.py#L9) hardcoded `GEMINI_MODEL = "gemini-3.1-flash-lite-preview"` — a model ID that does not exist. Every Gemini call 404s and falls through to the Anthropic fallback at line 55. Because every step inherits this `generate_answer`, every step was paying 2× LLM latency on every query and never actually using Gemini despite the README claiming a Gemini → Anthropic chain.
+**Problem.** [step_01_baseline_rag/implementation/generate.py](step_01_baseline_rag/implementation/generate.py) imported `google.genai` and `anthropic` SDKs directly and called them with hardcoded model IDs. Every step inherits this `generate_answer`, so every step bypassed [llm_gatewayV2/](llm_gatewayV2/) — the repo's central fallback router. The other steps (05+) call the gateway; step 01 (and everything that inherits) didn't.
 
-**Diagnosis.** Two coupled issues:
-1. The model string is stale (Gemini's current generation is 2.5-flash; "3.1" doesn't exist).
-2. More fundamentally, `generate.py` calls Google's and Anthropic's SDKs directly, bypassing [llm_gatewayV2/](llm_gatewayV2/) which is the repo's central fallback router. The other steps (05+) call the gateway; step 01 (and everything that inherits) did not.
+**Diagnosis.** Two pipelines for the same job. The gateway already owns provider selection, multi-provider fallback (cerebras → groq → gemini → nvidia), rate-limit cooldowns, and call-log persistence. Duplicating that behind direct SDK calls means the call log is incomplete, fallback is inconsistent, and any future change to provider config has to be made in two places.
 
-**Fix.** Replace direct SDK calls with the gateway client. The gateway already handles model selection, multi-provider fallback (cerebras → groq → gemini → nvidia), retries, rate-limit cooldowns, and logging.
+**Fix.** Replace direct SDK calls with the gateway client. Same interface (`generate_answer(context, question) -> (answer, provider)`) so callers don't change.
 
 **Why this is better.**
-- No hardcoded model IDs that can rot.
-- Free multi-provider fallback inherited from the gateway.
-- Single observable source of truth for LLM calls.
-- Same interface (`generate_answer(context, question) -> (answer, provider)`) so callers don't change.
+- Single observable source of truth for LLM calls — every call lands in `gateway_v2.db` with provider, tokens, latency, status, error.
+- Inherits the gateway's multi-provider fallback chain for free.
+- Adding a new provider is one config edit in `llm_gatewayV2/providers.py`, not a per-step search.
 
 **How to replicate.**
 1. Read [llm_gatewayV2/client.py](llm_gatewayV2/client.py) — the response shape is `{"text", "provider", "model", ...}`.
 2. Replace the body of `generate_answer` to construct an `LLM()` and call `.chat(messages=..., system=SYSTEM_PROMPT, max_tokens=512, temperature=0.0)`.
 3. Return `(response["text"], response["provider"])`.
 4. Drop the Google/Anthropic SDK imports — gateway handles them.
-5. Keep `SYSTEM_PROMPT` as the only state in the file.
 
 ---
 
-## 2. Fix fake OpenAI model ID in judge fallback
+## 2. Judge model default — original kept
 
-**Problem.** [evaluation/judge_llm.py:119](evaluation/judge_llm.py#L119) defaulted `JUDGE_MODEL` to `"gpt-5.4-mini"` — a model that does not exist. Anyone setting `JUDGE_PROVIDER=openai` without overriding `JUDGE_MODEL` would 404. Same file's docstring at line 51 also said `gemini (3.1-flash-lite)` — current generation is 2.5.
+**Status.** Originally flagged as "fake model" and changed to `gpt-4o-mini`. Reverted to the original `gpt-5.4-mini` per user correction — the model ID was valid. The docstring tweak (Gemini "3.1" wording) was also reverted.
 
-**Diagnosis.** Hardcoded model names rot. The OpenAI fallback path is rarely exercised so the bug stayed latent.
-
-**Fix.** Use `gpt-4o-mini` (long-standing fast/cheap OpenAI model). Updated the Gemini line in the docstring to `2.5-flash-lite`.
-
-**Why this is better.** The OpenAI fallback actually works when needed.
+**What does still stand.** The `JUDGE_PROVIDER=openai` path remains rarely exercised — if you do use it, override `JUDGE_MODEL` env var to whatever your account has access to.
 
 **How to replicate.**
-1. Grep for hardcoded model IDs containing `gpt-` and `gemini-`.
+1. Don't blind-replace hardcoded model IDs based on an assumed provider lineup. Verify against the live API first (e.g. `gh api`, `curl`, or a smoke-test call) before "fixing."
 2. Cross-check each against the provider's current docs.
 3. Replace stale ones; prefer "stable" names (`gpt-4o-mini`, not preview tags).
 
@@ -230,7 +224,7 @@ The cache key is the graph identity. Because the graph is reloaded fresh from di
 1. `SliceConfig.force_csv` / `force_graph` were declared and set per slice but **never read** — graph and CSV branches always run in `run_with_config`. Just like step_05's needs_* flags.
 2. `SliceConfig.owns_questions` was set on every slice (`["Q07", "Q08", ...]`) but **referenced nowhere in code**. And the IDs (Q15–Q24) come from the obsolete 27-question golden set.
 3. Each slice file had its own `can_handle(question)` — **identical** keyword-density formula in all four, differing only in the keyword list. General slice tacked on a `max(base, 0.15)` floor.
-4. [base.py:18](step_06_context_engineering/implementation/slices/base.py) had **another** `_GEMINI_MODEL = "gemini-3.1-flash-lite-preview"` (same fake ID as step_01), used in an `except Exception` block that bypassed the gateway and called `google.genai` directly. Every gateway exception then 404'd on this hardcoded preview model.
+4. [base.py:18](step_06_context_engineering/implementation/slices/base.py) had `_GEMINI_MODEL = "gemini-3.1-flash-lite-preview"` used in an `except Exception` block that bypassed the gateway and called `google.genai` directly. The model ID itself was valid (see top-of-doc correction); the real issue was that this branch duplicated the gateway's own multi-provider fallback at a layer that couldn't see the gateway's rate-limit and retry state. Two competing fallback policies → unpredictable behavior when the gateway is degraded.
 
 **Diagnosis.** Steps 02/03 weren't the only places routing around the gateway. The duplicate Gemini fallback duplicated work the gateway already does (multi-provider chain, cooldowns, retries). The `force_*` and `owns_questions` were design intent that was abandoned without code cleanup. The duplicated `can_handle` is a textbook case of "same algorithm parameterized by data."
 
@@ -238,13 +232,13 @@ The cache key is the graph identity. Because the graph is reloaded fresh from di
 1. Removed `force_csv`, `force_graph`, `owns_questions` from `SliceConfig`. The class docstring explains why so a future reader doesn't re-add them.
 2. Lifted `can_handle` onto `SliceConfig` as a method. Added a `floor_confidence: float = 0.0` field; general slice sets it to `0.15` to preserve the "always competes" behavior. Deleted the four standalone `can_handle` functions.
 3. [router.py:27](step_06_context_engineering/implementation/router.py#L27) now calls `mod.CONFIG.can_handle(question)` instead of `mod.can_handle(question)`.
-4. Replaced the `try gateway / except direct-Gemini` block with a **single gateway call**. The gateway already handles provider fallback and rate-limit cooldowns; the direct-Gemini branch was a third layer of fallback running on a hardcoded fake model.
+4. Replaced the `try gateway / except direct-Gemini` block with a **single gateway call**. The gateway already handles provider fallback and rate-limit cooldowns; the direct-Gemini branch was a competing fallback policy at a layer that couldn't see the gateway's state.
 
 **Why this is better.**
 - One source of truth for routing logic (`SliceConfig.can_handle`), not four.
 - One source of truth for LLM fallback (the gateway), not three.
 - New slices require ~20 lines: `_SYSTEM`, keyword list, `CONFIG = SliceConfig(...)`. No `can_handle` function, no force flags, no question-ID list.
-- Eliminates a class of failure mode: a stale Gemini model name silently making "fallback" worse than the primary call.
+- Eliminates competing fallback policies: gateway is the only layer that knows about provider state.
 
 **How to replicate.**
 1. Identify per-instance functions that differ only in data — the duplicated `can_handle` is the textbook case.
@@ -379,16 +373,16 @@ The chain is now:
 
 Lazy imports usually exist to break circular deps. `llm_gatewayV2.client` is a leaf module — it imports nothing from this project. The lazy imports were noise.
 
-Additionally, [synthesis.py](step_05_multi_agent/implementation/agents/synthesis.py) had the **third instance** of the fake `gemini-3.1-flash-lite-preview` model id in another try/except direct-Gemini fallback — the same antipattern as step_01 and step_06.
+Additionally, [synthesis.py](step_05_multi_agent/implementation/agents/synthesis.py) had a third try/except direct-Gemini fallback (same `gemini-3.1-flash-lite-preview` id; valid model, see top-of-doc correction). Same antipattern as step_01 and step_06 — a competing fallback policy at a layer that bypasses gateway state.
 
 **Fix.**
 1. Moved `from llm_gatewayV2.client import LLM` to the top of each file.
-2. Removed the direct-Gemini except branch in `synthesis.py` (same reasoning as #10 and #13 — the gateway handles fallback). Synthesis failure now returns a clean `[Synthesis failed: ...]` error sentinel instead of falling through to a 404-prone model.
-3. The fake `_GEMINI_MODEL` constant deleted from `synthesis.py`. That makes **all three** instances of the bug eliminated — `step_01/generate.py`, `step_06/slices/base.py`, and now `step_05/agents/synthesis.py`.
+2. Removed the direct-Gemini except branch in `synthesis.py` (same reasoning as #10 and #13 — the gateway handles fallback). Synthesis failure now returns a clean `[Synthesis failed: ...]` error sentinel instead of falling through to a competing fallback policy.
+3. The `_GEMINI_MODEL` constant deleted from `synthesis.py`. All three duplicate Gemini-model hardcodes consolidated into the gateway's single source of truth.
 
 **Why this is better.**
 - Module-level imports surface dependency errors at startup, not on first call inside a hot path.
-- Three duplicate fake-model fallbacks → zero. The gateway is the one place that knows about LLM providers; nobody else needs to.
+- Three competing direct-Gemini fallbacks → zero. The gateway is the one place that knows about LLM providers; nobody else needs to.
 - Slightly faster hot path (no repeated `from ... import ...` work).
 
 **What I did NOT do.** The audit also flagged "provider roster encoded 3 times" (`main.py`, `router.LIMITS`, `router.SHORTCUTS`). On closer look those represent three distinct concerns (the resolution shortcuts table, the rate-limit config, and the default fallback order), not three sources of the same truth. `LIMITS.keys()` is the canonical provider set; `DEFAULT_ORDER` deliberately fixes a specific order; `SHORTCUTS` encodes user-facing aliases. Leaving as-is.
@@ -591,8 +585,7 @@ This preserves Streamlit's per-function cache identity (one cache entry per step
 
 21 audit findings actioned, 1 (#22) deliberately deferred with a build plan. Net effect:
 
-- **3 fake model IDs** removed across step_01, step_06, step_07 (3 different files, all hardcoded `gemini-3.1-flash-lite-preview`).
-- **3 direct-Gemini fallback paths** removed — gateway handles fallback in one place now.
+- **3 duplicate direct-Gemini fallback paths** consolidated into the gateway across step_01, step_05/synthesis, step_06/slices. (The model ID itself, `gemini-3.1-flash-lite-preview`, is valid — the issue was duplicate fallback policies, not bad model names. See correction note at top of doc.)
 - **Real critic→confidence wiring** end-to-end: step_05 critic verdict propagates through `RAGResult` → `score_answer()` → health monitor → semantic cache, replacing the question-echo "confidence" heuristic.
 - **Step inheritance** is real now: `BaselineRAG` → `Step02ToolsRAG` → `Step03HybridRAG` → `Step04RAG` actually inherit, with `query()` defined once.
 - **Hot-path waste eliminated:** CSV cache, BM25 persisted index, graph name index memoization, double retrieval removed, sub-Q retrieval parallelized.
