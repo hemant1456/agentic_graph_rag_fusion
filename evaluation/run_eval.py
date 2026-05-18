@@ -30,19 +30,11 @@ from typing import Any, Callable
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
 
-from datasets import Dataset
-from langchain_huggingface import HuggingFaceEmbeddings
-from ragas import evaluate
-from ragas.embeddings import LangchainEmbeddingsWrapper
-from ragas.llms import LangchainLLMWrapper
-from ragas.metrics import (
-    AnswerCorrectness,
-    AnswerRelevancy,
-    ContextPrecision,
-    ContextRecall,
-    Faithfulness,
-)
-from ragas.run_config import RunConfig
+import json as _json
+import re as _re
+from concurrent.futures import ThreadPoolExecutor
+
+from langchain_core.messages import HumanMessage
 
 from evaluation.judge_llm import build_judge_llm
 from step_01_baseline_rag.evaluation.golden_questions import GOLDEN_QUESTIONS
@@ -134,12 +126,79 @@ def _reference_from_question(q) -> str:
     return f"The correct answer must contain these facts: {facts}. {q.explanation}"
 
 
-def _build_ragas_objects() -> tuple[LangchainLLMWrapper, LangchainEmbeddingsWrapper]:
-    llm = LangchainLLMWrapper(build_judge_llm(temperature=0.0, max_tokens=1024))
-    embeddings = LangchainEmbeddingsWrapper(
-        HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+_JUDGE_PROMPT = """You are an expert evaluator for a Retrieval-Augmented Generation (RAG) system. Score the actual answer along 5 RAGAS-equivalent dimensions, EACH scored 0.0 to 1.0. Be format-tolerant — "June 30, 2024" and "2024-06-30" mean the same date; "Daniel Osei" and "Daniel Osei, Security Lead" name the same person.
+
+QUESTION: {question}
+
+REFERENCE ANSWER (gold): {reference}
+
+ACTUAL ANSWER (under test): {answer}
+
+RETRIEVED CONTEXTS (the chunks the system gave the LLM):
+{contexts}
+
+Score these 5 metrics:
+
+1. answer_correctness — factual + semantic match against the reference. Penalize missing facts, wrong values, or contradictions. (1.0 = fully correct; 0.5 = partially right but missing facts; 0.0 = wrong)
+2. faithfulness — every claim in the actual answer must be supported by the retrieved contexts (no hallucination). (1.0 = all claims grounded; 0.0 = invented facts)
+3. answer_relevancy — does the answer directly address the question? Penalize evasive/off-topic answers. (1.0 = on-topic; 0.0 = evasive)
+4. context_precision — of the retrieved contexts shown, what fraction were actually relevant to answering this question? (1.0 = every chunk relevant; 0.0 = noise)
+5. context_recall — do the retrieved contexts collectively contain every fact in the reference answer? (1.0 = nothing missing; 0.0 = required facts missing from contexts)
+
+If the answer says "I don't know" or "the documents don't contain this", treat it as: faithfulness 1.0, answer_relevancy ~0.3, answer_correctness 0.0 (unless the reference says "no info", in which case correctness 1.0).
+
+Return ONE JSON object, no prose, no markdown fences, with exactly these keys:
+{{"answer_correctness": <0-1>, "faithfulness": <0-1>, "answer_relevancy": <0-1>, "context_precision": <0-1>, "context_recall": <0-1>, "reasoning": "<one short sentence>"}}"""
+
+
+def _extract_json(text: str) -> dict:
+    text = text.strip()
+    if "```" in text:
+        m = _re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, _re.DOTALL)
+        if m:
+            text = m.group(1)
+    else:
+        m = _re.search(r"\{.*\}", text, _re.DOTALL)
+        if m:
+            text = m.group(0)
+    return _json.loads(text)
+
+
+def _score_one(judge, sample: dict) -> dict:
+    """Single LLM call → all 5 metrics for one sample."""
+    contexts = "\n".join(f"[{i+1}] {c}" for i, c in enumerate(sample["retrieved_contexts"]))
+    prompt = _JUDGE_PROMPT.format(
+        question=sample["user_input"],
+        reference=sample["reference"],
+        answer=sample["response"],
+        contexts=contexts[:8000],  # keep prompt under judge context limit
     )
-    return llm, embeddings
+    try:
+        out = judge.invoke([HumanMessage(content=prompt)]).content
+        parsed = _extract_json(out)
+    except Exception as e:
+        return {
+            "answer_correctness": 0.0, "faithfulness": 0.0, "answer_relevancy": 0.0,
+            "context_precision": 0.0, "context_recall": 0.0,
+            "reasoning": f"judge failure: {type(e).__name__}: {str(e)[:120]}",
+        }
+
+    def _f(k):
+        v = parsed.get(k, 0)
+        try:
+            f = float(v)
+        except (TypeError, ValueError):
+            return 0.0
+        return max(0.0, min(1.0, f if f == f else 0.0))
+
+    return {
+        "answer_correctness": _f("answer_correctness"),
+        "faithfulness":       _f("faithfulness"),
+        "answer_relevancy":   _f("answer_relevancy"),
+        "context_precision":  _f("context_precision"),
+        "context_recall":     _f("context_recall"),
+        "reasoning":          str(parsed.get("reasoning", ""))[:300],
+    }
 
 
 def evaluate_step(step_name: str) -> dict:
@@ -165,53 +224,27 @@ def evaluate_step(step_name: str) -> dict:
         })
         print(f"  [{q.id}] {q.question[:70]}... ({latency_ms:.0f}ms)")
 
-    print(f"\n=== Scoring with RAGAS (5 metrics) ===\n")
-    llm, embeddings = _build_ragas_objects()
-    ragas_inputs = [
-        {k: s[k] for k in ("user_input", "response", "retrieved_contexts", "reference")}
-        for s in samples
-    ]
-    dataset = Dataset.from_list(ragas_inputs)
+    print(f"\n=== Scoring (1 judge call per question → 5 metrics in one JSON) ===\n")
+    judge = build_judge_llm(temperature=0.0, max_tokens=512)
 
-    # Judge runs via llm_gatewayV2 with JUDGE_PROVIDERS=groq,gemini.
-    # Groq is fast (~200ms/call) so max_workers=4 batches without burning 30 RPM.
-    run_cfg = RunConfig(timeout=60, max_retries=3, max_workers=4)
-    metrics = [
-        AnswerCorrectness(),
-        Faithfulness(),
-        AnswerRelevancy(),
-        ContextPrecision(),
-        ContextRecall(),
-    ]
-    result = evaluate(
-        dataset,
-        metrics=metrics,
-        llm=llm,
-        embeddings=embeddings,
-        run_config=run_cfg,
-        raise_exceptions=False,
-        show_progress=True,
-    )
+    scores: list[dict] = [None] * len(samples)  # type: ignore[list-item]
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        futures = {pool.submit(_score_one, judge, s): i for i, s in enumerate(samples)}
+        done = 0
+        for fut in futures:
+            i = futures[fut]
+            scores[i] = fut.result()
+            done += 1
+            s = samples[i]
+            print(f"  [{s['question_id']}] correctness={scores[i]['answer_correctness']:.2f}  "
+                  f"faith={scores[i]['faithfulness']:.2f}  recall={scores[i]['context_recall']:.2f}  "
+                  f"prec={scores[i]['context_precision']:.2f}  relev={scores[i]['answer_relevancy']:.2f}  "
+                  f"({done}/{len(samples)})")
 
-    df = result.to_pandas()  # type: ignore[attr-defined]
-
-    def _safe(col: str, i: int) -> float:
-        v = df.iloc[i].get(col, 0) if i < len(df) else 0
-        try:
-            f = float(v)
-        except (TypeError, ValueError):
-            return 0.0
-        return f if f == f else 0.0  # NaN guard
-
-    # Overall grade is based on answer_correctness (the most direct factual check).
     grades: list[str] = []
     rows: list[dict] = []
-    for i, s in enumerate(samples):
-        ac = _safe("answer_correctness", i)
-        fa = _safe("faithfulness", i)
-        ar = _safe("answer_relevancy", i)
-        cp = _safe("context_precision", i)
-        cr = _safe("context_recall", i)
+    for s, sc in zip(samples, scores):
+        ac = sc["answer_correctness"]
         if ac >= 0.7:
             grade = "PASS"
         elif ac >= 0.4:
@@ -225,13 +258,14 @@ def evaluate_step(step_name: str) -> dict:
             "answer": s["response"],
             "grade": grade,
             "answer_correctness": round(ac, 3),
-            "faithfulness": round(fa, 3),
-            "answer_relevancy": round(ar, 3),
-            "context_precision": round(cp, 3),
-            "context_recall": round(cr, 3),
-            "required_facts": s["_required_facts"],
+            "faithfulness":       round(sc["faithfulness"], 3),
+            "answer_relevancy":   round(sc["answer_relevancy"], 3),
+            "context_precision":  round(sc["context_precision"], 3),
+            "context_recall":     round(sc["context_recall"], 3),
+            "judge_reasoning":    sc["reasoning"],
+            "required_facts":     s["_required_facts"],
             "retrieval_latency_ms": s["_latency_ms"],
-            "contexts_count": len(s["retrieved_contexts"]),
+            "contexts_count":     len(s["retrieved_contexts"]),
         })
 
     grade_counts = {g: grades.count(g) for g in ("PASS", "PARTIAL", "FAIL")}

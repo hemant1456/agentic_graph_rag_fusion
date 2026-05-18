@@ -1,19 +1,19 @@
 {
   "step": "step_01_baseline_rag",
-  "timestamp": "2026-05-17T21:35:40",
-  "total_questions": 15,
+  "timestamp": "2026-05-18T11:53:09",
+  "total_questions": 3,
   "grade_counts": {
-    "PASS": 2,
-    "PARTIAL": 3,
-    "FAIL": 10
+    "PASS": 3,
+    "PARTIAL": 0,
+    "FAIL": 0
   },
-  "pass_rate": 0.13,
+  "pass_rate": 1.0,
   "ragas_averages": {
-    "answer_correctness": 0.299,
-    "faithfulness": 0.907,
-    "answer_relevancy": 0.44,
-    "context_precision": 0.1,
-    "context_recall": 0.3
+    "answer_correctness": 1.0,
+    "faithfulness": 1.0,
+    "answer_relevancy": 1.0,
+    "context_precision": 0.567,
+    "context_recall": 1.0
   },
   "thresholds": {
     "PASS": "answer_correctness>=0.7",
@@ -24,261 +24,58 @@
     {
       "id": "Q01",
       "question": "What is Vertexia's customer data retention policy for hot storage and cold storage?",
-      "answer": "Vertexia's customer data retention policy is as follows:\n\n*   **Hot Storage:** 90 days of customer data.\n*   **Cold Storage:** 1 year of customer data (S3 Glacier).",
+      "answer": "Vertexia's customer data retention policy is as follows:\n\n*   **Hot Storage:** 90 days\n*   **Cold Storage:** 1 year (S3 Glacier)",
       "grade": "PASS",
-      "answer_correctness": 0.717,
+      "answer_correctness": 1.0,
       "faithfulness": 1.0,
-      "answer_relevancy": 0.901,
-      "context_precision": 0.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.8,
       "context_recall": 1.0,
+      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by multiple retrieved contexts; context 8 is irrelevant, slightly lowering precision.",
       "required_facts": [
         "90 day",
         "glacier"
       ],
-      "retrieval_latency_ms": 9863.7,
-      "contexts_count": 5
+      "retrieval_latency_ms": 10001.3,
+      "contexts_count": 10
     },
     {
       "id": "Q02",
       "question": "Who co-founded Vertexia and in what year was the company founded?",
-      "answer": "Vertexia Inc. was founded in March 2019. Arjun Mehta is identified as a co-founder of the company.",
+      "answer": "Vertexia was co-founded by Arjun Mehta and Diana Volkov. The company was founded in March 2019.",
       "grade": "PASS",
-      "answer_correctness": 0.822,
+      "answer_correctness": 1.0,
       "faithfulness": 1.0,
-      "answer_relevancy": 0.958,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.8,
+      "context_recall": 1.0,
+      "judge_reasoning": "The actual answer correctly identifies both co-founders and the founding year (March 2019), which is consistent with the reference and supported by the retrieved contexts; all claims are grounded, directly address the question, and the contexts contain all necessary facts, though one context (legal/",
       "required_facts": [
         "Arjun Mehta",
         "Diana Volkov",
         "2019"
       ],
-      "retrieval_latency_ms": 1058.0,
-      "contexts_count": 5
+      "retrieval_latency_ms": 921.0,
+      "contexts_count": 10
     },
     {
       "id": "Q03",
       "question": "In Vertexia's on-call runbook, what is the first action and the escalation owner for the PulseConnect webhook delivery failure alert?",
-      "answer": "The provided context does not contain information regarding a \"PulseConnect webhook delivery failure\" alert. The \"Vertexia On-Call Runbook \u2014 Top Production Alerts\" document lists the 8 most frequent production alerts, but it only provides details for the `NexusFlow ingest_lag_seconds > 300` alert and mentions the `InsightLens query_p99 > 5000ms` alert.",
-      "grade": "FAIL",
-      "answer_correctness": 0.169,
+      "answer": "For the **PulseConnect webhook_delivery_failure_rate > 5%** alert, the details are as follows:\n\n*   **First action:** Check SendGrid quota dashboard and the Twilio API status page. Inspect outbound retry queue depth in PulseConnect admin UI.\n*   **Owner:** Raj Patel",
+      "grade": "PASS",
+      "answer_correctness": 1.0,
       "faithfulness": 1.0,
-      "answer_relevancy": 0.0,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.1,
+      "context_recall": 1.0,
+      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by context [1]; extra retrieved contexts are irrelevant, lowering precision.",
       "required_facts": [
         "SendGrid",
         "Twilio",
         "Raj Patel"
       ],
-      "retrieval_latency_ms": 1217.2,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q04",
-      "question": "According to Vertexia's vendor data processing matrix, what sub-processors does Datadog use, and what is its data retention period for traces and logs?",
-      "answer": "The provided context does not contain information regarding Datadog. The \"Vertexia Vendor Data Processing Matrix\" only provides details for the vendor Snowflake. Therefore, I cannot answer your question regarding Datadog's sub-processors or data retention periods.",
-      "grade": "FAIL",
-      "answer_correctness": 0.162,
-      "faithfulness": 1.0,
-      "answer_relevancy": 0.0,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
-      "required_facts": [
-        "us-east-1",
-        "eu-west-1",
-        "ap-southeast-1",
-        "15 months"
-      ],
-      "retrieval_latency_ms": 1029.6,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q05",
-      "question": "What is the total ARR across all Vertexia customers combined?",
-      "answer": "Based on the provided documents, Vertexia Inc.'s ARR was $16.5M at the end of Q3 2023.",
-      "grade": "FAIL",
-      "answer_correctness": 0.203,
-      "faithfulness": 1.0,
-      "answer_relevancy": 0.566,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
-      "required_facts": [
-        "11,000,000"
-      ],
-      "retrieval_latency_ms": 1018.7,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q06",
-      "question": "What was the total revenue across all products combined in Q3 2023 (July, August, and September)?",
-      "answer": "Based on the provided Q3 2023 Financial Performance Report, the total GAAP recognized revenue for Q3 2023 was $4.12M.\n\nThe provided documents do not contain a month-by-month breakdown for July and August, so it is not possible to calculate the total revenue by summing individual monthly figures from the provided context.",
-      "grade": "PARTIAL",
-      "answer_correctness": 0.486,
-      "faithfulness": 0.8,
-      "answer_relevancy": 0.0,
-      "context_precision": 1.0,
-      "context_recall": 1.0,
-      "required_facts": [
-        "4,120,000"
-      ],
-      "retrieval_latency_ms": 1140.7,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q07",
-      "question": "How many active Vertexia employees are based in Berlin?",
-      "answer": "The provided documents do not contain information regarding any Vertexia employees based in Berlin. The context states that Vertexia has employees across San Francisco, Austin, and Bangalore.",
-      "grade": "FAIL",
-      "answer_correctness": 0.0,
-      "faithfulness": 1.0,
-      "answer_relevancy": 0.931,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
-      "required_facts": [
-        "5"
-      ],
-      "retrieval_latency_ms": 971.6,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q08",
-      "question": "Which NexusFlow API endpoint was deprecated in v2.1, and what endpoint replaced it?",
-      "answer": "The provided documents do not contain information regarding any deprecated endpoints in NexusFlow API v2.1. The changelog for v2.1 lists new endpoints (`POST /v2/pipelines/{id}/replay`, `GET /v2/pipelines/{id}/lineage`, and `PATCH /v2/connectors/{id}/rate_limit`), but it does not mention any deprecations or replacements.",
-      "grade": "FAIL",
-      "answer_correctness": 0.168,
-      "faithfulness": 1.0,
-      "answer_relevancy": 0.942,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
-      "required_facts": [
-        "events/batch",
-        "events/stream"
-      ],
-      "retrieval_latency_ms": 1085.7,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q09",
-      "question": "Who is the remediation owner for security audit finding M-2, and what was the target remediation date?",
-      "answer": "The provided documents do not contain information regarding a specific security audit finding labeled \"M-2,\" nor do they list remediation owners or target remediation dates for individual findings. Therefore, I cannot answer your question.",
-      "grade": "FAIL",
-      "answer_correctness": 0.197,
-      "faithfulness": 1.0,
-      "answer_relevancy": 0.0,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
-      "required_facts": [
-        "Daniel Osei",
-        "October 31, 2023"
-      ],
-      "retrieval_latency_ms": 1064.1,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q10",
-      "question": "What is Vertexia's annual spend on Snowflake and when does the contract expire?",
-      "answer": "The provided documents do not contain information regarding Vertexia's annual spend on Snowflake or the expiration date of a Snowflake contract. Therefore, I cannot answer this question.",
-      "grade": "FAIL",
-      "answer_correctness": 0.221,
-      "faithfulness": 1.0,
-      "answer_relevancy": 0.0,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
-      "required_facts": [
-        "120,000",
-        "June 30, 2024"
-      ],
-      "retrieval_latency_ms": 752.9,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q11",
-      "question": "Who is the CSM managing the Phoenix Corp account, and who is that person's direct manager?",
-      "answer": "Based on the provided documents, Maya Sharma is the CSM (Customer Success Manager) managing the Phoenix Corp account.\n\nThe provided context does not state who Maya Sharma's direct manager is; it only identifies her as the VP of Customer Success.",
-      "grade": "PARTIAL",
-      "answer_correctness": 0.468,
-      "faithfulness": 0.0,
-      "answer_relevancy": 0.0,
-      "context_precision": 0.0,
-      "context_recall": 0.5,
-      "required_facts": [
-        "Maya Sharma",
-        "Lisa Torres"
-      ],
-      "retrieval_latency_ms": 1124.5,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q12",
-      "question": "If NexusFlow goes down entirely, which services are directly or indirectly affected? List all of them.",
-      "answer": "Based on the provided documents, if NexusFlow goes down entirely, the following services are affected:\n\n*   **InsightLens:** This service is directly impacted because it depends on the NexusFlow `events_api` for analytics ingestion (Source 1, Source 3, and Source 4).\n\nThe provided documents do not mention any other services being affected by a NexusFlow outage. Specifically, Source 3 notes that **PulseConnect** was unaffected during the August 14, 2023, NexusFlow outage.",
-      "grade": "FAIL",
-      "answer_correctness": 0.0,
-      "faithfulness": 0.8,
-      "answer_relevancy": 0.972,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
-      "required_facts": [
-        "InsightLens",
-        "PulseConnect",
-        "DataCraft"
-      ],
-      "retrieval_latency_ms": 1334.8,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q13",
-      "question": "Who does Aisha Johnson report to, and who does that person report to? Give the full two-hop reporting chain.",
-      "answer": "Based on the provided documents, Aisha Johnson leads the InsightLens team, which is part of the Product Engineering department led by Tom\u00e1s Garc\u00eda. Therefore, Aisha Johnson reports to Tom\u00e1s Garc\u00eda.\n\nTom\u00e1s Garc\u00eda reports to Sarah Chen (the Chief Technology Officer).",
-      "grade": "PARTIAL",
-      "answer_correctness": 0.672,
-      "faithfulness": 1.0,
-      "answer_relevancy": 0.686,
-      "context_precision": 0.0,
-      "context_recall": 1.0,
-      "required_facts": [
-        "Tom\u00e1s Garc\u00eda",
-        "Sarah Chen"
-      ],
-      "retrieval_latency_ms": 974.8,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q14",
-      "question": "Does Vertexia's documented NexusFlow availability target meet the uptime requirement in the Phoenix Corp contract? What is the gap if any?",
-      "answer": "Based on the provided documents, there is a gap between Vertexia's standard architecture target and the requirement in the Phoenix Corp contract:\n\n*   **Phoenix Corp Contract Requirement:** The Master Service Agreement mandates a Monthly Uptime Percentage of at least **99.99%**.\n*   **NexusFlow Standard Target:** The standard NexusFlow architecture target is **99.9%**.\n\n**The Gap:** The Phoenix Corp contract requirement exceeds the standard NexusFlow architecture target by 0.09%. According to the internal deal summary, achieving this higher SLA requires close coordination between the Platform Engineering and Product Engineering teams to ensure necessary redundancy and failover capabilities.",
-      "grade": "FAIL",
-      "answer_correctness": 0.0,
-      "faithfulness": 1.0,
-      "answer_relevancy": 0.641,
-      "context_precision": 0.5,
-      "context_recall": 1.0,
-      "required_facts": [
-        "99.9",
-        "99.99"
-      ],
-      "retrieval_latency_ms": 1191.4,
-      "contexts_count": 5
-    },
-    {
-      "id": "Q15",
-      "question": "Which employees left Vertexia voluntarily in 2023? For each person, state their department, last day, and the stated reason for departure.",
-      "answer": "Based on the provided documents, there is no information regarding employees who left Vertexia voluntarily in 2023. \n\nThe documents mention that Diana Volkov (co-founder) departed in late 2021, but they do not provide details on voluntary departures for 2023.",
-      "grade": "FAIL",
-      "answer_correctness": 0.204,
-      "faithfulness": 1.0,
-      "answer_relevancy": 0.0,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
-      "required_facts": [
-        "Adrian Blake",
-        "FinDataCo",
-        "Preet Kaur",
-        "relocated"
-      ],
-      "retrieval_latency_ms": 1014.4,
-      "contexts_count": 5
+      "retrieval_latency_ms": 1023.3,
+      "contexts_count": 10
     }
   ]
 }
