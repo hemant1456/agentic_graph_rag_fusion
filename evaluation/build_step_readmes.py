@@ -136,8 +136,8 @@ def build_step_block(step_name: str) -> str:
     )
     lines.append("")
 
-    # Per-question table
-    lines.append("### Per-question detail")
+    # Per-question summary table (compact at-a-glance view)
+    lines.append("### Per-question summary")
     lines.append("")
     lines.append("| ID | Grade | correctness | Fixed-by step | Notes |")
     lines.append("|---|---|---:|---|---|")
@@ -146,19 +146,68 @@ def build_step_block(step_name: str) -> str:
         q = meta.get(qid)
         if not q:
             continue
-        fixed_by = q.fixed_by_step.replace("step_", "S").split("_")[0]
         blurb = _analysis_blurb(qid, q, row, step_tier)
-        # escape pipes in blurb
         blurb = blurb.replace("|", "\\|")
-        question_short = _truncate(q.question, 90).replace("|", "\\|")
         lines.append(
             f"| **{qid}** | {row['grade']} | {row['answer_correctness']:.2f} "
             f"| `{q.fixed_by_step}` | {blurb} |"
         )
     lines.append("")
-    lines.append("> Each question's text + reference answer lives in "
-                 "`step_01_baseline_rag/evaluation/golden_questions.py`. The full per-question "
-                 "JSON (including the judge's reasoning) is in `results/eval_results.json`.")
+
+    # Per-question full detail (collapsed) — question text, reference, system answer, judge
+    lines.append("### Per-question detail (question · reference · system answer · judge)")
+    lines.append("")
+    lines.append("Each entry is collapsed; click to expand the full debug view.")
+    lines.append("")
+    for qid in sorted(rows.keys()):
+        row = rows[qid]
+        q = meta.get(qid)
+        if not q:
+            continue
+        blurb = _analysis_blurb(qid, q, row, step_tier)
+        judge_text = (row.get("judge_reasoning") or "").strip()
+        ref = (getattr(q, "reference_answer", "") or "").strip()
+        actual = (row.get("answer") or "").strip()
+
+        summary_label = (
+            f"<b>{qid}</b> — {row['grade']} · correctness {row['answer_correctness']:.2f} · "
+            f"tier owner: <code>{q.fixed_by_step}</code>"
+        )
+        lines.append(f"<details>")
+        lines.append(f"<summary>{summary_label}</summary>")
+        lines.append("")
+        lines.append(f"**Question** &nbsp; {q.question}")
+        lines.append("")
+        lines.append("**Reference answer (gold):**")
+        lines.append("")
+        lines.append("> " + (ref.replace("\n", "\n> ") if ref else "_(no reference recorded)_"))
+        lines.append("")
+        lines.append("**System answer at this step:**")
+        lines.append("")
+        lines.append("> " + (actual.replace("\n", "\n> ") if actual else "_(no answer recorded)_"))
+        lines.append("")
+        lines.append(f"**Diagnosis** &nbsp; {blurb}")
+        if judge_text:
+            lines.append("")
+            lines.append(f"**Judge reasoning** &nbsp; {judge_text}")
+        # Metric breakdown
+        lines.append("")
+        lines.append(
+            "| answer_correctness | faithfulness | answer_relevancy | context_precision | context_recall |"
+        )
+        lines.append("|---:|---:|---:|---:|---:|")
+        lines.append(
+            f"| {row.get('answer_correctness', 0):.2f} "
+            f"| {row.get('faithfulness', 0):.2f} "
+            f"| {row.get('answer_relevancy', 0):.2f} "
+            f"| {row.get('context_precision', 0):.2f} "
+            f"| {row.get('context_recall', 0):.2f} |"
+        )
+        lines.append("")
+        lines.append("</details>")
+        lines.append("")
+
+    lines.append("> The full per-question JSON (retrieved contexts, latency, etc.) is in `results/eval_results.json`.")
     lines.append("")
     lines.append(MARKER_END)
     return "\n".join(lines)
