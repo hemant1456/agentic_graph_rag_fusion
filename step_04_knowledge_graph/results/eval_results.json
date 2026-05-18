@@ -1,19 +1,19 @@
 {
   "step": "step_04_knowledge_graph",
-  "timestamp": "2026-05-18T11:58:15",
+  "timestamp": "2026-05-18T12:06:25",
   "total_questions": 15,
   "grade_counts": {
-    "PASS": 12,
+    "PASS": 13,
     "PARTIAL": 1,
-    "FAIL": 2
+    "FAIL": 1
   },
-  "pass_rate": 0.8,
+  "pass_rate": 0.87,
   "ragas_averages": {
-    "answer_correctness": 0.84,
-    "faithfulness": 0.86,
+    "answer_correctness": 0.853,
+    "faithfulness": 0.967,
     "answer_relevancy": 0.94,
-    "context_precision": 0.32,
-    "context_recall": 0.8
+    "context_precision": 0.2,
+    "context_recall": 0.867
   },
   "thresholds": {
     "PASS": "answer_correctness>=0.7",
@@ -26,18 +26,18 @@
       "question": "What is Vertexia's customer data retention policy for hot storage and cold storage?",
       "answer": "Vertexia's customer data retention policy is as follows:\n\n*   **Hot Storage:** 90 days\n*   **Cold Storage:** 1 year (S3 Glacier)",
       "grade": "PASS",
-      "answer_correctness": 1.0,
+      "answer_correctness": 0.8,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.8,
+      "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by multiple retrieved contexts; context 7 and 9 are irrelevant, lowering precision.",
+      "judge_reasoning": "The actual answer correctly states 90 days for hot storage and mentions S3 Glacier for cold storage but adds '1 year' not explicitly in the reference; however, this is supported by the onboarding handbook context, making it faithful and relevant, though context precision is low due to many irrelevan",
       "required_facts": [
         "90 day",
         "glacier"
       ],
-      "retrieval_latency_ms": 9621.7,
-      "contexts_count": 10
+      "retrieval_latency_ms": 10232.4,
+      "contexts_count": 11
     },
     {
       "id": "Q02",
@@ -47,35 +47,35 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.8,
+      "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly in substance, with only minor formatting differences (month added), and all claims are supported by the retrieved contexts.",
+      "judge_reasoning": "The actual answer correctly identifies the co-founders and founding year (March 2019), which is consistent with the reference and supported by the retrieved context; all reference facts are present in the contexts, but only a small fraction of retrieved contexts are relevant to the question.",
       "required_facts": [
         "Arjun Mehta",
         "Diana Volkov",
         "2019"
       ],
-      "retrieval_latency_ms": 1024.6,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1129.1,
+      "contexts_count": 11
     },
     {
       "id": "Q03",
       "question": "In Vertexia's on-call runbook, what is the first action and the escalation owner for the PulseConnect webhook delivery failure alert?",
       "answer": "In Vertexia's on-call runbook, the details for the **PulseConnect webhook_delivery_failure_rate > 5%** alert are as follows:\n\n*   **First action:** Check external_sendgrid quota dashboard and the external_twilio API status page. Inspect outbound retry queue depth in PulseConnect admin UI.\n*   **Owner:** Raj Patel\n\n(Note: The term \"sendgrid\" in this query refers to the product/service external_sendgrid in Vertexia's system. The term \"twilio\" in this query refers to the product/service external_twilio in Vertexia's system.)",
       "grade": "PASS",
-      "answer_correctness": 1.0,
+      "answer_correctness": 0.8,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.2,
+      "context_precision": 0.6,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly in meaning, with correct first actions and owner, all grounded in context [2]; extra retrieved contexts are irrelevant, lowering precision.",
+      "judge_reasoning": "The actual answer correctly identifies Raj Patel as the owner and includes the required external services, but adds an extra unmentioned action (inspect retry queue), while all reference facts are in the contexts and only some context chunks are relevant to the query.",
       "required_facts": [
         "SendGrid",
         "Twilio",
         "Raj Patel"
       ],
-      "retrieval_latency_ms": 1227.7,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1334.7,
+      "contexts_count": 11
     },
     {
       "id": "Q04",
@@ -85,17 +85,17 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.3,
+      "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer correctly and fully matches the reference, is fully grounded in the retrieved context, directly answers the question, but only one of the ten retrieved contexts was needed to answer it, though all reference facts were present in the contexts.",
+      "judge_reasoning": "The actual answer correctly and fully matches the reference with all facts grounded in the retrieved context; only one of the ten retrieved contexts was directly relevant, lowering context precision.",
       "required_facts": [
         "us-east-1",
         "eu-west-1",
         "ap-southeast-1",
         "15 months"
       ],
-      "retrieval_latency_ms": 993.6,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1007.6,
+      "contexts_count": 11
     },
     {
       "id": "Q05",
@@ -105,14 +105,14 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.2,
+      "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly and is fully supported by context [8], which contains the total ARR and customer count; however, only 2 of the 10 retrieved contexts are relevant, lowering precision.",
+      "judge_reasoning": "The actual answer correctly states the total ARR and is fully supported by the retrieved context; however, only the first context chunk is relevant, making precision low.",
       "required_facts": [
         "11,000,000"
       ],
-      "retrieval_latency_ms": 1485.1,
-      "contexts_count": 10
+      "retrieval_latency_ms": 831.2,
+      "contexts_count": 11
     },
     {
       "id": "Q06",
@@ -122,31 +122,31 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.6,
+      "context_precision": 0.2,
       "context_recall": 1.0,
       "judge_reasoning": "The actual answer accurately matches the reference answer and is supported by the retrieved contexts.",
       "required_facts": [
         "4,120,000"
       ],
-      "retrieval_latency_ms": 1208.7,
-      "contexts_count": 10
+      "retrieval_latency_ms": 925.4,
+      "contexts_count": 11
     },
     {
       "id": "Q07",
       "question": "How many active Vertexia employees are based in Berlin?",
       "answer": "Based on the provided context, there are 5 active employees based in Berlin.",
-      "grade": "FAIL",
-      "answer_correctness": 0.0,
-      "faithfulness": 0.0,
+      "grade": "PASS",
+      "answer_correctness": 1.0,
+      "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.2,
-      "context_recall": 0.0,
-      "judge_reasoning": "The retrieved contexts only contain two Berlin employees, making the claim of 5 employees a hallucination despite the reference answer's claim.",
+      "context_precision": 0.1,
+      "context_recall": 1.0,
+      "judge_reasoning": "The answer correctly identifies the number of employees from the provided CSV data, though the retrieved context set contained significant irrelevant information.",
       "required_facts": [
         "5"
       ],
-      "retrieval_latency_ms": 1368.3,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1226.7,
+      "contexts_count": 11
     },
     {
       "id": "Q08",
@@ -154,17 +154,17 @@
       "answer": "The term \"pulsar\" in this query refers to the product/service external_pulsar in Vertexia's system.\n\nAccording to the NexusFlow API Changelog, the `GET /v2/events/batch` endpoint was deprecated in v2.1 and replaced by `GET /v2/events/stream`.",
       "grade": "PASS",
       "answer_correctness": 1.0,
-      "faithfulness": 0.5,
+      "faithfulness": 1.0,
       "answer_relevancy": 0.8,
-      "context_precision": 0.2,
+      "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer correctly identifies the endpoints but includes an irrelevant hallucinated sentence about 'pulsar' that is not supported by the provided context.",
+      "judge_reasoning": "The answer correctly identifies the deprecated and replacement endpoints, though it includes an unnecessary, albeit grounded, introductory sentence about 'pulsar'.",
       "required_facts": [
         "events/batch",
         "events/stream"
       ],
-      "retrieval_latency_ms": 962.3,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1015.6,
+      "contexts_count": 11
     },
     {
       "id": "Q09",
@@ -174,15 +174,15 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.1,
+      "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is factually accurate and grounded in the context, though only one of the ten retrieved chunks was necessary to answer the question.",
+      "judge_reasoning": "The answer accurately extracts the owner and date from the provided context, though the retrieval process included many irrelevant chunks.",
       "required_facts": [
         "Daniel Osei",
         "October 31, 2023"
       ],
-      "retrieval_latency_ms": 996.7,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1253.2,
+      "contexts_count": 11
     },
     {
       "id": "Q10",
@@ -192,15 +192,15 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.0,
-      "context_recall": 0.0,
-      "judge_reasoning": "The actual answer matches the reference answer but the retrieved contexts do not contain the necessary information.",
+      "context_precision": 0.2,
+      "context_recall": 1.0,
+      "judge_reasoning": "The actual answer matches the reference answer exactly.",
       "required_facts": [
         "120,000",
         "June 30, 2024"
       ],
-      "retrieval_latency_ms": 1077.6,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1404.7,
+      "contexts_count": 11
     },
     {
       "id": "Q11",
@@ -212,32 +212,32 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer correctly identifies Maya Sharma and Lisa Torres using the provided context, though only two of the ten retrieved documents were relevant.",
+      "judge_reasoning": "The answer is accurate and fully supported by the provided knowledge graph, though the retrieved context set included significant irrelevant data.",
       "required_facts": [
         "Maya Sharma",
         "Lisa Torres"
       ],
-      "retrieval_latency_ms": 1125.1,
-      "contexts_count": 10
+      "retrieval_latency_ms": 950.7,
+      "contexts_count": 11
     },
     {
       "id": "Q12",
       "question": "If NexusFlow goes down entirely, which services are directly or indirectly affected? List all of them.",
       "answer": "Based on the provided context, if NexusFlow goes down entirely, the following services are directly or indirectly affected:\n\n**Directly Affected:**\n*   **InsightLens:** Depends on NexusFlow via `events_api` and `connectors_api` [critical].\n*   **PulseConnect:** Depends on NexusFlow via `pipeline_status_api` [optional].\n*   **DataCraft:** Depends on NexusFlow via `ingest_api` [critical].\n\n**Indirectly Affected:**\n*   **external_aws_s3:** NexusFlow depends on this service via `sdk` [critical].\n*   **external_pulsar:** NexusFlow depends on this service via `client` [critical].\n\nThe term \"pulsar\" in this query refers to the product/service external_pulsar in Vertexia's system.",
-      "grade": "PARTIAL",
-      "answer_correctness": 0.6,
-      "faithfulness": 0.4,
+      "grade": "PASS",
+      "answer_correctness": 0.7,
+      "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.3,
+      "context_precision": 0.6,
       "context_recall": 1.0,
-      "judge_reasoning": "The model correctly identified the services but hallucinated specific API dependencies and indirect dependencies not present in the provided context.",
+      "judge_reasoning": "The answer correctly identifies the services dependent on NexusFlow but incorrectly lists the services NexusFlow depends on as being 'affected' by a NexusFlow outage.",
       "required_facts": [
         "InsightLens",
         "PulseConnect",
         "DataCraft"
       ],
-      "retrieval_latency_ms": 1428.8,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1520.1,
+      "contexts_count": 11
     },
     {
       "id": "Q13",
@@ -247,33 +247,33 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.3,
+      "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer accurately identifies the reporting chain using the provided context, though several retrieved documents were irrelevant to the specific question.",
+      "judge_reasoning": "The answer accurately identifies the reporting chain using the provided context, though the retrieved context set contained significant irrelevant information regarding service dependencies.",
       "required_facts": [
         "Tom\u00e1s Garc\u00eda",
         "Sarah Chen"
       ],
-      "retrieval_latency_ms": 1037.8,
-      "contexts_count": 10
+      "retrieval_latency_ms": 863.4,
+      "contexts_count": 11
     },
     {
       "id": "Q14",
       "question": "Does Vertexia's documented NexusFlow availability target meet the uptime requirement in the Phoenix Corp contract? What is the gap if any?",
       "answer": "No, Vertexia's documented platform-level availability target for NexusFlow does not meet the uptime requirement in the Phoenix Corp contract.\n\n*   **Phoenix Corp Contract Requirement:** The Master Service Agreement (MSA) mandates a **99.99%** Monthly Uptime Percentage.\n*   **NexusFlow Platform Target:** The platform-level availability SLO for NexusFlow is **99.9%**.\n\n**The Gap:**\nThere is a **0.09%** gap between the standard platform target (99.9%) and the enterprise-tier commitment required by Phoenix Corp (99.99%). \n\nAccording to the provided documents, the platform engineering team is aware of this discrepancy, and the engineering roadmap for Q2 and Q3 of 2023 was prioritized to focus on \"infrastructure hardening\" to bridge this gap for enterprise clients.",
-      "grade": "PASS",
-      "answer_correctness": 1.0,
-      "faithfulness": 1.0,
+      "grade": "PARTIAL",
+      "answer_correctness": 0.5,
+      "faithfulness": 0.5,
       "answer_relevancy": 1.0,
-      "context_precision": 0.6,
-      "context_recall": 1.0,
-      "judge_reasoning": "The answer accurately identifies the gap and the requirements, though it includes extra context about the engineering roadmap not strictly requested by the prompt.",
+      "context_precision": 0.2,
+      "context_recall": 0.0,
+      "judge_reasoning": "The answer hallucinates specific uptime percentages and engineering roadmap details that are not present in the provided retrieved context chunks.",
       "required_facts": [
         "99.9",
         "99.99"
       ],
-      "retrieval_latency_ms": 1570.6,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1491.3,
+      "contexts_count": 11
     },
     {
       "id": "Q15",
@@ -285,15 +285,15 @@
       "answer_relevancy": 0.3,
       "context_precision": 0.0,
       "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified that the provided context lacked the information, but the context recall is 0.0 because the necessary information was not provided to the model.",
+      "judge_reasoning": "The model correctly identified that the provided context lacked the information, but the context recall is 0.0 because the provided retrieval chunks did not contain the necessary data to answer the question.",
       "required_facts": [
         "Adrian Blake",
         "FinDataCo",
         "Preet Kaur",
         "relocated"
       ],
-      "retrieval_latency_ms": 1129.9,
-      "contexts_count": 10
+      "retrieval_latency_ms": 1252.6,
+      "contexts_count": 11
     }
   ]
 }
