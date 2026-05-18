@@ -23,7 +23,7 @@ def run(
     question: str,
     retriever: "Step03HybridRAG",
     graph: nx.DiGraph,
-) -> tuple[str, str, list[AgentTrace]]:
+) -> tuple[str, str, list[AgentTrace], str]:
     """
     Run the full multi-agent pipeline.
 
@@ -120,4 +120,8 @@ def run(
         latency_ms=(time.perf_counter() - t0) * 1000,
     ))
 
-    return critic_res.answer, synth.provider, traces
+    # Assemble the contexts the LLM actually saw, so callers (the pipeline + the
+    # eval judge contract) can verify which facts were grounded vs hallucinated.
+    context_text = "\n\n".join(f"[{label}]\n{body}" for label, body in contexts.items())
+
+    return critic_res.answer, synth.provider, traces, context_text

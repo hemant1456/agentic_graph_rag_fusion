@@ -39,7 +39,7 @@ def run_with_config(
     config: SliceConfig,
     retriever: "Step03HybridRAG",
     graph: "nx.DiGraph",
-) -> tuple[str, str, dict]:
+) -> tuple[str, str, dict, str]:
     """
     Execute the full CE + synthesis pipeline with slice-specific overrides.
 
@@ -47,6 +47,8 @@ def run_with_config(
         answer        (str)   — final answer text
         provider      (str)   — e.g. "gateway:gemini"
         ce_metrics    (dict)  — context engineering stats
+        context_xml   (str)   — the full assembled context the LLM saw, so the
+                                eval judge can verify which facts were grounded
     """
     from step_05_multi_agent.implementation.agents import (
         critic,
@@ -122,4 +124,4 @@ def run_with_config(
         provider = "gemini-direct"
 
     critic_res = critic.review(question, answer, {"Context": context_xml})
-    return critic_res.answer, provider, ce_metrics
+    return critic_res.answer, provider, ce_metrics, context_xml

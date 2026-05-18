@@ -44,7 +44,7 @@ class Step05RAG:
             raise RuntimeError("Call .build() before .query()")
 
         t0 = time.perf_counter()
-        answer, provider, traces = orchestrate(question, self._retriever, self._graph)
+        answer, provider, traces, context_text = orchestrate(question, self._retriever, self._graph)
         total_ms = (time.perf_counter() - t0) * 1000
 
         # Representative chunk set for dashboard source display
@@ -55,8 +55,10 @@ class Step05RAG:
             answer=answer,
             provider=f"multi-agent:{provider}",
             retrieved_chunks=chunks,
-            context_sent="[multi-agent managed context — see orchestrator traces]",
-            context_chars=len(answer),
+            # Carry the full context the synthesis LLM saw so the eval judge can
+            # verify claims (CSV tool output, graph results, retrieved chunks).
+            context_sent=context_text,
+            context_chars=len(context_text),
             retrieval_latency_ms=total_ms,
             generation_latency_ms=0.0,
         )

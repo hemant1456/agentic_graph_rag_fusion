@@ -13,6 +13,14 @@ from step_05_multi_agent.implementation.agents.contracts import CSVResult
 
 def _fallback_intent(question: str) -> str | None:
     q = question.lower()
+    # Parametric: "combined ARR of customers under <Manager>'s active direct reports"
+    # Lets the structured-data agent recognize the multi-CSV-join pattern even
+    # when detect_intent's regex misfires.
+    if "combined" in q and "arr" in q and "direct report" in q:
+        import re as _re
+        m = _re.search(r"direct\s+reports?\s+of\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,3})", question)
+        if m:
+            return f"arr_by_manager_reports:{m.group(1).strip()}"
     if "q3" in q and "revenue" in q:
         return "q3_2023_revenue"
     if "vendor" in q and ("spend" in q or "cost" in q):

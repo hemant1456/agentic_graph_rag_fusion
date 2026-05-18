@@ -36,7 +36,7 @@ def dispatch(
     question: str,
     retriever,
     graph,
-) -> tuple[str, str, dict, str, float]:
+) -> tuple[str, str, dict, str, float, str]:
     """
     Route + execute.
 
@@ -46,7 +46,8 @@ def dispatch(
         ce_metrics      (dict)
         slice_name      (str)
         router_confidence (float)
+        context_xml     (str)   — assembled context the LLM saw, for eval grounding
     """
     slice_name, confidence, config = route(question)
-    answer, provider, ce_metrics = run_with_config(question, config, retriever, graph)
-    return answer, provider, ce_metrics, slice_name, confidence
+    answer, provider, ce_metrics, context_xml = run_with_config(question, config, retriever, graph)
+    return answer, provider, ce_metrics, slice_name, confidence, context_xml

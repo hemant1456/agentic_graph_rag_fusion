@@ -63,7 +63,7 @@ class Step06RAG:
             raise RuntimeError("Call .build() before .query()")
 
         t0 = time.perf_counter()
-        answer, provider, ce_metrics, slice_name, confidence = vsa_dispatch(
+        answer, provider, ce_metrics, slice_name, confidence, context_xml = vsa_dispatch(
             question, self._retriever, self._graph
         )
         total_ms = (time.perf_counter() - t0) * 1000
@@ -76,7 +76,9 @@ class Step06RAG:
             answer=answer,
             provider=f"vsa:{slice_name}:{provider}",
             retrieved_chunks=display_chunks,
-            context_sent=f"[VSA slice={slice_name} conf={confidence:.2f}]",
+            # Carry the full engineered context (CSV tool output + graph + reranked
+            # chunks) so the eval judge can verify grounded vs hallucinated claims.
+            context_sent=f"[VSA slice={slice_name} conf={confidence:.2f}]\n\n{context_xml}",
             context_chars=ce_metrics.get("engineered_chars", 0),
             retrieval_latency_ms=total_ms,
             generation_latency_ms=0.0,

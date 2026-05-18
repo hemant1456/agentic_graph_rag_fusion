@@ -38,7 +38,22 @@ _PATTERNS: list[tuple[re.Pattern, str]] = [
 ]
 
 
+# Parametric intent: "combined ARR of customers under <Manager>'s active direct reports".
+# Captures the manager name into the intent string so run_query can dispatch on the param.
+# Inline (?i:...) makes the descriptor case-insensitive but keeps the name capture
+# strictly title-case so it stops at the proper name (otherwise re.I would let
+# words like "per" match [A-Z][a-z]+ and the capture would over-extend).
+_ARR_BY_MANAGER_REPORTS_RE = re.compile(
+    r"(?i:combined).{0,40}(?i:arr|annual recurring revenue)"
+    r".{0,200}?(?i:direct\s+reports?\s+of)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,3})"
+)
+
+
 def detect_intent(question: str) -> str | None:
+    # Parametric first — captures a manager name and embeds it in the intent string.
+    m = _ARR_BY_MANAGER_REPORTS_RE.search(question)
+    if m:
+        return f"arr_by_manager_reports:{m.group(1).strip()}"
     for pat, intent in _PATTERNS:
         if pat.search(question):
             return intent
@@ -47,18 +62,21 @@ def detect_intent(question: str) -> str | None:
 
 def run_query(intent: str) -> str:
     try:
-        if intent == "q3_2023_revenue":
+        name, _, arg = intent.partition(":")
+        if name == "q3_2023_revenue":
             return _q3_revenue()
-        elif intent == "q3_closed_deals":
+        elif name == "q3_closed_deals":
             return _q3_closed_deals()
-        elif intent == "total_arr":
+        elif name == "total_arr":
             return _total_arr()
-        elif intent == "h2_2023_arr":
+        elif name == "h2_2023_arr":
             return _h2_2023_arr()
-        elif intent == "employees_by_location":
+        elif name == "employees_by_location":
             return _employees_by_location()
-        elif intent == "total_headcount":
+        elif name == "total_headcount":
             return _total_headcount()
+        elif name == "arr_by_manager_reports":
+            return _arr_by_manager_reports(arg)
     except Exception as e:
         return f"[CSV QUERY ERROR: {e}]"
     return ""
@@ -142,4 +160,44 @@ def _total_headcount() -> str:
     for _, r in df.iterrows():
         lines.append(f"  {r['department']}: {r['headcount']}")
     lines.append(f"  TOTAL planned headcount: {total}")
+    return "\n".join(lines)
+
+
+def _arr_by_manager_reports(manager_name: str) -> str:
+    """Compose two CSVs: resolve <manager_name>'s active direct reports in
+    employee_directory.csv, then sum arr_usd over customer_list.csv where csm
+    is in that set.
+
+    This is the only intent that JOINS two CSV files — required for Tier 5
+    questions where the multi-agent has to compose graph + structured aggregate.
+    """
+    emp = pd.read_csv(CORPUS_PATH / "hr" / "employee_directory.csv")
+    cust = pd.read_csv(CORPUS_PATH / "sales" / "customer_list.csv")
+
+    match = emp[emp["name"].str.strip().str.lower() == manager_name.strip().lower()]
+    if match.empty:
+        return f"[CSV QUERY ERROR: manager '{manager_name}' not found in employee_directory.csv]"
+    manager_id = match.iloc[0]["employee_id"]
+
+    reports = emp[(emp["manager_id"] == manager_id) & (emp["status"] == "active")]
+    csms = reports["name"].tolist()
+    if not csms:
+        return (
+            f"[STRUCTURED CSV QUERY: {manager_name} ({manager_id}) has no active direct "
+            "reports in employee_directory.csv]"
+        )
+
+    matched = cust[cust["csm"].isin(csms)]
+    total = int(matched["arr_usd"].sum())
+
+    lines = [
+        f"[STRUCTURED CSV QUERY — AUTHORITATIVE: combined ARR of customers whose CSM is an active direct report of {manager_name}]",
+        "[Source: employee_directory.csv (active direct reports) + customer_list.csv (ARR sum)]",
+        f"  Manager: {manager_name} ({manager_id})",
+        f"  Active direct reports: {', '.join(csms)} ({len(csms)} total)",
+        f"  Customers in their portfolios: {len(matched)}",
+    ]
+    for _, r in matched.iterrows():
+        lines.append(f"    {r['company_name']} (CSM: {r['csm']}): ${int(r['arr_usd']):,}")
+    lines.append(f"  COMBINED ARR: ${total:,}")
     return "\n".join(lines)
