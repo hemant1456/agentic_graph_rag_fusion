@@ -43,7 +43,7 @@ Scored with RAGAS via `llm_gatewayV2` (cerebras → gemini → groq fallback). `
 | step_01_baseline_rag | 8 | 2 | 5 | 0.587 | 1.000 | 0.640 | 0.383 | 0.847 |
 | step_02_tools | 8 | 2 | 5 | 0.600 | 0.933 | 0.640 | 0.337 | 0.847 |
 | step_03_hybrid_retrieval | 9 | 2 | 4 | 0.667 | 0.933 | 0.673 | 0.283 | 0.880 |
-| step_04_knowledge_graph | 1 | 0 | 14 | 0.059 | 0.067 | 0.589 | 0.000 | 0.523 |
+| step_04_knowledge_graph | 12 | 1 | 2 | 0.840 | 0.860 | 0.800 | 0.320 | 0.940 |
 | step_05_multi_agent | _pending_ | | | | | | | |
 | step_06_context_engineering | _pending_ | | | | | | | |
 | step_07_production | _pending_ | | | | | | | |
