@@ -1,19 +1,19 @@
 {
   "step": "step_04_knowledge_graph",
-  "timestamp": "2026-05-18T12:40:12",
+  "timestamp": "2026-05-18T13:38:01",
   "total_questions": 14,
   "grade_counts": {
-    "PASS": 12,
-    "PARTIAL": 0,
-    "FAIL": 2
+    "PASS": 10,
+    "PARTIAL": 3,
+    "FAIL": 1
   },
-  "pass_rate": 0.86,
+  "pass_rate": 0.71,
   "ragas_averages": {
-    "answer_correctness": 0.857,
-    "faithfulness": 1.0,
+    "answer_correctness": 0.807,
+    "faithfulness": 0.986,
     "answer_relevancy": 0.9,
-    "context_precision": 0.314,
-    "context_recall": 0.871
+    "context_precision": 0.286,
+    "context_recall": 0.757
   },
   "thresholds": {
     "PASS": "answer_correctness>=0.7",
@@ -31,12 +31,12 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly and is fully supported by the retrieved context; however, only 1 of the 10 retrieved contexts is relevant, lowering context_precision.",
+      "judge_reasoning": "The answer is accurate and fully supported by the provided context, though the retrieval system returned a large amount of irrelevant information.",
       "required_facts": [
         "90 day",
         "glacier"
       ],
-      "retrieval_latency_ms": 13508.3,
+      "retrieval_latency_ms": 10144.6,
       "contexts_count": 11
     },
     {
@@ -49,32 +49,32 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by the retrieved contexts; however, only 2 of the 10 retrieved contexts (onboarding_handbook.txt and founding_story.txt) are relevant, lowering context precision.",
+      "judge_reasoning": "The answer is accurate and fully supported by the provided documents, though the retrieved context set contained significant irrelevant information.",
       "required_facts": [
         "Arjun Mehta",
         "Diana Volkov",
         "2019"
       ],
-      "retrieval_latency_ms": 873.8,
+      "retrieval_latency_ms": 921.9,
       "contexts_count": 11
     },
     {
       "id": "Q03",
       "question": "In Vertexia's on-call runbook, what is the first action and the escalation owner for the PulseConnect webhook delivery failure alert?",
       "answer": "In Vertexia's on-call runbook, the details for the **PulseConnect webhook_delivery_failure_rate > 5%** alert are as follows:\n\n*   **First action:** Check external_sendgrid quota dashboard and the external_twilio API status page. Inspect outbound retry queue depth in PulseConnect admin UI.\n*   **Owner:** Raj Patel\n\n(Note: The term \"sendgrid\" in this query refers to the product/service external_sendgrid in Vertexia's system. The term \"twilio\" in this query refers to the product/service external_twilio in Vertexia's system.)",
-      "grade": "PASS",
-      "answer_correctness": 1.0,
+      "grade": "PARTIAL",
+      "answer_correctness": 0.5,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.8,
-      "context_recall": 1.0,
-      "judge_reasoning": "The actual answer correctly identifies the first action and escalation owner as per the reference, uses correct service names per context, and all claims are grounded in the retrieved context; context precision is slightly reduced due to some irrelevant organizational details in the retrieved chunks",
+      "context_precision": 0.2,
+      "context_recall": 0.0,
+      "judge_reasoning": "The retrieved context lacks the specific runbook instructions for the alert, leading to a hallucination of the first action, though the owner was correctly identified via the vendor contract.",
       "required_facts": [
         "SendGrid",
         "Twilio",
         "Raj Patel"
       ],
-      "retrieval_latency_ms": 1553.9,
+      "retrieval_latency_ms": 1228.0,
       "contexts_count": 11
     },
     {
@@ -87,11 +87,11 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer correctly states the total ARR and is fully supported by the retrieved context; however, only the first context chunk is relevant, making precision low.",
+      "judge_reasoning": "The answer correctly identifies the total ARR provided in the first retrieved context, though most of the other retrieved documents were irrelevant to the specific query.",
       "required_facts": [
         "11,000,000"
       ],
-      "retrieval_latency_ms": 1434.3,
+      "retrieval_latency_ms": 1435.1,
       "contexts_count": 11
     },
     {
@@ -108,7 +108,7 @@
       "required_facts": [
         "5"
       ],
-      "retrieval_latency_ms": 1227.7,
+      "retrieval_latency_ms": 1124.8,
       "contexts_count": 11
     },
     {
@@ -119,13 +119,13 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.1,
+      "context_precision": 0.5,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer is factually correct, fully grounded in the retrieved contexts, and directly addresses the question; however, only 1 of the 10 retrieved contexts was necessary, lowering precision.",
+      "judge_reasoning": "The answer is accurate and fully supported by the provided context, though the retrieval included several redundant and irrelevant chunks.",
       "required_facts": [
         "181"
       ],
-      "retrieval_latency_ms": 1126.7,
+      "retrieval_latency_ms": 1332.2,
       "contexts_count": 11
     },
     {
@@ -143,7 +143,7 @@
         "120,000",
         "2024-06-30"
       ],
-      "retrieval_latency_ms": 1229.5,
+      "retrieval_latency_ms": 1329.4,
       "contexts_count": 11
     },
     {
@@ -161,7 +161,7 @@
         "events/batch",
         "events/stream"
       ],
-      "retrieval_latency_ms": 1022.2,
+      "retrieval_latency_ms": 1242.0,
       "contexts_count": 11
     },
     {
@@ -178,7 +178,7 @@
       "required_facts": [
         "Priya Kapoor"
       ],
-      "retrieval_latency_ms": 995.0,
+      "retrieval_latency_ms": 1113.0,
       "contexts_count": 11
     },
     {
@@ -197,39 +197,42 @@
         "San Francisco",
         "Maya Sharma"
       ],
-      "retrieval_latency_ms": 1050.1,
+      "retrieval_latency_ms": 921.8,
       "contexts_count": 11
     },
     {
       "id": "Q11",
-      "question": "Based on Vertexia's API dependency graph, which Vertexia services directly depend on NexusFlow's APIs? Name all of them.",
-      "answer": "Based on the provided dependency graph and documentation, the following Vertexia services directly depend on NexusFlow's APIs:\n\n*   **InsightLens:** Depends on NexusFlow via the `events_api` and `connectors_api`.\n*   **PulseConnect:** Depends on NexusFlow via the `pipeline_status_api`.\n*   **DataCraft:** Depends on NexusFlow via the `ingest_api`.\n\nAdditionally, the term \"pulsar\" in this query refers to the product/service external_pulsar in Vertexia's system.",
-      "grade": "PASS",
-      "answer_correctness": 1.0,
-      "faithfulness": 1.0,
+      "question": "Based on Vertexia's API dependency graph, which Vertexia services directly depend on NexusFlow's APIs? Name each service AND the specific NexusFlow endpoint it consumes.",
+      "answer": "Based on the provided documents, the following Vertexia services directly depend on NexusFlow's APIs:\n\n*   **InsightLens:** Consumes the `/events/stream` endpoint (as identified in the `NexusFlow Events API` spec) and the `events_api` (as identified in the `InsightLens v1.0 PRD` and `Data Platform Team \u2014 On-Call Runbook`).\n*   **DataCraft:** Consumes the `/events/stream` endpoint (as identified in the `NexusFlow Events API` spec).\n*   **PulseConnect:** Consumes the `pipeline_status_api` (as identified in the `[KNOWLEDGE GRAPH CONTEXT]` and `Blast radius from PulseConnect` analysis).\n*   **DataCraft (Integration):** Consumes the `ingest_api` (as identified in the `[KNOWLEDGE GRAPH CONTEXT]` and `Blast radius from DataCraft` analysis).\n\n*Note: While the `[KNOWLEDGE GRAPH CONTEXT]` mentions InsightLens depends on NexusFlow via `connectors_api`, the `NexusFlow Events API` specification specifically lists InsightLens as a consumer of the `/events/stream` endpoint.*",
+      "grade": "PARTIAL",
+      "answer_correctness": 0.6,
+      "faithfulness": 0.8,
       "answer_relevancy": 1.0,
       "context_precision": 0.6,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer correctly identifies all three services and their respective APIs based on the provided context, though the context set included several irrelevant documents.",
+      "judge_reasoning": "The actual answer correctly identifies all three services but adds a non-existent 'DataCraft (Integration)' and misidentifies endpoints; it is mostly grounded but includes minor hallucinations not in the contexts.",
       "required_facts": [
         "InsightLens",
         "PulseConnect",
-        "DataCraft"
+        "DataCraft",
+        "events_api",
+        "pipeline_status_api",
+        "ingest_api"
       ],
-      "retrieval_latency_ms": 1130.8,
+      "retrieval_latency_ms": 1845.5,
       "contexts_count": 11
     },
     {
       "id": "Q12",
       "question": "Which active Vertexia employees located in the Bangalore office report \u2014 directly or indirectly, through any number of management hops \u2014 to the CTO Sarah Chen? List every such employee.",
       "answer": "Based on the provided documents, the active employee located in the Bangalore office who reports to CTO Sarah Chen is:\n\n*   **Priya Nair** (Lead, Data Platform Team)\n\n**Reasoning:**\n*   According to the Knowledge Graph, Priya Nair is located in Bangalore.\n*   Her manager is Marcus Webb (Lead, Platform Engineering).\n*   Marcus Webb\u2019s manager is Sarah Chen (CTO).\n*   Therefore, Priya Nair reports indirectly to Sarah Chen.\n\nThe provided context does not list any other active employees in the Bangalore office. While the \"Active Employees by Office Location\" CSV indicates there are 5 active employees in Bangalore, the provided Knowledge Graph only identifies Priya Nair as being located there.",
-      "grade": "FAIL",
-      "answer_correctness": 0.2,
+      "grade": "PARTIAL",
+      "answer_correctness": 0.4,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.2,
-      "context_recall": 0.2,
-      "judge_reasoning": "The model failed to identify the Bangalore-based employees because the provided knowledge graph context was incomplete regarding their office locations, leading to a correct but highly incomplete answer.",
+      "context_precision": 0.8,
+      "context_recall": 0.6,
+      "judge_reasoning": "The answer correctly identifies Priya Nair but misses four other employees; all claims are grounded in context, though the retrieved context contains enough information to infer the full list with proper traversal.",
       "required_facts": [
         "Priya Nair",
         "Kenji Ito",
@@ -237,7 +240,7 @@
         "Priya Kapoor",
         "Omar Faruk"
       ],
-      "retrieval_latency_ms": 1994.3,
+      "retrieval_latency_ms": 1732.1,
       "contexts_count": 11
     },
     {
@@ -248,13 +251,13 @@
       "answer_correctness": 0.0,
       "faithfulness": 1.0,
       "answer_relevancy": 0.3,
-      "context_precision": 0.4,
-      "context_recall": 1.0,
-      "judge_reasoning": "The model failed to identify the correct direct reports from the provided context, leading to an incorrect 'I don't know' response despite the information being present.",
+      "context_precision": 0.2,
+      "context_recall": 0.0,
+      "judge_reasoning": "The actual answer correctly states it lacks information but fails to extract available data from the context; key customer and CSM data for Sam Rivera and Anjali Patel are missing in retrieved contexts despite being inferable from Maya Sharma's direct reports and customer assignments.",
       "required_facts": [
         "3,708,000"
       ],
-      "retrieval_latency_ms": 1078.4,
+      "retrieval_latency_ms": 1234.1,
       "contexts_count": 11
     },
     {
@@ -265,14 +268,14 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.8,
+      "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The model correctly identified the CSM, filtered by the criteria, and calculated the total ARR accurately based on the provided context.",
+      "judge_reasoning": "The actual answer correctly identifies Anjali Patel as the only qualifying CSM and computes the correct combined ARR; all claims are grounded in the context; the retrieved contexts contain all necessary facts but include significant irrelevant information.",
       "required_facts": [
         "2,400,000",
         "Anjali Patel"
       ],
-      "retrieval_latency_ms": 2046.7,
+      "retrieval_latency_ms": 2151.9,
       "contexts_count": 11
     }
   ]
