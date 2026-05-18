@@ -316,10 +316,14 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         type="multi_hop",
         question=(
             "Based on Vertexia's API dependency graph, which Vertexia services "
-            "directly depend on NexusFlow's APIs? Name all of them."
+            "directly depend on NexusFlow's APIs? Name each service AND the "
+            "specific NexusFlow endpoint it consumes."
         ),
-        required_facts=["InsightLens", "PulseConnect", "DataCraft"],
-        partial_facts=["dependency", "depends", "API"],
+        required_facts=[
+            "InsightLens", "PulseConnect", "DataCraft",
+            "events_api", "pipeline_status_api", "ingest_api",
+        ],
+        partial_facts=["dependency", "depends", "connectors_api"],
         disqualifiers=[],
         explanation=(
             "api_dependencies.csv: three services consume NexusFlow APIs — "
@@ -355,7 +359,7 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         explanation=(
             "Pure employee_directory.csv reverse-BFS from E003 (Sarah Chen), "
             "filtered by location=Bangalore and status=active. The five "
-            "transitive reports are Priya Nair (E010, direct via Marcus Webb "
+            "transitive reports are Priya Nair (E010, two hops via Marcus Webb "
             "E009), Kenji Ito (E017, via Priya Nair), Lin Wei (E021, via Yuki "
             "Tanaka via Tomás García), Priya Kapoor (E039, via Priya Nair), "
             "and Omar Faruk (E032, via Daniel Osei). "
@@ -431,7 +435,10 @@ GOLDEN_QUESTIONS: list[GoldenQuestion] = [
         ),
         required_facts=["2,400,000", "Anjali Patel"],
         partial_facts=["Customer Success Manager", "2022", "combined ARR"],
-        disqualifiers=[],
+        # GREP AUDIT: $2,400,000 is also Phoenix Corp's individual ARR (heavily
+        # in prose docs). A baseline retrieving phoenix_corp prose would return
+        # "$2.4M (Phoenix Corp)" — same number, wrong provenance. Disqualify it.
+        disqualifiers=["Phoenix Corp", "Phoenix Corporation"],
         explanation=(
             "(1) GRAPH/STRUCTURED on directory: filter status=active, role "
             "contains 'Customer Success Manager', start_date in 2022 → exactly "
