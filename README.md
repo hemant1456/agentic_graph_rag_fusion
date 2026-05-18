@@ -44,13 +44,13 @@ Scored with RAGAS via `llm_gatewayV2` (cerebras → gemini → groq fallback). `
 | step_02_tools | 6 | 2 | 6 | 0.514 | 0.986 | 0.529 | 0.243 | 0.700 |
 | step_03_hybrid_retrieval | 9 | 2 | 3 | 0.721 | 0.914 | 0.757 | 0.256 | 0.921 |
 | step_04_knowledge_graph | 10 | 3 | 1 | 0.807 | 0.986 | 0.757 | 0.286 | 0.900 |
-| step_05_multi_agent | 0 | 0 | 14 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
-| step_06_context_engineering | 0 | 0 | 14 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+| step_05_multi_agent | 10 | 2 | 2 | 0.807 | 0.736 | 0.650 | 0.259 | 1.000 |
+| step_06_context_engineering | 11 | 1 | 2 | 0.814 | 0.700 | 0.657 | 0.345 | 1.000 |
 | step_07_production | _pending_ | | | | | | | |
 
 <!-- RESULTS_TABLE_END -->
 
-Eval rows are pending after the 2026-05-18 restructure (10 steps → 8). All previous numbers were captured against the old structure and will be re-run.
+Step 07 (production hardening) is left as `_pending_` — it is the reliability layer (cache, retry, confidence, health monitor) and is re-scored separately when production-grade behavior is being measured. The other rows are the latest run against the 14-question golden set.
 
 
 
