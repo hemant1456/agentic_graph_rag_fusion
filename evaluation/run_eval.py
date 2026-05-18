@@ -54,7 +54,27 @@ def _cached(step_name: str, builder: Callable[[], Any]) -> Any:
 
 
 def _result_to_sample(r) -> dict:
-    return {"answer": r.answer, "contexts": [c.text for c in r.retrieved_chunks]}
+    """Build the (answer, contexts) pair the judge will see.
+
+    `retrieved_chunks` only carries vector-retrieved chunks. But steps that
+    invoke a tool (CSV tool in step_02+, graph context in step_04+, etc.)
+    add the tool output to `context_sent` before sending to the LLM. If we
+    don't show that extra context to the judge, correct tool-grounded
+    answers get marked as hallucinations in `faithfulness`.
+
+    Fix: compute the delta between `context_sent` and the joined chunk
+    texts, and surface that delta to the judge as a synthetic context.
+    """
+    chunk_texts = [c.text for c in r.retrieved_chunks]
+    extra = r.context_sent or ""
+    for ct in chunk_texts:
+        extra = extra.replace(ct, "")
+    extra = extra.strip()
+    contexts = list(chunk_texts)
+    if extra:
+        # Put the tool output first so the judge sees authoritative content up top.
+        contexts.insert(0, extra)
+    return {"answer": r.answer, "contexts": contexts}
 
 
 def answer_step_01(question: str) -> dict:
