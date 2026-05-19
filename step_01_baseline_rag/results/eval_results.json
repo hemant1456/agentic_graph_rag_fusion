@@ -1,6 +1,6 @@
 {
   "step": "step_01_baseline_rag",
-  "timestamp": "2026-05-18T13:34:37",
+  "timestamp": "2026-05-18T21:05:08",
   "total_questions": 14,
   "grade_counts": {
     "PASS": 4,
@@ -9,11 +9,11 @@
   },
   "pass_rate": 0.29,
   "ragas_averages": {
-    "answer_correctness": 0.35,
+    "answer_correctness": 0.336,
     "faithfulness": 0.986,
-    "answer_relevancy": 0.621,
-    "context_precision": 0.264,
-    "context_recall": 0.343
+    "answer_relevancy": 0.686,
+    "context_precision": 0.186,
+    "context_recall": 0.314
   },
   "thresholds": {
     "PASS": "answer_correctness>=0.7",
@@ -24,38 +24,40 @@
     {
       "id": "Q01",
       "question": "What is Vertexia's customer data retention policy for hot storage and cold storage?",
-      "answer": "Vertexia's customer data retention policy is as follows:\n\n*   **Hot Storage:** 90 days\n*   **Cold Storage:** 1 year (S3 Glacier)",
+      "answer": "According to the provided context, Vertexia's customer data retention policy is as follows:\n\n- Hot Storage: 90 days of customer data.\n- Cold Storage: 1 year of customer data (S3 Glacier).\n\nThis information is consistently mentioned across multiple sources, including [Source 1: legal/phoenix_corp_msa.txt], [Source 3: hr/onboarding_handbook.txt], and [Source 7: legal/phoenix_corp_msa.txt].",
       "grade": "PASS",
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.5,
+      "context_precision": 0.6,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly and is fully supported by multiple retrieved contexts; however, only about half of the retrieved contexts are relevant to the question.",
+      "judge_reasoning": "The answer accurately reflects the retention policy found in the retrieved documents, though several retrieved chunks were irrelevant to the specific question asked.",
       "required_facts": [
         "90 day",
         "glacier"
       ],
-      "retrieval_latency_ms": 11416.7,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 8303.6,
       "contexts_count": 11
     },
     {
       "id": "Q02",
       "question": "Who co-founded Vertexia and in what year was the company founded?",
-      "answer": "Vertexia was co-founded by Arjun Mehta and Diana Volkov. The company was founded in March 2019.",
+      "answer": "Vertexia was co-founded by Arjun Mehta and Diana Volkov in March 2019.",
       "grade": "PASS",
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.5,
+      "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly and is fully supported by the retrieved contexts, though only half of the retrieved contexts were relevant to the question.",
+      "judge_reasoning": "The answer is factually accurate and fully supported by the retrieved documents, though only two of the ten provided context chunks were actually relevant to the query.",
       "required_facts": [
         "Arjun Mehta",
         "Diana Volkov",
         "2019"
       ],
-      "retrieval_latency_ms": 1030.5,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 1123.8,
       "contexts_count": 11
     },
     {
@@ -66,84 +68,94 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.7,
+      "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference exactly in content and is fully supported by the retrieved contexts; most retrieved contexts are relevant but some are not directly related to the PulseConnect alert.",
+      "judge_reasoning": "The answer is accurate and fully supported by the retrieved context, though the retrieval process returned many irrelevant documents.",
       "required_facts": [
         "SendGrid",
         "Twilio",
         "Raj Patel"
       ],
-      "retrieval_latency_ms": 1221.4,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 1131.3,
       "contexts_count": 11
     },
     {
       "id": "Q04",
       "question": "What is the total ARR across all Vertexia customers combined?",
-      "answer": "As of the end of Q3 2023, the total ARR for Vertexia Inc. is $16.5M.",
+      "answer": "According to the context documents, specifically Source 1 (Q3 2023 Finance Report) and Source 3 (Series C Announcement), the total ARR (Annual Recurring Revenue) of Vertexia Inc. at the end of Q3 2023 is $16.5M. \n\nThis information is directly mentioned in both sources, indicating that as of Q3 2023, the total ARR across all Vertexia customers combined is $16.5M.",
       "grade": "FAIL",
       "answer_correctness": 0.0,
       "faithfulness": 1.0,
-      "answer_relevancy": 0.8,
-      "context_precision": 0.3,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.2,
       "context_recall": 0.0,
-      "judge_reasoning": "The actual answer reports $16.5M ARR from retrieved contexts, but the reference answer specifies a different value ($11M) derived from summing a CSV file not present in the contexts, making the answer incorrect despite being faithful to the provided documents.",
+      "judge_reasoning": "The model correctly identified the ARR from the provided documents but failed to answer the specific question which required information not present in the retrieved context.",
       "required_facts": [
         "11,000,000"
       ],
-      "retrieval_latency_ms": 1739.3,
+      "disqualifiers_tripped": [
+        "16.5M"
+      ],
+      "retrieval_latency_ms": 817.9,
       "contexts_count": 11
     },
     {
       "id": "Q05",
       "question": "How many active Vertexia employees are based in the Berlin office?",
-      "answer": "The provided documents do not contain information regarding a Berlin office. The context states that Vertexia employees are based in San Francisco, Austin, and Bangalore.",
+      "answer": "The provided context does not mention a Berlin office or any employees based in Berlin. All references are to offices in San Francisco, Austin, and Bangalore. Therefore, based on the available information, there are no active Vertexia employees based in the Berlin office.",
       "grade": "FAIL",
       "answer_correctness": 0.0,
       "faithfulness": 1.0,
-      "answer_relevancy": 0.3,
-      "context_precision": 0.1,
+      "answer_relevancy": 1.0,
+      "context_precision": 0.0,
       "context_recall": 0.0,
-      "judge_reasoning": "The actual answer correctly states that Berlin office information is absent from the contexts, so it is faithful, but the reference answer asserts a fact (5 employees) not supported by any context, making correctness 0.0 and recall 0.0 since the required fact is missing in retrieved documents.",
+      "judge_reasoning": "The model correctly identified that the context lacks information about a Berlin office, but the reference answer claims there are 5 employees there, indicating a discrepancy between the provided gold standard and the provided context.",
       "required_facts": [
         "5"
       ],
-      "retrieval_latency_ms": 1024.9,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 717.3,
       "contexts_count": 11
     },
     {
       "id": "Q06",
       "question": "What is the total planned headcount across all departments in Vertexia's 2023 budget allocation?",
-      "answer": "Based on the provided budget allocation documents, the total planned headcount for the departments listed is as follows:\n\n*   **Platform Engineering:** 42\n*   **Revenue:** 38\n*   **People & Culture:** 5\n*   **Executive:** 3\n\nThe total planned headcount for these specific departments is 88. Please note that the provided context does not contain a comprehensive list of all departments at Vertexia Inc., so this figure may not represent the total planned headcount for the entire company.",
+      "answer": "To determine the total planned headcount across all departments in Vertexia's 2023 budget allocation, we need to look at the budget allocation files provided, specifically the rows from the finance/budget_allocation_2023.csv file.\n\nFrom the provided rows:\n- Revenue department has a headcount of 38.\n- Executive department has a headcount of 3.\n- Platform Engineering department has a headcount of 42.\n- People & Culture department has a headcount of 5.\n\nHowever, the context does not provide a comprehensive list of all departments and their respective headcounts. The information is fragmented across different sources, and not all rows from the budget allocation file are included.\n\nGiven the available data, we can only calculate the total headcount for the departments mentioned:\n38 (Revenue) + 3 (Executive) + 42 (Platform Engineering) + 5 (People & Culture) = 88\n\nBut since the context mentions that the target headcount by the end of the year is ~500 (as per the org chart in Source 2), and we only have information for a few departments, we cannot accurately calculate the total planned headcount across all departments based on the provided information. The context does not contain enough information to answer this question fully.",
       "grade": "FAIL",
-      "answer_correctness": 0.2,
+      "answer_correctness": 0.0,
       "faithfulness": 1.0,
-      "answer_relevancy": 0.8,
-      "context_precision": 0.5,
-      "context_recall": 0.4,
-      "judge_reasoning": "The model correctly identified partial data from the retrieved chunks but failed to retrieve or aggregate the full budget allocation table, leading to an incomplete and incorrect total.",
+      "answer_relevancy": 0.3,
+      "context_precision": 0.4,
+      "context_recall": 0.0,
+      "judge_reasoning": "The model correctly identified that it could not calculate the total from the provided chunks, but the retrieval system failed to provide all necessary rows from the CSV to answer the question.",
       "required_facts": [
         "181"
       ],
-      "retrieval_latency_ms": 1195.6,
+      "disqualifiers_tripped": [
+        "500",
+        "~500"
+      ],
+      "retrieval_latency_ms": 128401.4,
       "contexts_count": 11
     },
     {
       "id": "Q07",
       "question": "According to Vertexia's vendor contracts summary, what is the annual contract value for Snowflake and when does that contract renew?",
-      "answer": "According to the Vertexia vendor contracts summary, the annual contract value for Snowflake is $120,000, and the contract renews on June 30, 2024.",
+      "answer": "According to the vendor contracts summary (Source 9: finance/vendor_contracts_summary.csv), the annual contract value for Snowflake is $120,000, and the contract renews on June 30, 2024.",
       "grade": "PASS",
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
       "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is factually accurate and fully supported by the retrieved context, though only one of the ten provided chunks was relevant to the query.",
+      "judge_reasoning": "The actual answer is factually correct, fully grounded in the retrieved context, and directly addresses the question; only one of the ten retrieved contexts (Source 9) is relevant, but it contains all necessary facts.",
       "required_facts": [
         "120,000",
         "2024-06-30"
       ],
-      "retrieval_latency_ms": 1363.3,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 1914.2,
       "contexts_count": 11
     },
     {
@@ -161,43 +173,48 @@
         "events/batch",
         "events/stream"
       ],
-      "retrieval_latency_ms": 1215.9,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 1108.3,
       "contexts_count": 11
     },
     {
       "id": "Q09",
       "question": "Per Vertexia's Q4 2023 on-call schedule, who was the on-call engineer for the Data Platform Team during the week starting 2023-10-16?",
-      "answer": "The provided documents do not contain information regarding the specific on-call schedule for the Data Platform Team for the week starting 2023-10-16. Therefore, I cannot answer your question.",
+      "answer": "The context does not contain enough information to answer the question about who was the on-call engineer for the Data Platform Team during the week starting 2023-10-16. The provided documents do not include specific details about the Q4 2023 on-call schedule or the on-call rotations for the Data Platform Team beyond mentioning that the company is allocating additional budget to support Kenji Ito and the on-call rotations.",
       "grade": "FAIL",
       "answer_correctness": 0.0,
       "faithfulness": 1.0,
       "answer_relevancy": 0.3,
       "context_precision": 0.0,
       "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified that the provided context lacked the requested information, but the retrieval system failed to provide the necessary document containing the on-call schedule.",
+      "judge_reasoning": "The model correctly identified that the provided context lacked the answer, but the context recall is 0.0 because the necessary document was not retrieved.",
       "required_facts": [
         "Priya Kapoor"
       ],
-      "retrieval_latency_ms": 1040.9,
+      "disqualifiers_tripped": [
+        "Kenji Ito"
+      ],
+      "retrieval_latency_ms": 41980.2,
       "contexts_count": 11
     },
     {
       "id": "Q10",
       "question": "Who is the CSM assigned to the customer 'Summit Pharma', what office location is that CSM based in, and who is that CSM's direct manager?",
-      "answer": "Based on the provided documents, the CSM assigned to Summit Pharma is Anjali Patel.\n\nThe provided context does not contain information regarding Anjali Patel's office location or her direct manager.",
+      "answer": "The CSM assigned to the customer 'Summit Pharma' is Anjali Patel. \n\nHowever, the context does not contain enough information to determine Anjali Patel's office location.\n\nAdditionally, the context does not explicitly state Anjali Patel's direct manager. It does mention that Maya Sharma is the VP Customer Success, but it does not specify if Anjali Patel reports to Maya Sharma. The org chart provided in the context only shows the structure up to the VP level and does not provide information on the reporting structure for individual CSMs.",
       "grade": "FAIL",
       "answer_correctness": 0.3,
       "faithfulness": 1.0,
-      "answer_relevancy": 0.3,
+      "answer_relevancy": 0.8,
       "context_precision": 0.2,
       "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified the CSM but failed to retrieve the office location and manager information present in the provided context, leading to an incomplete answer.",
+      "judge_reasoning": "The model correctly identified the CSM but failed to retrieve or infer the location and manager information present in the provided context, leading to an incomplete answer.",
       "required_facts": [
         "Anjali Patel",
         "San Francisco",
         "Maya Sharma"
       ],
-      "retrieval_latency_ms": 917.9,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 1773.6,
       "contexts_count": 11
     },
     {
@@ -219,20 +236,21 @@
         "pipeline_status_api",
         "ingest_api"
       ],
-      "retrieval_latency_ms": 1598.8,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 1448.8,
       "contexts_count": 11
     },
     {
       "id": "Q12",
       "question": "Which active Vertexia employees located in the Bangalore office report \u2014 directly or indirectly, through any number of management hops \u2014 to the CTO Sarah Chen? List every such employee.",
-      "answer": "Based on the provided documents, there is insufficient information to list every employee in the Bangalore office who reports to CTO Sarah Chen.\n\nWhile the documents establish the following:\n*   **Sarah Chen** is the CTO (appointed April 10, 2023) and oversees the organizational structure, including Platform Engineering (led by Marcus Webb) and Product Engineering (led by Tom\u00e1s Garc\u00eda).\n*   **Priya Nair** is listed as the lead for the Bangalore office in the Q3 2023 Org Chart.\n\nHowever, the provided context does not contain a full employee roster, nor does it provide the reporting lines or organizational hierarchy for the Bangalore office beyond identifying Priya Nair as the lead. Therefore, it is not possible to determine which specific employees in Bangalore report to Sarah Chen.",
+      "answer": "Based on the provided context, I do not have enough information to answer the question fully. The context does not contain a detailed organizational chart or a list of employees in the Bangalore office, nor does it specify the management structure or reporting lines for the employees in Bangalore.\n\nThe only information available about the Bangalore office is that it is led by Priya Nair (Source 8: hr/org_chart_q3_2023.txt), but there is no information about who reports to Priya Nair or who reports to the CTO Sarah Chen.\n\nTherefore, I cannot provide a list of active Vertexia employees in the Bangalore office who report to the CTO Sarah Chen.",
       "grade": "FAIL",
       "answer_correctness": 0.0,
       "faithfulness": 1.0,
       "answer_relevancy": 0.3,
       "context_precision": 0.1,
       "context_recall": 0.0,
-      "judge_reasoning": "The model correctly identified that the provided context lacked the necessary information to answer the question, though the reference answer implies the information should have been present in the retrieved documents.",
+      "judge_reasoning": "The model correctly identified that the provided context lacked the necessary information to answer the question, though the retrieved documents were largely irrelevant to the specific reporting structure requested.",
       "required_facts": [
         "Priya Nair",
         "Kenji Ito",
@@ -240,7 +258,8 @@
         "Priya Kapoor",
         "Omar Faruk"
       ],
-      "retrieval_latency_ms": 1475.1,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 842.3,
       "contexts_count": 11
     },
     {
@@ -257,7 +276,8 @@
       "required_facts": [
         "3,708,000"
       ],
-      "retrieval_latency_ms": 1022.9,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 42027.6,
       "contexts_count": 11
     },
     {
@@ -275,7 +295,8 @@
         "2,400,000",
         "Anjali Patel"
       ],
-      "retrieval_latency_ms": 1228.3,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 46796.1,
       "contexts_count": 11
     }
   ]

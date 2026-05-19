@@ -1,19 +1,19 @@
 {
   "step": "step_03_hybrid_retrieval",
-  "timestamp": "2026-05-18T13:36:53",
+  "timestamp": "2026-05-18T22:11:43",
   "total_questions": 14,
   "grade_counts": {
-    "PASS": 9,
-    "PARTIAL": 2,
-    "FAIL": 3
+    "PASS": 10,
+    "PARTIAL": 0,
+    "FAIL": 4
   },
-  "pass_rate": 0.64,
+  "pass_rate": 0.71,
   "ragas_averages": {
-    "answer_correctness": 0.721,
-    "faithfulness": 0.914,
-    "answer_relevancy": 0.921,
-    "context_precision": 0.256,
-    "context_recall": 0.757
+    "answer_correctness": 0.774,
+    "faithfulness": 0.95,
+    "answer_relevancy": 0.874,
+    "context_precision": 0.206,
+    "context_recall": 0.743
   },
   "thresholds": {
     "PASS": "answer_correctness>=0.7",
@@ -24,19 +24,20 @@
     {
       "id": "Q01",
       "question": "What is Vertexia's customer data retention policy for hot storage and cold storage?",
-      "answer": "Vertexia's customer data retention policy is as follows:\n\n*   **Hot Storage:** 90 days\n*   **Cold Storage:** 1 year (S3 Glacier)",
+      "answer": "Vertexia's customer data retention policy specifies:\n\n- **Hot Storage:** 90 days of customer data.\n- **Cold Storage:** 1 year of customer data (stored in S3 Glacier).\n\nAfter this period, data is purged according to the deletion pipeline. This policy is consistent across multiple documents, including the Onboarding Handbook, Master Service Agreement with Phoenix Corp, and the Data Processing Agreement Template.",
       "grade": "PASS",
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
       "context_precision": 0.5,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is accurate and fully supported by the retrieved documents, though several retrieved chunks were irrelevant to the specific question asked.",
+      "judge_reasoning": "The actual answer correctly and fully matches the reference with all claims grounded in retrieved contexts, but only half of the retrieved contexts are relevant to the question.",
       "required_facts": [
         "90 day",
         "glacier"
       ],
-      "retrieval_latency_ms": 9999.3,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 181257.9,
       "contexts_count": 11
     },
     {
@@ -49,32 +50,34 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.2,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer matches the reference answer and is supported by the retrieved contexts.",
+      "judge_reasoning": "The answer is accurate and fully supported by the retrieved documents, though many of the provided context chunks were irrelevant to the specific question.",
       "required_facts": [
         "Arjun Mehta",
         "Diana Volkov",
         "2019"
       ],
-      "retrieval_latency_ms": 1028.0,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 819.8,
       "contexts_count": 11
     },
     {
       "id": "Q03",
       "question": "In Vertexia's on-call runbook, what is the first action and the escalation owner for the PulseConnect webhook delivery failure alert?",
-      "answer": "For the **PulseConnect webhook_delivery_failure_rate > 5%** alert, the details are as follows:\n\n*   **First action:** Check SendGrid quota dashboard and the Twilio API status page. Inspect outbound retry queue depth in PulseConnect admin UI.\n*   **Owner:** Raj Patel",
+      "answer": "For the **PulseConnect webhook_delivery_failure_rate > 5%** alert in Vertexia's on-call runbook:\n\n- **First action:** Check SendGrid quota dashboard and the Twilio API status page. Inspect outbound retry queue depth in PulseConnect admin UI.  \n- **Escalation owner:** Raj Patel",
       "grade": "PASS",
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.1,
+      "context_precision": 0.8,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is perfectly accurate and grounded, though the retrieval process returned many irrelevant documents.",
+      "judge_reasoning": "The actual answer matches the reference exactly and is fully supported by the retrieved contexts; most retrieved chunks are relevant but some are not directly related to the PulseConnect alert.",
       "required_facts": [
         "SendGrid",
         "Twilio",
         "Raj Patel"
       ],
-      "retrieval_latency_ms": 1228.3,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 181386.6,
       "contexts_count": 11
     },
     {
@@ -87,28 +90,30 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer correctly identifies the total ARR from the provided structured context, though most of the retrieved documents were irrelevant to the specific query.",
+      "judge_reasoning": "The actual answer correctly states the total ARR across all customers and is fully supported by the retrieved contexts, particularly the structured CSV query; however, only 1 of the 10 retrieved contexts is directly relevant, lowering context precision.",
       "required_facts": [
         "11,000,000"
       ],
-      "retrieval_latency_ms": 859.1,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 885.3,
       "contexts_count": 11
     },
     {
       "id": "Q05",
       "question": "How many active Vertexia employees are based in the Berlin office?",
-      "answer": "Based on the provided \"Active Employees by Office Location\" CSV query, there are 5 active employees based in the Berlin office.",
+      "answer": "According to the provided context, there are **5 active employees** based in the Berlin office.",
       "grade": "PASS",
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
       "context_precision": 0.09,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is accurate and grounded in the provided context, though the retrieval process returned many irrelevant documents.",
+      "judge_reasoning": "The answer is accurate and supported by the provided context, though the retrieval system returned many irrelevant documents.",
       "required_facts": [
         "5"
       ],
-      "retrieval_latency_ms": 1088.9,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 181248.4,
       "contexts_count": 11
     },
     {
@@ -119,19 +124,20 @@
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
-      "context_precision": 0.5,
+      "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is accurate and fully supported, though the retrieved context set contained significant redundant noise.",
+      "judge_reasoning": "The answer is fully correct, grounded in the retrieved context, and directly addresses the question, but only 1 of the 10 retrieved contexts was necessary to answer it.",
       "required_facts": [
         "181"
       ],
-      "retrieval_latency_ms": 1123.6,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 919.2,
       "contexts_count": 11
     },
     {
       "id": "Q07",
       "question": "According to Vertexia's vendor contracts summary, what is the annual contract value for Snowflake and when does that contract renew?",
-      "answer": "According to the Vendor Contracts Summary, the annual contract value for Snowflake is $120,000 USD, and the contract renewal date is June 30, 2024.",
+      "answer": "According to Vertexia's vendor contracts summary, the annual contract value for Snowflake is $120,000 USD, and the contract renews on June 30, 2024.",
       "grade": "PASS",
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
@@ -143,25 +149,27 @@
         "120,000",
         "2024-06-30"
       ],
-      "retrieval_latency_ms": 1024.2,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 819.8,
       "contexts_count": 11
     },
     {
       "id": "Q08",
       "question": "Which NexusFlow API endpoint was deprecated in v2.1, and what endpoint replaced it?",
-      "answer": "The `GET /v2/events/batch` endpoint was deprecated in v2.1. It was replaced by `GET /v2/events/stream`.",
+      "answer": "The NexusFlow API endpoint `GET /v2/events/batch` was deprecated in v2.1. It was replaced by `GET /v2/events/stream`.",
       "grade": "PASS",
       "answer_correctness": 1.0,
       "faithfulness": 1.0,
       "answer_relevancy": 1.0,
       "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The answer is accurate and fully supported by the context, though the retrieved set contained significant irrelevant documents.",
+      "judge_reasoning": "The answer is accurate and fully supported by the context, though only one of the ten provided chunks contained the relevant information.",
       "required_facts": [
         "events/batch",
         "events/stream"
       ],
-      "retrieval_latency_ms": 1168.7,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 181042.9,
       "contexts_count": 11
     },
     {
@@ -174,43 +182,45 @@
       "answer_relevancy": 1.0,
       "context_precision": 0.1,
       "context_recall": 1.0,
-      "judge_reasoning": "The actual answer correctly identifies Priya Kapoor as the on-call engineer for the specified week, fully matching the reference; all claims are grounded in the retrieved context (specifically context [8]); the answer directly addresses the question; only one of the ten retrieved contexts (on_call_s",
+      "judge_reasoning": "The answer is accurate and fully supported by the retrieved context, though the system retrieved many irrelevant documents.",
       "required_facts": [
         "Priya Kapoor"
       ],
-      "retrieval_latency_ms": 1185.7,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 921.8,
       "contexts_count": 11
     },
     {
       "id": "Q10",
       "question": "Who is the CSM assigned to the customer 'Summit Pharma', what office location is that CSM based in, and who is that CSM's direct manager?",
-      "answer": "Based on the provided documents, the CSM assigned to Summit Pharma is Anjali Patel.\n\nThe provided context does not contain information regarding the office location of Anjali Patel or the identity of her direct manager.",
-      "grade": "PARTIAL",
-      "answer_correctness": 0.5,
+      "answer": "The Customer Success Manager (CSM) assigned to the customer 'Summit Pharma' is **Anjali Patel**, as shown in both the customer list and the CSM account history records.\n\nHowever, the provided context does **not** contain information about Anjali Patel's office location or her direct manager. While the org chart documents list some organizational structures, they do not include Anjali Patel or her reporting line.\n\nTherefore:\n\n- **CSM**: Anjali Patel  \n- **Office location**: Not specified in the context  \n- **Direct manager**: Not specified in the context",
+      "grade": "FAIL",
+      "answer_correctness": 0.33,
       "faithfulness": 1.0,
-      "answer_relevancy": 1.0,
-      "context_precision": 0.4,
-      "context_recall": 0.6,
-      "judge_reasoning": "The answer correctly identifies Anjali Patel as the CSM for Summit Pharma but honestly states that location and manager info are missing; all claims are grounded, but the retrieved contexts lack the employee directory with manager and location details.",
+      "answer_relevancy": 0.33,
+      "context_precision": 0.1,
+      "context_recall": 0.0,
+      "judge_reasoning": "The model correctly identified the CSM but failed to find the location and manager information because those facts were not present in the provided retrieved contexts.",
       "required_facts": [
         "Anjali Patel",
         "San Francisco",
         "Maya Sharma"
       ],
-      "retrieval_latency_ms": 1331.1,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 180939.3,
       "contexts_count": 11
     },
     {
       "id": "Q11",
       "question": "Based on Vertexia's API dependency graph, which Vertexia services directly depend on NexusFlow's APIs? Name each service AND the specific NexusFlow endpoint it consumes.",
       "answer": "Based on the provided documents, the following services directly depend on NexusFlow's APIs:\n\n*   **InsightLens:** Consumes the `/events/stream` endpoint (as noted in the `NexusFlow Events API` specification and the InsightLens PRD).\n*   **DataCraft Integration:** Consumes the `/events/stream` endpoint (as noted in the `NexusFlow Events API` specification).\n\nAdditionally, the `Data Platform Team \u2014 On-Call Runbook` notes that **InsightLens** depends on the `events-api` for its analytics ingestion path, and the `NexusFlow System Architecture` document mentions that NexusFlow delivers data to **internal services like InsightLens**.",
-      "grade": "PARTIAL",
-      "answer_correctness": 0.4,
-      "faithfulness": 1.0,
-      "answer_relevancy": 1.0,
-      "context_precision": 0.8,
-      "context_recall": 0.6,
-      "judge_reasoning": "The actual answer correctly identifies InsightLens and mentions DataCraft Integration but incorrectly maps endpoints and misses PulseConnect; all claims are grounded in context, but key facts from api_dependencies.csv are missing in retrieval.",
+      "grade": "FAIL",
+      "answer_correctness": 0.3,
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.8,
+      "context_precision": 0.1,
+      "context_recall": 0.0,
+      "judge_reasoning": "The answer missed two of the three services and hallucinated an endpoint not present in the provided context, while the retrieved contexts failed to include the critical api_dependencies.csv file.",
       "required_facts": [
         "InsightLens",
         "PulseConnect",
@@ -219,20 +229,21 @@
         "pipeline_status_api",
         "ingest_api"
       ],
-      "retrieval_latency_ms": 1343.8,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 1434.0,
       "contexts_count": 11
     },
     {
       "id": "Q12",
       "question": "Which active Vertexia employees located in the Bangalore office report \u2014 directly or indirectly, through any number of management hops \u2014 to the CTO Sarah Chen? List every such employee.",
-      "answer": "Based on the provided documents, there is no information available that lists the specific names of active employees located in the Bangalore office, nor is there a comprehensive directory linking individual employees to their specific office locations and reporting lines.\n\nWhile the documents identify the leadership structure (Sarah Chen as CTO, with Marcus Webb and Tom\u00e1s Garc\u00eda reporting to her, and their respective sub-teams including Priya Nair, Daniel Osei, Yuki Tanaka, Aisha Johnson, and Raj Patel), the provided context does not specify which of these individuals or any other employees are based in the Bangalore office.",
+      "answer": "Based on the provided context, we can determine the following:\n\n1. **Sarah Chen** is the **Chief Technology Officer (CTO)** of Vertexia Inc., effective April 10, 2023 (Source 1, Source 5).\n2. Sarah Chen oversees two engineering organizations:\n   - **Platform Engineering**, led by **Marcus Webb**\n   - **Product Engineering**, led by **Tom\u00e1s Garc\u00eda** (Source 5)\n3. Both Marcus Webb and Tom\u00e1s Garc\u00eda report directly to Sarah Chen (Source 5).\n4. The **Bangalore office** has **5 active employees** (from the structured CSV query).\n5. However, **no document provides a list of individual employees in the Bangalore office** or their reporting lines by name.\n6. While we know the structure of the engineering teams (e.g., Data Platform under Priya Nair, Security under Daniel Osei, and product teams under Yuki Tanaka, Aisha Johnson, and Raj Patel), **none of these documents specify the office locations of these individuals or their direct reports**.\n7. The total headcount is stated as approximately 500 employees across San Francisco, Austin, and Bangalore (Sources 2, 3, 7), and Q1 2023 headcount was ~430 (Source 6), implying growth into the ~500 range by late 2023 \u2014 but again, no granular location-based reporting data is given.\n\n### Conclusion:\nAlthough it is highly likely that some of the **5 active employees in the Bangalore office** report into the engineering organization (given that engineering teams are structured under the CTO), **the specific names, roles, and reporting lines of employees in the Bangalore office are not provided in any of the documents**.\n\nTherefore, **based on the available information, it is not possible to list any specific active employees in the Bangalore office who report to CTO Sarah Chen**.\n\n**Answer: The context does not contain sufficient information to list the names of active Bangalore-based employees who report to CTO Sarah Chen.**",
       "grade": "FAIL",
       "answer_correctness": 0.0,
       "faithfulness": 1.0,
       "answer_relevancy": 0.3,
       "context_precision": 0.1,
       "context_recall": 0.0,
-      "judge_reasoning": "The actual answer correctly states that the documents lack specific information about Bangalore-based employees reporting to Sarah Chen, which aligns with the retrieved contexts; however, the reference answer contains details not present in any retrieved context, making correctness and context recal",
+      "judge_reasoning": "The model correctly identified that the provided context chunks lacked the specific employee-to-office mapping required to answer the question, though the reference answer implies such information exists in the source material.",
       "required_facts": [
         "Priya Nair",
         "Kenji Ito",
@@ -240,24 +251,26 @@
         "Priya Kapoor",
         "Omar Faruk"
       ],
-      "retrieval_latency_ms": 1623.2,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 1638.8,
       "contexts_count": 11
     },
     {
       "id": "Q13",
       "question": "What is the combined ARR (sum of arr_usd in customer_list.csv) of all customers whose assigned CSM is an active direct report of Maya Sharma per the employee directory?",
-      "answer": "Based on the provided documents, the employee directory (Source 6) identifies Maya Sharma as the VP of Customer Success. The directory does not list any employees who report to Maya Sharma (i.e., employees with a `manager_id` corresponding to Maya Sharma's `employee_id`, E019).\n\nBecause there are no active direct reports of Maya Sharma listed in the provided context, the combined ARR of customers assigned to such individuals is $0.",
-      "grade": "FAIL",
-      "answer_correctness": 0.0,
-      "faithfulness": 0.0,
-      "answer_relevancy": 0.8,
+      "answer": "The combined ARR of all customers whose assigned CSM is an active direct report of Maya Sharma is **$3,708,000**.\n\nThis total is derived from the customers assigned to Sam Rivera and Anjali Patel, who are the two active direct reports of Maya Sharma, as confirmed in the employee directory. The individual ARR values of their customers sum to $3,708,000.",
+      "grade": "PASS",
+      "answer_correctness": 1.0,
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0,
       "context_precision": 0.1,
-      "context_recall": 0.0,
-      "judge_reasoning": "The actual answer incorrectly claims Maya Sharma has no direct reports due to missing employee_directory data, but the reference confirms Sam Rivera and Anjali Patel are her direct reports, which were not retrieved or used.",
+      "context_recall": 1.0,
+      "judge_reasoning": "The answer is accurate and fully supported by the provided context, though the retrieval included many irrelevant chunks regarding Maya Sharma's own accounts.",
       "required_facts": [
         "3,708,000"
       ],
-      "retrieval_latency_ms": 1128.4,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 180680.3,
       "contexts_count": 11
     },
     {
@@ -275,7 +288,8 @@
         "2,400,000",
         "Anjali Patel"
       ],
-      "retrieval_latency_ms": 1920.1,
+      "disqualifiers_tripped": [],
+      "retrieval_latency_ms": 2102.4,
       "contexts_count": 11
     }
   ]

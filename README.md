@@ -34,23 +34,23 @@ Reduced from 31 to 14 — each tier is corpus-audited to be unreachable by prior
 
 ## Latest eval results
 
-Scored with RAGAS via `llm_gatewayV2` (cerebras → gemini → groq fallback). `answer_correctness ≥ 0.7` = PASS, `≥ 0.4` = PARTIAL, else FAIL. The four diagnostic metrics localize *where* a failure happens (low recall = retrieval missed; low precision = retrieval noisy; low faithfulness = hallucination; low relevancy = off-topic).
+Scored with RAGAS via `llm_gatewayV2` (groq → cerebras → gemini → nvidia fallback chain). `answer_correctness ≥ 0.7` = PASS, `≥ 0.4` = PARTIAL, else FAIL. The four diagnostic metrics localize *where* a failure happens (low recall = retrieval missed; low precision = retrieval noisy; low faithfulness = hallucination; low relevancy = off-topic).
 
 <!-- RESULTS_TABLE_START -->
 
 | Step | PASS | PART | FAIL | answer_correctness | faithfulness | context_recall | context_precision | answer_relevancy |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| step_01_baseline_rag | 4 | 1 | 9 | 0.350 | 0.986 | 0.343 | 0.264 | 0.621 |
-| step_02_tools | 6 | 2 | 6 | 0.514 | 0.986 | 0.529 | 0.243 | 0.700 |
-| step_03_hybrid_retrieval | 9 | 2 | 3 | 0.721 | 0.914 | 0.757 | 0.256 | 0.921 |
-| step_04_knowledge_graph | 10 | 3 | 1 | 0.807 | 0.986 | 0.757 | 0.286 | 0.900 |
-| step_05_multi_agent | 10 | 2 | 2 | 0.807 | 0.736 | 0.650 | 0.259 | 1.000 |
-| step_06_context_engineering | 11 | 1 | 2 | 0.814 | 0.700 | 0.657 | 0.345 | 1.000 |
-| step_07_production | _pending_ | | | | | | | |
+| step_01_baseline_rag | 4 | 1 | 9 | 0.336 | 0.986 | 0.314 | 0.186 | 0.686 |
+| step_02_tools | 7 | 1 | 6 | 0.586 | 0.986 | 0.593 | 0.271 | 0.750 |
+| step_03_hybrid_retrieval | 10 | 0 | 4 | 0.774 | 0.950 | 0.743 | 0.206 | 0.874 |
+| step_04_knowledge_graph | 12 | 2 | 0 | 0.929 | 0.871 | 0.914 | 0.386 | 0.979 |
+| step_05_multi_agent | 10 | 2 | 2 | 0.800 | 0.786 | 0.843 | 0.164 | 1.000 |
+| step_06_context_engineering | 10 | 2 | 2 | 0.771 | 0.771 | 0.679 | 0.429 | 1.000 |
+| step_07_production | 11 | 1 | 2 | 0.843 | 0.657 | 0.564 | 0.279 | 0.986 |
 
 <!-- RESULTS_TABLE_END -->
 
-Step 07 (production hardening) is left as `_pending_` — it is the reliability layer (cache, retry, confidence, health monitor) and is re-scored separately when production-grade behavior is being measured. The other rows are the latest run against the 14-question golden set.
+All rows are from the latest run against the 14-question golden set. Step 07 (production hardening) adds the reliability layer (cache, retry, confidence, health monitor) on top of step 06 — it's scored against the same questions so accuracy is directly comparable to the prior steps.
 
 
 
