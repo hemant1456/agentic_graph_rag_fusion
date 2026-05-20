@@ -74,7 +74,7 @@ def main():
     SYSTEM_PROMPT = "you are a judge, who will give score based on the provided context "
     overall_verdict = defaultdict(int)
     correctness = 0
-    number_of_question = 6
+    number_of_question = 14
 
     for q in GOLDEN_QUESTIONS[:number_of_question]:
         result = rag.query(q.question)

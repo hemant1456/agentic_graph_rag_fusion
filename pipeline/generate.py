@@ -71,5 +71,16 @@ def generate(client,query, context, tools = None):
             role= 'user',
             parts = function_result_parts
         ))
+    contents.append(genai_types.Content(
+    role="user",
+    parts=[genai_types.Part(text="You have used your full tool budget. Based on what you have learned so far, write your final answer now. Do not request any more tool calls.")],
+))
+    config_kwargs.pop('tools',None)
+    response =  client.models.generate_content(
+        
+    model = MODEL_NAME,
+    contents = contents,
+    config = genai_types.GenerateContentConfig(**config_kwargs))
+
     return response
 

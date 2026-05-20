@@ -2,6 +2,8 @@ import pandas as pd
 from pathlib import Path
 from typing import Literal
 
+
+
 DATA_DIR = Path(__file__).parent.parent / "dataset" / "company_data"
 
 _CSV_PATHS = {
@@ -28,18 +30,23 @@ _CSV_PATHS = {
     "deals_q4_2023":     DATA_DIR / "sales" / "deal_pipeline_q4_2023.csv",
 }
 
+
 def csv_info(file_name:str):
     '''
     given a file name it returns the info about that csv file
     '''
-    df = pd.read_csv(_CSV_PATHS[file_name])
-    lines = [
-        f"Rows: {len(df)}",
-        f"Columns: {list(df.columns)}",
-        f"Dtypes: {df.dtypes.astype(str).to_dict()}",
-        f"Sample rows: {df.head(3).to_dict(orient='records')}",
-    ]
-    return "\n".join(lines)
+    if file_name in _CSV_PATHS:
+        df = pd.read_csv(_CSV_PATHS[file_name])
+        lines = [
+            f"Rows: {len(df)}",
+            f"Columns: {list(df.columns)}",
+            f"Dtypes: {df.dtypes.astype(str).to_dict()}",
+            f"Sample rows: {df.head(min(20,len(df))).to_dict(orient='records')}",
+        ]
+        return "\n".join(lines)
+    else:
+        return "file not found, please use correct file name"
+
 
 
 def list_csvs() -> dict[str, str]:
@@ -120,7 +127,8 @@ def query_csv(
         return float(len(df))
 
     if operation == "rows":
-        return df.head(5).to_dict(orient="records") 
+        rows =  df.head(min(20,len(df))).to_dict(orient="records") 
+        return [{k: (None if pd.isna(v) else v) for k, v in row.items()} for row in rows]
 
     if operation in {"sum", "mean"}:
         if operation_column is None:
