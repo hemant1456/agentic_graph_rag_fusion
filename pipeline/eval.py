@@ -1,58 +1,87 @@
+import argparse
 import sys
 from pathlib import Path
+from pydantic import BaseModel, Field
+
+from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from step_01_baseline_rag.evaluation.golden_questions import GOLDEN_QUESTIONS
-from ingest import load_vector_store
-from pipeline import ask
+from pipeline.pipeline import BaseLineRag
+from google import genai
+from google.genai import types as genai_type
+from typing import Literal
+from collections import defaultdict
+load_dotenv()
 
-PASS_SYMBOL  = "\033[92m✓\033[0m"
-PARTIAL_SYMBOL = "\033[93m~\033[0m"
-FAIL_SYMBOL  = "\033[91m✗\033[0m"
-SYMBOLS = {"PASS": PASS_SYMBOL, "PARTIAL": PARTIAL_SYMBOL, "FAIL": FAIL_SYMBOL}
+class JudgeVerdict(BaseModel):
+    verdict: Literal["pass","fail"]
+    correctness: float = Field(description="how much the answer by agent and reference are aligned, score between 0 to 1")
+    faithfullness: float = Field(description="how much does llm follow the retrieved chunks to generate answer and didn't add things on its own, score between 0 to 1")
+    recall: float = Field(description="how much of required context does the retrieved chunks were able to capture, score between 0 to 1")
+    precision: float = Field(description="how much of retrieved chunks were helpful, score between 0 to 1")
 
 
-def score(answer: str, question) -> tuple[str, list, list]:
-    answer_lower = answer.lower()
-    disqualifier_hits = [d for d in question.disqualifiers if d.lower() in answer_lower]
-    required_hits = [f for f in question.required_facts if f.lower() in answer_lower]
-    partial_hits = [f for f in question.partial_facts if f.lower() in answer_lower]
+MODEL_NAME = 'gemini-3.1-flash-lite-preview'
 
-    if disqualifier_hits:
-        grade = "FAIL"
-    elif len(required_hits) == len(question.required_facts):
-        grade = "PASS"
-    elif required_hits or partial_hits:
-        grade = "PARTIAL"
-    else:
-        grade = "FAIL"
+def judge(client, system_prompt, question, reference, answer, context):
+    verdict = client.models.generate_content(
+        model = MODEL_NAME,
+        contents = f"""judge the accuracy of answer: {answer} 
+        based on following details:
+        question: {question}
+        context: {context}
+        reference: {reference}
+        """,
+        config = genai_type.GenerateContentConfig(
+            system_instruction = system_prompt,
+            temperature = 0, 
+            max_output_tokens = 2000,
+            response_schema=JudgeVerdict
+        )
+    )
+    return verdict
 
-    missing = [f for f in question.required_facts if f not in required_hits]
-    return grade, missing, disqualifier_hits
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Run the 14-question golden eval with LLM-as-judge.")
+    parser.add_argument("--chunk-size", type=int, default=1000, help="Splitter chunk size in chars")
+    parser.add_argument("--chunk-overlap", type=int, default=100, help="Splitter overlap in chars")
+    parser.add_argument("--reset", action = "store_true")
+    args = parser.parse_args()
+
+
+    print(f"Config: chunk_size={args.chunk_size}, chunk_overlap={args.chunk_overlap}, reset={args.reset}")
+    print()
+
+    rag = BaseLineRag().build(
+        reset=args.reset,
+        chunk_size=args.chunk_size,
+        chunk_overlap=args.chunk_overlap,
+    )
+
+    client = genai.Client()
+    
+    SYSTEM_PROMPT = "you are a judge, who will give score based on the provided context "
+    overall_verdict = defaultdict(int)
+    correctness = 0
+    number_of_question = 14
+
+    for q in GOLDEN_QUESTIONS[:number_of_question]:
+        result = rag.query(q.question)
+        response = judge(client, SYSTEM_PROMPT,q.question, q.reference_answer, result.answer, result.context)
+        verdict = JudgeVerdict.model_validate_json(response.text)
+        print(q.question)
+        print(verdict.verdict)
+        overall_verdict[verdict.verdict]+=1
+        correctness+= verdict.correctness
+    print(f"overall score {overall_verdict}")
+    print(f"average_correctness {correctness/number_of_question}")
+
+
 
 
 if __name__ == "__main__":
-    vs = load_vector_store()
-    counts = {"PASS": 0, "PARTIAL": 0, "FAIL": 0}
-
-    for q in GOLDEN_QUESTIONS:
-        answer = ask(q.question, vs)
-        grade, missing, disqualifiers = score(answer, q)
-        counts[grade] += 1
-
-        sym = SYMBOLS[grade]
-        print(f"{sym} {q.id} [{q.type}]")
-        print(f"   Q: {q.question}")
-        print(f"   A: {answer[:200]}{'...' if len(answer) > 200 else ''}")
-        if missing:
-            print(f"   Missing facts: {missing}")
-        if disqualifiers:
-            print(f"   Disqualifiers hit: {disqualifiers}")
-        print()
-
-    total = len(GOLDEN_QUESTIONS)
-    print("=" * 50)
-    print(f"PASS: {counts['PASS']}  PARTIAL: {counts['PARTIAL']}  FAIL: {counts['FAIL']}")
-    print(f"Pass rate: {counts['PASS']}/{total} ({counts['PASS']/total:.0%})")
-    print("=" * 50)
+    main()
