@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from step_01_baseline_rag.evaluation.golden_questions import GOLDEN_QUESTIONS
-from pipeline.pipeline import BaseLineRag
+from pipeline.pipeline import BaseLineRag, RAGWithTools
 from google import genai
 from google.genai import types as genai_type
 from typing import Literal
@@ -56,18 +56,25 @@ def main():
     print(f"Config: chunk_size={args.chunk_size}, chunk_overlap={args.chunk_overlap}, reset={args.reset}")
     print()
 
-    rag = BaseLineRag().build(
+    # rag = BaseLineRag().build(
+    #     reset=args.reset,
+    #     chunk_size=args.chunk_size,
+    #     chunk_overlap=args.chunk_overlap,
+    # )
+
+    rag = RAGWithTools().build(
         reset=args.reset,
         chunk_size=args.chunk_size,
         chunk_overlap=args.chunk_overlap,
     )
 
+    
     client = genai.Client()
     
     SYSTEM_PROMPT = "you are a judge, who will give score based on the provided context "
     overall_verdict = defaultdict(int)
     correctness = 0
-    number_of_question = 14
+    number_of_question = 6
 
     for q in GOLDEN_QUESTIONS[:number_of_question]:
         result = rag.query(q.question)
