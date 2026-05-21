@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from step_01_baseline_rag.evaluation.golden_questions import GOLDEN_QUESTIONS
-from pipeline.pipeline import BaseLineRag, RAGWithTools
+from pipeline.pipeline import BaseLineRag, RAGWithTools, HybridRAG
 from google import genai
 from google.genai import types as genai_type
 from typing import Literal
@@ -16,7 +16,7 @@ from collections import defaultdict
 load_dotenv()
 
 class JudgeVerdict(BaseModel):
-    verdict: Literal["pass","fail"]
+    verdict: Literal["pass","fail","partial"] = Field(description="pass means answered correctly, fail means it could answer only some part and partial means that it could answer mostly but didn't get all or exactly right")
     correctness: float = Field(description="how much the answer by agent and reference are aligned, score between 0 to 1")
     faithfullness: float = Field(description="how much does llm follow the retrieved chunks to generate answer and didn't add things on its own, score between 0 to 1")
     recall: float = Field(description="how much of required context does the retrieved chunks were able to capture, score between 0 to 1")
@@ -62,7 +62,12 @@ def main():
     #     chunk_overlap=args.chunk_overlap,
     # )
 
-    rag = RAGWithTools().build(
+    # rag = RAGWithTools().build(
+    #     reset=args.reset,
+    #     chunk_size=args.chunk_size,
+    #     chunk_overlap=args.chunk_overlap,
+    # )
+    rag = HybridRAG().build(
         reset=args.reset,
         chunk_size=args.chunk_size,
         chunk_overlap=args.chunk_overlap,
@@ -76,12 +81,13 @@ def main():
     correctness = 0
     number_of_question = 14
 
-    for q in GOLDEN_QUESTIONS[:number_of_question]:
+    for idx,q in enumerate(GOLDEN_QUESTIONS[:number_of_question],start=1):
         result = rag.query(q.question)
         response = judge(client, SYSTEM_PROMPT,q.question, q.reference_answer, result.answer, result.context)
         verdict = JudgeVerdict.model_validate_json(response.text)
-        print(q.question)
+        print(f"Number: {idx} question {q.question}")
         print(verdict.verdict)
+        print(f"\n\n")
         overall_verdict[verdict.verdict]+=1
         correctness+= verdict.correctness
     print(f"overall score {overall_verdict}")

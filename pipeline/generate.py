@@ -66,7 +66,7 @@ def generate(client,query, context, tools = None):
                 name = fnc.name,
                 response={'result': result}
             ))
-            print(f'called function {fnc.name} with arguments {fnc.args} and got result: {result}')
+            print(f'called function {fnc.name} with arguments {fnc.args}')
         contents.append(genai_types.Content(
             role= 'user',
             parts = function_result_parts
